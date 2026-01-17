@@ -170,7 +170,7 @@ const Auth = () => {
         <div className="bg-card rounded-lg shadow-lg p-8 border border-border">
           <div className="text-center mb-8">
             <h1 className="font-serif text-3xl font-semibold text-foreground mb-2">
-              Willow Creek Stables
+              Swan Hill Stables
             </h1>
             <p className="text-muted-foreground">
               {isSignUp ? "Create your account" : "Sign in to access your member portal"}

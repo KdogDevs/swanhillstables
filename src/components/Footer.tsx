@@ -7,7 +7,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
             <h3 className="font-serif text-2xl font-semibold mb-4">
-              Willow Creek Stables
+              Swan Hill Stables
             </h3>
             <p className="text-primary-foreground/80 max-w-md leading-relaxed">
               Where passion meets excellence in equestrian care. Our family-owned facility 
@@ -51,8 +51,8 @@ export const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="mailto:info@willowcreekstables.com" className="hover:text-primary-foreground transition-colors">
-                  info@willowcreekstables.com
+                <a href="mailto:info@swanhillstables.com" className="hover:text-primary-foreground transition-colors">
+                  info@swanhillstables.com
                 </a>
               </li>
             </ul>
@@ -60,7 +60,7 @@ export const Footer = () => {
         </div>
 
         <div className="border-t border-primary-foreground/20 mt-12 pt-8 text-center text-primary-foreground/60 text-sm">
-          © {new Date().getFullYear()} Willow Creek Stables. All rights reserved.
+          © {new Date().getFullYear()} Swan Hill Stables. All rights reserved.
         </div>
       </div>
     </footer>

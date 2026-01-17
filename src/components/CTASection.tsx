@@ -20,7 +20,7 @@ export const CTASection = () => {
           </h2>
           <p className="text-primary-foreground/80 text-lg leading-relaxed mb-10">
             Whether you're looking for exceptional boarding, professional lessons, 
-            or a welcoming community, Willow Creek Stables is ready to welcome you home.
+            or a welcoming community, Swan Hill Stables is ready to welcome you home.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="hero" size="xl" asChild>

@@ -36,7 +36,7 @@ export const OverviewSection = () => {
             <div className="aspect-[4/5] rounded-lg overflow-hidden card-shadow">
               <img
                 src={horsePortrait}
-                alt="Beautiful horse at Willow Creek Stables"
+                alt="Beautiful horse at Swan Hill Stables"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -60,7 +60,7 @@ export const OverviewSection = () => {
                 <span className="italic block">Excellence</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-10">
-                For over 25 years, Willow Creek Stables has been a sanctuary for horses 
+                For over 25 years, Swan Hill Stables has been a sanctuary for horses 
                 and a home for riders of all ages. Our commitment to exceptional care, 
                 professional training, and genuine community sets us apart.
               </p>

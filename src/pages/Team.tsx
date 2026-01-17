@@ -10,7 +10,7 @@ const teamMembers = [
     name: "Sarah Mitchell",
     role: "Owner & Head Trainer",
     image: team1,
-    bio: "With over 25 years of experience in the equestrian industry, Sarah founded Willow Creek Stables with a vision of creating a nurturing environment for both horses and riders. She holds certifications in dressage and hunter/jumper, and has trained countless students to national competition levels.",
+    bio: "With over 25 years of experience in the equestrian industry, Sarah founded Swan Hill Stables with a vision of creating a nurturing environment for both horses and riders. She holds certifications in dressage and hunter/jumper, and has trained countless students to national competition levels.",
     credentials: ["USDF Gold Medalist", "CHA Certified", "25+ Years Experience"],
   },
   {
@@ -135,7 +135,7 @@ const Team = () => {
                 trainer or just starting your equestrian career, we'd love to hear from you.
               </p>
               <a 
-                href="mailto:careers@willowcreekstables.com"
+                href="mailto:careers@swanhillstables.com"
                 className="inline-block bg-primary text-primary-foreground font-medium px-8 py-3 rounded-md hover:bg-primary/90 transition-colors"
               >
                 Get in Touch
