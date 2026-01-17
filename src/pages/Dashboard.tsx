@@ -112,7 +112,7 @@ const Dashboard = () => {
   };
 
   const quickActions = [
-    { icon: Calendar, label: "Book Lesson", description: "Schedule your next riding session", href: "#" },
+    { icon: Calendar, label: "Book Lesson", description: "Schedule your next riding session", href: "/lessons" },
     { icon: CreditCard, label: "View Invoices", description: "Check billing and payment history", href: "#" },
     { icon: Bell, label: "Notifications", description: "View updates and announcements", href: "#" },
     { icon: Settings, label: "Account Settings", description: "Manage your profile and preferences", href: "#" },

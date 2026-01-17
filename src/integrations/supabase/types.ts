@@ -14,6 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
+      lesson_bookings: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          slot_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          slot_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          slot_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_bookings_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "lesson_slots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lesson_slots: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          end_time: string
+          id: string
+          is_recurring: boolean
+          max_capacity: number
+          notes: string | null
+          recurring_day_of_week: number | null
+          slot_date: string
+          start_time: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          end_time: string
+          id?: string
+          is_recurring?: boolean
+          max_capacity?: number
+          notes?: string | null
+          recurring_day_of_week?: number | null
+          slot_date: string
+          start_time: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          end_time?: string
+          id?: string
+          is_recurring?: boolean
+          max_capacity?: number
+          notes?: string | null
+          recurring_day_of_week?: number | null
+          slot_date?: string
+          start_time?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
