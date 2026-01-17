@@ -101,14 +101,6 @@ export const AdminDocuments = () => {
 
   const checkDocuSignConnection = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke("docusign-auth", {
-        body: {},
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-      });
-
-      // Use query param approach
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/docusign-auth?action=check-connection`,
         {
@@ -121,6 +113,8 @@ export const AdminDocuments = () => {
       if (response.ok) {
         const data = await response.json();
         setDocuSignConnected(data.connected);
+      } else {
+        setDocuSignConnected(false);
       }
     } catch (error) {
       console.error("Error checking DocuSign connection:", error);
