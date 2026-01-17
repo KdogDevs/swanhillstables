@@ -1,8 +1,15 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -12,7 +19,14 @@ const navLinks = [
 
 export const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -37,9 +51,28 @@ export const Navigation = () => {
                 {link.name}
               </Link>
             ))}
-            <Button variant="default" size="sm">
-              Sign In
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <User size={16} />
+                    <span className="max-w-[120px] truncate">
+                      {user.user_metadata?.full_name || user.email?.split("@")[0]}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleSignOut} className="gap-2 cursor-pointer">
+                    <LogOut size={16} />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="default" size="sm" onClick={() => navigate("/auth")}>
+                Sign In
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -76,9 +109,32 @@ export const Navigation = () => {
                     {link.name}
                   </Link>
                 ))}
-                <Button variant="default" size="sm" className="w-fit">
-                  Sign In
-                </Button>
+                {user ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-fit gap-2"
+                    onClick={() => {
+                      handleSignOut();
+                      setIsOpen(false);
+                    }}
+                  >
+                    <LogOut size={16} />
+                    Sign Out
+                  </Button>
+                ) : (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="w-fit"
+                    onClick={() => {
+                      navigate("/auth");
+                      setIsOpen(false);
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                )}
               </div>
             </motion.div>
           )}
