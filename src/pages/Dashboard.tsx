@@ -18,18 +18,61 @@ import {
   Bell,
   Settings,
   ChevronRight,
-  Home
+  Home,
+  Stethoscope,
+  Pencil
 } from "lucide-react";
-import { Tables } from "@/integrations/supabase/types";
 import { Link } from "react-router-dom";
+import ProfileEditDialog from "@/components/ProfileEditDialog";
 
-type Profile = Tables<"profiles">;
+interface Profile {
+  id: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+  full_name: string | null;
+  phone: string | null;
+  address: string | null;
+  avatar_url: string | null;
+  emergency_contact_name: string | null;
+  emergency_contact_phone: string | null;
+  secondary_emergency_contact_name: string | null;
+  secondary_emergency_contact_phone: string | null;
+  preferred_vet_name: string | null;
+  preferred_vet_phone: string | null;
+  preferred_farrier_name: string | null;
+  preferred_farrier_phone: string | null;
+  is_boarder: boolean;
+}
 
 const Dashboard = () => {
   const { user, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error fetching profile:", error);
+      } else {
+        setProfile(data as Profile | null);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoadingProfile(false);
+    }
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -38,28 +81,6 @@ const Dashboard = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user) return;
-      
-      try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-        if (error) {
-          console.error("Error fetching profile:", error);
-        } else {
-          setProfile(data);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoadingProfile(false);
-      }
-    };
-
     if (user) {
       fetchProfile();
     }
@@ -174,10 +195,11 @@ const Dashboard = () => {
 
                 <Separator />
 
+                {/* Primary Emergency Contact */}
                 <div>
                   <h4 className="text-sm font-medium text-foreground flex items-center gap-2 mb-3">
                     <AlertCircle className="h-4 w-4 text-accent" />
-                    Emergency Contact
+                    Primary Emergency Contact
                   </h4>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-1">
@@ -191,7 +213,63 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <Button variant="outline" className="mt-4">
+                {/* Secondary Emergency Contact */}
+                <div>
+                  <h4 className="text-sm font-medium text-foreground flex items-center gap-2 mb-3">
+                    <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                    Secondary Emergency Contact
+                  </h4>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <p className="text-sm text-muted-foreground">Contact Name</p>
+                      <p className="font-medium">{profile?.secondary_emergency_contact_name || "Not set"}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm text-muted-foreground">Contact Phone</p>
+                      <p className="font-medium">{profile?.secondary_emergency_contact_phone || "Not set"}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Horse Care Preferences - Only for Boarders */}
+                {profile?.is_boarder && (
+                  <>
+                    <Separator />
+                    <div>
+                      <h4 className="text-sm font-medium text-foreground flex items-center gap-2 mb-3">
+                        <Stethoscope className="h-4 w-4 text-primary" />
+                        Horse Care Preferences
+                      </h4>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="space-y-1">
+                          <p className="text-sm text-muted-foreground">Preferred Vet</p>
+                          <p className="font-medium">
+                            {profile?.preferred_vet_name || "Not set"}
+                            {profile?.preferred_vet_phone && (
+                              <span className="text-muted-foreground text-sm ml-2">
+                                ({profile.preferred_vet_phone})
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-sm text-muted-foreground">Preferred Farrier</p>
+                          <p className="font-medium">
+                            {profile?.preferred_farrier_name || "Not set"}
+                            {profile?.preferred_farrier_phone && (
+                              <span className="text-muted-foreground text-sm ml-2">
+                                ({profile.preferred_farrier_phone})
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <Button variant="outline" className="mt-4" onClick={() => setEditDialogOpen(true)}>
+                  <Pencil className="h-4 w-4 mr-2" />
                   Edit Profile
                 </Button>
               </CardContent>
@@ -254,6 +332,13 @@ const Dashboard = () => {
           </Card>
         </motion.div>
       </main>
+
+      <ProfileEditDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        profile={profile}
+        onProfileUpdated={fetchProfile}
+      />
     </div>
   );
 };
