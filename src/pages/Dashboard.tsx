@@ -161,7 +161,7 @@ const Dashboard = () => {
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Profile Card */}
-            <Card className="lg:col-span-2">
+            <Card className="lg:col-span-3">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5 text-primary" />
@@ -170,7 +170,7 @@ const Dashboard = () => {
                 <CardDescription>Your personal and contact details</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Full Name</p>
                     <p className="font-medium">{profile?.full_name || user.user_metadata?.full_name || "Not set"}</p>
@@ -272,33 +272,6 @@ const Dashboard = () => {
                   <Pencil className="h-4 w-4 mr-2" />
                   Edit Profile
                 </Button>
-              </CardContent>
-            </Card>
-
-            {/* Membership Status Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Membership Status</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-primary/10">
-                  <span className="text-sm font-medium text-foreground">Status</span>
-                  <span className="text-sm font-semibold text-primary">Active</span>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Member Since</span>
-                    <span className="font-medium">
-                      {profile?.created_at 
-                        ? new Date(profile.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-                        : "N/A"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Plan Type</span>
-                    <span className="font-medium">Full Board</span>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
