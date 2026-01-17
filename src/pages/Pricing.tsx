@@ -6,80 +6,42 @@ import { Button } from "@/components/ui/button";
 
 const boardingOptions = [
   {
-    name: "Pasture Board",
-    price: "$400",
+    name: "Run-In / Outdoor Board",
+    price: "$500",
     period: "/month",
-    description: "Full-time pasture living with daily monitoring and care.",
+    description: "Outdoor living with run-in shelter access.",
     features: [
-      "24/7 pasture access",
+      "24/7 pasture access with run-in shelter",
       "Daily feeding (2x/day)",
       "Fresh water always available",
       "Weekly health checks",
-      "Blanketing included",
       "Basic fly control",
     ],
   },
   {
-    name: "Full Board",
+    name: "Stall Board",
     price: "$800",
     period: "/month",
     description: "Premium stall boarding with personalized daily care.",
     features: [
       "12x12 matted stall",
       "Daily turnout (weather permitting)",
-      "Feeding (3x/day) with quality hay & grain",
+      "Feeding (2x/day) with quality hay & grain",
       "Daily stall cleaning",
-      "Blanketing & fly masks included",
       "Access to all facilities",
       "Owner tack locker",
     ],
     featured: true,
-  },
-  {
-    name: "Training Board",
-    price: "$1,400",
-    period: "/month",
-    description: "Full board plus professional training sessions.",
-    features: [
-      "Everything in Full Board",
-      "4 training rides per week",
-      "Monthly progress reports",
-      "Show preparation",
-      "Personalized training plan",
-      "Priority scheduling",
-    ],
   },
 ];
 
 const lessonOptions = [
   {
     name: "Private Lesson",
-    price: "$75",
+    price: "$40",
     period: "/session",
     description: "One-on-one instruction tailored to your goals.",
     duration: "60 minutes",
-  },
-  {
-    name: "Semi-Private",
-    price: "$55",
-    period: "/person",
-    description: "Small group of 2 riders at similar skill levels.",
-    duration: "60 minutes",
-  },
-  {
-    name: "Group Lesson",
-    price: "$45",
-    period: "/person",
-    description: "Learn with 3-4 riders in a supportive environment.",
-    duration: "60 minutes",
-  },
-  {
-    name: "Lesson Package",
-    price: "$260",
-    period: "/4 lessons",
-    description: "Save with our popular 4-lesson bundle.",
-    duration: "Private lessons",
-    savings: "Save $40",
   },
 ];
 
@@ -126,19 +88,18 @@ const Pricing = () => {
                 Boarding Options
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                From pasture to full-service training, we have boarding options 
+                From outdoor run-in to full-service stall boarding, we have options 
                 to fit every horse and budget.
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {boardingOptions.map((option, index) => (
                 <motion.div
                   key={option.name}
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
                   className={`relative rounded-xl p-8 transition-all duration-300 hover:card-shadow-hover ${
                     option.featured
                       ? "bg-primary text-primary-foreground card-shadow-hover"
@@ -211,47 +172,32 @@ const Pricing = () => {
               </p>
             </motion.div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="max-w-md mx-auto">
               {lessonOptions.map((lesson, index) => (
                 <motion.div
                   key={lesson.name}
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="bg-card rounded-xl p-6 card-shadow hover:card-shadow-hover transition-all duration-300"
+                  className="bg-card rounded-xl p-8 card-shadow hover:card-shadow-hover transition-all duration-300 text-center"
                 >
-                  {lesson.savings && (
-                    <span className="inline-block bg-accent/20 text-accent text-xs font-semibold px-3 py-1 rounded-full mb-4">
-                      {lesson.savings}
-                    </span>
-                  )}
-                  <h3 className="font-serif text-xl font-semibold text-foreground mb-2">
+                  <h3 className="font-serif text-2xl font-semibold text-foreground mb-2">
                     {lesson.name}
                   </h3>
-                  <p className="text-muted-foreground text-sm mb-4">
+                  <p className="text-muted-foreground text-sm mb-6">
                     {lesson.description}
                   </p>
-                  <div className="flex items-baseline gap-1 mb-2">
-                    <span className="font-serif text-3xl font-semibold text-foreground">{lesson.price}</span>
+                  <div className="flex items-baseline gap-1 justify-center mb-2">
+                    <span className="font-serif text-4xl font-semibold text-foreground">{lesson.price}</span>
                     <span className="text-muted-foreground text-sm">{lesson.period}</span>
                   </div>
-                  <p className="text-muted-foreground text-sm">{lesson.duration}</p>
+                  <p className="text-muted-foreground text-sm mb-6">{lesson.duration}</p>
+                  <Button variant="default" size="lg" className="w-full">
+                    Book a Lesson
+                  </Button>
                 </motion.div>
               ))}
             </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
-              className="text-center mt-12"
-            >
-              <Button variant="default" size="xl">
-                Book a Lesson
-              </Button>
-            </motion.div>
           </div>
         </section>
       </main>

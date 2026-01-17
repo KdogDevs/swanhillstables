@@ -10,7 +10,7 @@ export const HeroSection = () => {
       <div className="absolute inset-0">
         <img
           src={heroBarn}
-          alt="Willow Creek Stables at sunset"
+          alt="Swan Hill Stables at sunset"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 hero-overlay" />
@@ -33,7 +33,7 @@ export const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="font-serif text-5xl md:text-7xl lg:text-8xl font-semibold text-primary-foreground mb-6 text-shadow"
         >
-          Willow Creek
+          Swan Hill
           <span className="block italic font-normal mt-2">Stables</span>
         </motion.h1>
 

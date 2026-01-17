@@ -7,7 +7,7 @@ import horsePortrait from "@/assets/horse-portrait.jpg";
 const galleryImages = [
   {
     src: heroImage,
-    alt: "Willow Creek Stables exterior at golden hour",
+    alt: "Swan Hill Stables exterior at golden hour",
     span: "col-span-2 row-span-2",
   },
   {
