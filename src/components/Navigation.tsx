@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, LogOut, User } from "lucide-react";
+import { Menu, X, LogOut, User, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -62,6 +62,10 @@ export const Navigation = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate("/dashboard")} className="gap-2 cursor-pointer">
+                    <LayoutDashboard size={16} />
+                    Dashboard
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut} className="gap-2 cursor-pointer">
                     <LogOut size={16} />
                     Sign Out
@@ -110,18 +114,32 @@ export const Navigation = () => {
                   </Link>
                 ))}
                 {user ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-fit gap-2"
-                    onClick={() => {
-                      handleSignOut();
-                      setIsOpen(false);
-                    }}
-                  >
-                    <LogOut size={16} />
-                    Sign Out
-                  </Button>
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-fit gap-2"
+                      onClick={() => {
+                        navigate("/dashboard");
+                        setIsOpen(false);
+                      }}
+                    >
+                      <LayoutDashboard size={16} />
+                      Dashboard
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-fit gap-2"
+                      onClick={() => {
+                        handleSignOut();
+                        setIsOpen(false);
+                      }}
+                    >
+                      <LogOut size={16} />
+                      Sign Out
+                    </Button>
+                  </div>
                 ) : (
                   <Button
                     variant="default"
