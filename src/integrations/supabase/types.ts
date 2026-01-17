@@ -23,7 +23,14 @@ export type Database = {
           emergency_contact_phone: string | null
           full_name: string | null
           id: string
+          is_boarder: boolean
           phone: string | null
+          preferred_farrier_name: string | null
+          preferred_farrier_phone: string | null
+          preferred_vet_name: string | null
+          preferred_vet_phone: string | null
+          secondary_emergency_contact_name: string | null
+          secondary_emergency_contact_phone: string | null
           updated_at: string
           user_id: string
         }
@@ -35,7 +42,14 @@ export type Database = {
           emergency_contact_phone?: string | null
           full_name?: string | null
           id?: string
+          is_boarder?: boolean
           phone?: string | null
+          preferred_farrier_name?: string | null
+          preferred_farrier_phone?: string | null
+          preferred_vet_name?: string | null
+          preferred_vet_phone?: string | null
+          secondary_emergency_contact_name?: string | null
+          secondary_emergency_contact_phone?: string | null
           updated_at?: string
           user_id: string
         }
@@ -47,7 +61,14 @@ export type Database = {
           emergency_contact_phone?: string | null
           full_name?: string | null
           id?: string
+          is_boarder?: boolean
           phone?: string | null
+          preferred_farrier_name?: string | null
+          preferred_farrier_phone?: string | null
+          preferred_vet_name?: string | null
+          preferred_vet_phone?: string | null
+          secondary_emergency_contact_name?: string | null
+          secondary_emergency_contact_phone?: string | null
           updated_at?: string
           user_id?: string
         }
