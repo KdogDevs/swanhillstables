@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const boardingOptions = [
   {
@@ -192,8 +193,8 @@ const Pricing = () => {
                     <span className="text-muted-foreground text-sm">{lesson.period}</span>
                   </div>
                   <p className="text-muted-foreground text-sm mb-6">{lesson.duration}</p>
-                  <Button variant="default" size="lg" className="w-full">
-                    Book a Lesson
+                  <Button variant="default" size="lg" className="w-full" asChild>
+                    <Link to="/lessons">Book a Lesson</Link>
                   </Button>
                 </motion.div>
               ))}
