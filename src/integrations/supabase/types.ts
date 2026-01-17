@@ -18,11 +18,15 @@ export type Database = {
         Row: {
           created_at: string
           document_type: string
+          docusign_status: string | null
+          envelope_id: string | null
           expires_at: string | null
           id: string
           notes: string | null
+          recipient_email: string | null
           sent_at: string | null
           signed_at: string | null
+          signing_url: string | null
           status: string
           updated_at: string
           user_id: string
@@ -30,11 +34,15 @@ export type Database = {
         Insert: {
           created_at?: string
           document_type: string
+          docusign_status?: string | null
+          envelope_id?: string | null
           expires_at?: string | null
           id?: string
           notes?: string | null
+          recipient_email?: string | null
           sent_at?: string | null
           signed_at?: string | null
+          signing_url?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -42,13 +50,53 @@ export type Database = {
         Update: {
           created_at?: string
           document_type?: string
+          docusign_status?: string | null
+          envelope_id?: string | null
           expires_at?: string | null
           id?: string
           notes?: string | null
+          recipient_email?: string | null
           sent_at?: string | null
           signed_at?: string | null
+          signing_url?: string | null
           status?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      docusign_tokens: {
+        Row: {
+          access_token: string
+          account_id: string | null
+          base_uri: string | null
+          created_at: string | null
+          expires_at: string
+          id: string
+          refresh_token: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          account_id?: string | null
+          base_uri?: string | null
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          refresh_token: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          account_id?: string | null
+          base_uri?: string | null
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          refresh_token?: string
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []

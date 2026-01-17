@@ -6,11 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Plus, Loader2, Send, CheckCircle, Clock, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FileText, Plus, Loader2, Send, CheckCircle, Clock, AlertTriangle, Link2, Unlink, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ClientDocument {
   id: string;
@@ -22,6 +25,9 @@ interface ClientDocument {
   expires_at: string | null;
   notes: string | null;
   created_at: string;
+  envelope_id: string | null;
+  docusign_status: string | null;
+  recipient_email: string | null;
   profiles?: {
     full_name: string | null;
   };
@@ -55,18 +61,124 @@ export const AdminDocuments = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [docuSignConnected, setDocuSignConnected] = useState<boolean | null>(null);
+  const [isConnectingDocuSign, setIsConnectingDocuSign] = useState(false);
+  const [sendingDocId, setSendingDocId] = useState<string | null>(null);
 
   // Form state
   const [selectedClient, setSelectedClient] = useState("");
   const [documentType, setDocumentType] = useState("");
   const [notes, setNotes] = useState("");
+  const [recipientEmail, setRecipientEmail] = useState("");
 
   const { toast } = useToast();
+  const { session } = useAuth();
 
   useEffect(() => {
     fetchDocuments();
     fetchClients();
+    checkDocuSignConnection();
+
+    // Check for DocuSign callback status in URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("docusign") === "connected") {
+      toast({
+        title: "DocuSign Connected",
+        description: "You can now send documents for e-signature!",
+      });
+      setDocuSignConnected(true);
+      // Clean up URL
+      window.history.replaceState({}, "", window.location.pathname);
+    } else if (params.get("error")) {
+      toast({
+        title: "DocuSign Connection Failed",
+        description: `Error: ${params.get("error")}`,
+        variant: "destructive",
+      });
+      window.history.replaceState({}, "", window.location.pathname);
+    }
   }, []);
+
+  const checkDocuSignConnection = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("docusign-auth", {
+        body: {},
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+
+      // Use query param approach
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/docusign-auth?action=check-connection`,
+        {
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setDocuSignConnected(data.connected);
+      }
+    } catch (error) {
+      console.error("Error checking DocuSign connection:", error);
+      setDocuSignConnected(false);
+    }
+  };
+
+  const connectDocuSign = async () => {
+    setIsConnectingDocuSign(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/docusign-auth?action=get-auth-url`,
+        {
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        window.location.href = data.authUrl;
+      } else {
+        throw new Error("Failed to get auth URL");
+      }
+    } catch (error) {
+      console.error("Error connecting to DocuSign:", error);
+      toast({
+        title: "Connection Failed",
+        description: "Could not connect to DocuSign. Please try again.",
+        variant: "destructive",
+      });
+      setIsConnectingDocuSign(false);
+    }
+  };
+
+  const disconnectDocuSign = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/docusign-auth?action=disconnect`,
+        {
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        setDocuSignConnected(false);
+        toast({
+          title: "Disconnected",
+          description: "DocuSign has been disconnected.",
+        });
+      }
+    } catch (error) {
+      console.error("Error disconnecting DocuSign:", error);
+    }
+  };
 
   const fetchDocuments = async () => {
     try {
@@ -118,6 +230,7 @@ export const AdminDocuments = () => {
         document_type: documentType,
         status: "pending",
         notes: notes || null,
+        recipient_email: recipientEmail || null,
       });
 
       if (error) throw error;
@@ -139,6 +252,64 @@ export const AdminDocuments = () => {
       });
     } finally {
       setIsCreating(false);
+    }
+  };
+
+  const handleSendDocument = async (doc: ClientDocument) => {
+    if (!docuSignConnected) {
+      toast({
+        title: "DocuSign Not Connected",
+        description: "Please connect DocuSign first to send documents for e-signature.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const email = doc.recipient_email || prompt("Enter recipient email address:");
+    if (!email) return;
+
+    const clientName = doc.profiles?.full_name || "Client";
+
+    setSendingDocId(doc.id);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/docusign-send`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+          body: JSON.stringify({
+            documentId: doc.id,
+            recipientEmail: email,
+            recipientName: clientName,
+            documentType: doc.document_type,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send document");
+      }
+
+      toast({
+        title: "Document Sent",
+        description: `${formatDocumentType(doc.document_type)} has been sent to ${email} for signing.`,
+      });
+
+      fetchDocuments();
+    } catch (error: any) {
+      console.error("Error sending document:", error);
+      toast({
+        title: "Send Failed",
+        description: error.message || "Failed to send document for signing",
+        variant: "destructive",
+      });
+    } finally {
+      setSendingDocId(null);
     }
   };
 
@@ -179,6 +350,7 @@ export const AdminDocuments = () => {
     setSelectedClient("");
     setDocumentType("");
     setNotes("");
+    setRecipientEmail("");
   };
 
   const getStatusIcon = (status: string) => {
@@ -232,6 +404,47 @@ export const AdminDocuments = () => {
 
   return (
     <div className="space-y-6">
+      {/* DocuSign Connection Status */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`w-3 h-3 rounded-full ${docuSignConnected ? 'bg-green-500' : 'bg-yellow-500'}`} />
+              <div>
+                <p className="font-medium">DocuSign Integration</p>
+                <p className="text-sm text-muted-foreground">
+                  {docuSignConnected === null 
+                    ? "Checking connection..." 
+                    : docuSignConnected 
+                      ? "Connected - Ready to send documents for e-signature" 
+                      : "Not connected - Connect to send documents for e-signature"}
+                </p>
+              </div>
+            </div>
+            {docuSignConnected ? (
+              <Button variant="outline" size="sm" onClick={disconnectDocuSign}>
+                <Unlink className="h-4 w-4 mr-2" />
+                Disconnect
+              </Button>
+            ) : (
+              <Button onClick={connectDocuSign} disabled={isConnectingDocuSign}>
+                {isConnectingDocuSign ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Connecting...
+                  </>
+                ) : (
+                  <>
+                    <Link2 className="h-4 w-4 mr-2" />
+                    Connect DocuSign
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
         <Card className="cursor-pointer hover:bg-secondary/50" onClick={() => setStatusFilter("pending")}>
@@ -353,6 +566,15 @@ export const AdminDocuments = () => {
                       </Select>
                     </div>
                     <div className="space-y-2">
+                      <Label>Recipient Email (for DocuSign)</Label>
+                      <Input
+                        type="email"
+                        placeholder="client@email.com"
+                        value={recipientEmail}
+                        onChange={(e) => setRecipientEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
                       <Label>Notes (optional)</Label>
                       <Textarea
                         placeholder="Any additional notes..."
@@ -398,6 +620,7 @@ export const AdminDocuments = () => {
                   <TableHead>Client</TableHead>
                   <TableHead>Document</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Email</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -413,27 +636,54 @@ export const AdminDocuments = () => {
                       <div className="flex items-center gap-2">
                         {getStatusIcon(doc.status)}
                         {getStatusBadge(doc.status)}
+                        {doc.envelope_id && (
+                          <Badge variant="outline" className="text-xs">
+                            DocuSign
+                          </Badge>
+                        )}
                       </div>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {doc.recipient_email || "-"}
                     </TableCell>
                     <TableCell>
                       {format(new Date(doc.created_at), "MMM d, yyyy")}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Select
-                        value={doc.status}
-                        onValueChange={(value) => handleUpdateStatus(doc.id, value)}
-                      >
-                        <SelectTrigger className="w-28">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {STATUS_OPTIONS.map((status) => (
-                            <SelectItem key={status.value} value={status.value}>
-                              {status.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="flex items-center justify-end gap-2">
+                        {doc.status === "pending" && doc.document_type !== "other" && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleSendDocument(doc)}
+                            disabled={sendingDocId === doc.id || !docuSignConnected}
+                          >
+                            {sendingDocId === doc.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <>
+                                <Send className="h-4 w-4 mr-1" />
+                                Send
+                              </>
+                            )}
+                          </Button>
+                        )}
+                        <Select
+                          value={doc.status}
+                          onValueChange={(value) => handleUpdateStatus(doc.id, value)}
+                        >
+                          <SelectTrigger className="w-28">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {STATUS_OPTIONS.map((status) => (
+                              <SelectItem key={status.value} value={status.value}>
+                                {status.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
