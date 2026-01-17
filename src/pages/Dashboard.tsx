@@ -20,10 +20,12 @@ import {
   ChevronRight,
   Home,
   Stethoscope,
-  Pencil
+  Pencil,
+  Shield
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ProfileEditDialog from "@/components/ProfileEditDialog";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 
 interface Profile {
   id: string;
@@ -47,6 +49,7 @@ interface Profile {
 
 const Dashboard = () => {
   const { user, loading: authLoading, signOut } = useAuth();
+  const { isAdmin } = useAdminCheck();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -123,10 +126,18 @@ const Dashboard = () => {
       {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-            <Home className="h-4 w-4" />
-            <span className="text-sm">Back to Home</span>
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+              <Home className="h-4 w-4" />
+              <span className="text-sm">Back to Home</span>
+            </Link>
+            {isAdmin && (
+              <Link to="/admin" className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+                <Shield className="h-4 w-4" />
+                <span className="text-sm font-medium">Admin</span>
+              </Link>
+            )}
+          </div>
           <h1 className="font-serif text-xl font-semibold text-foreground">Member Portal</h1>
           <Button variant="ghost" size="sm" onClick={handleSignOut}>
             Sign Out
