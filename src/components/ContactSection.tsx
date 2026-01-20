@@ -29,7 +29,7 @@ const socialProfiles = [
     name: "Zaxby's",
     followers: "412K",
     description: "Indescribably Good Chicken™",
-    profileImage: "https://logo.clearbit.com/zaxbys.com",
+    initials: "Z",
     url: "https://instagram.com/realzaxbys",
     gradient: "from-purple-500 via-pink-500 to-orange-400",
     buttonColor: "bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500",
@@ -41,7 +41,7 @@ const socialProfiles = [
     name: "Zaxby's",
     followers: "2.1M",
     description: "Indescribably Good Chicken™ | Official Page",
-    profileImage: "https://logo.clearbit.com/zaxbys.com",
+    initials: "Z",
     url: "https://facebook.com/zaxbys",
     gradient: "from-blue-600 to-blue-400",
     buttonColor: "bg-blue-600 hover:bg-blue-700",
@@ -53,9 +53,9 @@ const socialProfiles = [
     name: "Zaxby's",
     followers: "892K",
     description: "Chicken content 🐔",
-    profileImage: "https://logo.clearbit.com/zaxbys.com",
+    initials: "Z",
     url: "https://tiktok.com/@zaxbys",
-    gradient: "from-black via-gray-800 to-black",
+    gradient: "from-gray-900 via-gray-800 to-black",
     buttonColor: "bg-black hover:bg-gray-900",
   },
 ];
@@ -156,14 +156,10 @@ export const ContactSection = () => {
 
                   {/* Profile Content */}
                   <CardContent className="pt-0 relative">
-                    {/* Profile Image */}
+                    {/* Profile Avatar with Initials */}
                     <div className="absolute -top-10 left-4">
-                      <div className="w-20 h-20 rounded-full border-4 border-card overflow-hidden shadow-lg">
-                        <img
-                          src={profile.profileImage}
-                          alt={profile.name}
-                          className="w-full h-full object-cover"
-                        />
+                      <div className="w-20 h-20 rounded-full border-4 border-card overflow-hidden shadow-lg bg-white flex items-center justify-center">
+                        <span className="text-2xl font-bold text-primary">{profile.initials}</span>
                       </div>
                     </div>
 
