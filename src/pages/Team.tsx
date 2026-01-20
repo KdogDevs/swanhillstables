@@ -2,7 +2,7 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import team1 from "@/assets/team-1.jpg";
-import team2 from "@/assets/team-2.jpg";
+import lendyPhoto from "@/assets/lendy-johnston.jpg";
 import team3 from "@/assets/team-3.jpg";
 
 const teamMembers = [
@@ -16,7 +16,7 @@ const teamMembers = [
   {
     name: "Lendy Johnston",
     role: "Trainer",
-    image: team2,
+    image: lendyPhoto,
     bio: "Lendy is a junior at the University of Alabama who brings enthusiasm and skill to every lesson. Her patience and attention to detail help students build confidence and develop their riding abilities.",
     credentials: ["University of Alabama Junior", "Trainer"],
   },
