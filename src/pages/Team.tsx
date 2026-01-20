@@ -3,7 +3,8 @@ import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import nicolePhoto from "@/assets/nicole-barry.jpg";
 import lendyPhoto from "@/assets/lendy-johnston.jpg";
-import team3 from "@/assets/team-3.jpg";
+import sarahPhoto from "@/assets/sarah-figeritti.jpg";
+import team1 from "@/assets/team-1.jpg";
 
 const teamMembers = [
   {
@@ -23,14 +24,14 @@ const teamMembers = [
   {
     name: "Sarah Figeritti",
     role: "Trainer",
-    image: team3,
+    image: sarahPhoto,
     bio: "Sarah is a recent graduate of the University of Alabama with a deep love for equestrian sports. Her experience and dedication make her an invaluable part of our training team.",
     credentials: ["University of Alabama Graduate", "Trainer"],
   },
   {
     name: "Kagen Jensen",
     role: "Farm Hand & Trainer",
-    image: team3,
+    image: team1,
     bio: "Kagen is a freshman at the University of Alabama who wears many hats at Swan Hill Stables. As both a farm hand and trainer, he helps keep operations running smoothly while sharing his love of horses with students.",
     credentials: ["University of Alabama Freshman", "Farm Hand", "Trainer"],
   },
