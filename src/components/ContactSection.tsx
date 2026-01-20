@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Phone, Mail, ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import zaxbysLogo from "@/assets/zaxbys-logo.jpeg";
 
 const InstagramIcon = () => (
   <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
@@ -29,7 +30,7 @@ const socialProfiles = [
     name: "Zaxby's",
     followers: "412K",
     description: "Indescribably Good Chicken™",
-    initials: "Z",
+    profileImage: zaxbysLogo,
     url: "https://instagram.com/realzaxbys",
     gradient: "from-purple-500 via-pink-500 to-orange-400",
     buttonColor: "bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500",
@@ -41,7 +42,7 @@ const socialProfiles = [
     name: "Zaxby's",
     followers: "2.1M",
     description: "Indescribably Good Chicken™ | Official Page",
-    initials: "Z",
+    profileImage: zaxbysLogo,
     url: "https://facebook.com/zaxbys",
     gradient: "from-blue-600 to-blue-400",
     buttonColor: "bg-blue-600 hover:bg-blue-700",
@@ -53,7 +54,7 @@ const socialProfiles = [
     name: "Zaxby's",
     followers: "892K",
     description: "Chicken content 🐔",
-    initials: "Z",
+    profileImage: zaxbysLogo,
     url: "https://tiktok.com/@zaxbys",
     gradient: "from-gray-900 via-gray-800 to-black",
     buttonColor: "bg-black hover:bg-gray-900",
@@ -156,10 +157,14 @@ export const ContactSection = () => {
 
                   {/* Profile Content */}
                   <CardContent className="pt-0 relative">
-                    {/* Profile Avatar with Initials */}
+                    {/* Profile Image */}
                     <div className="absolute -top-10 left-4">
-                      <div className="w-20 h-20 rounded-full border-4 border-card overflow-hidden shadow-lg bg-white flex items-center justify-center">
-                        <span className="text-2xl font-bold text-primary">{profile.initials}</span>
+                      <div className="w-20 h-20 rounded-full border-4 border-card overflow-hidden shadow-lg">
+                        <img 
+                          src={profile.profileImage} 
+                          alt={profile.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     </div>
 
