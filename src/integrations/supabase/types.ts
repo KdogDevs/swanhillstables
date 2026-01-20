@@ -137,6 +137,56 @@ export type Database = {
         }
         Relationships: []
       }
+      horse_use_logs: {
+        Row: {
+          activity_type: string
+          created_at: string
+          duration_minutes: number | null
+          horse_name: string
+          id: string
+          logged_by: string
+          notes: string | null
+          ride_date: string
+          rider_id: string | null
+          rider_name: string
+          updated_at: string
+        }
+        Insert: {
+          activity_type?: string
+          created_at?: string
+          duration_minutes?: number | null
+          horse_name: string
+          id?: string
+          logged_by: string
+          notes?: string | null
+          ride_date?: string
+          rider_id?: string | null
+          rider_name: string
+          updated_at?: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          duration_minutes?: number | null
+          horse_name?: string
+          id?: string
+          logged_by?: string
+          notes?: string | null
+          ride_date?: string
+          rider_id?: string | null
+          rider_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horse_use_logs_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lesson_bookings: {
         Row: {
           created_at: string
