@@ -52,13 +52,13 @@ export const OverviewSection = () => {
                 About Our Barn
               </p>
               <h2 className="font-serif text-4xl md:text-5xl font-semibold text-foreground mb-6">
-                A Legacy of
-                <span className="italic block">Excellence</span>
+                A Fresh Start
+                <span className="italic block">Done Right</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-10">
-                For over 25 years, Swan Hill Stables has been a sanctuary for horses 
-                and a home for riders of all ages. Our commitment to exceptional care, 
-                professional training, and genuine community sets us apart.
+                Swan Hill Stables is a new barn built with care and passion for horses 
+                and riders of all ages. Our commitment to exceptional care and 
+                professional training sets us apart.
               </p>
             </motion.div>
 
