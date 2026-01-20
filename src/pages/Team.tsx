@@ -1,7 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
-import team1 from "@/assets/team-1.jpg";
+import nicolePhoto from "@/assets/nicole-barry.jpg";
 import lendyPhoto from "@/assets/lendy-johnston.jpg";
 import team3 from "@/assets/team-3.jpg";
 
@@ -9,7 +9,7 @@ const teamMembers = [
   {
     name: "Nicole Barry",
     role: "Owner & Trainer",
-    image: team1,
+    image: nicolePhoto,
     bio: "Nicole is a recent graduate of the University of Alabama with a passion for horses and teaching. As the owner of Swan Hill Stables, she brings fresh energy and dedication to creating a welcoming environment for riders of all skill levels.",
     credentials: ["University of Alabama Graduate", "Trainer", "Owner"],
   },
@@ -30,7 +30,7 @@ const teamMembers = [
   {
     name: "Kagen Jensen",
     role: "Farm Hand & Trainer",
-    image: team1,
+    image: team3,
     bio: "Kagen is a freshman at the University of Alabama who wears many hats at Swan Hill Stables. As both a farm hand and trainer, he helps keep operations running smoothly while sharing his love of horses with students.",
     credentials: ["University of Alabama Freshman", "Farm Hand", "Trainer"],
   },
