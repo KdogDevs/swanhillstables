@@ -24,6 +24,7 @@ import {
 import { Link } from "react-router-dom";
 import ProfileEditDialog from "@/components/ProfileEditDialog";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
+import { BoarderCareLog } from "@/components/BoarderCareLog";
 
 interface Profile {
   id: string;
@@ -329,6 +330,11 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Horse Care Log - Only for Boarders */}
+          {profile?.is_boarder && (
+            <BoarderCareLog />
+          )}
         </motion.div>
       </main>
 

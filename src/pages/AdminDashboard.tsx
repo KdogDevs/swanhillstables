@@ -8,6 +8,7 @@ import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { AdminClientsList } from "@/components/admin/AdminClientsList";
 import { AdminDocuments } from "@/components/admin/AdminDocuments";
 import { AdminLessonSlots } from "@/components/AdminLessonSlots";
+import { AdminCareLog } from "@/components/admin/AdminCareLog";
 import { 
   Loader2, 
   Users, 
@@ -15,7 +16,8 @@ import {
   Calendar, 
   Home,
   Shield,
-  LogOut 
+  LogOut,
+  ClipboardList
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -93,10 +95,14 @@ const AdminDashboard = () => {
 
           {/* Tabs */}
           <Tabs defaultValue="clients" className="space-y-6">
-            <TabsList className="grid w-full max-w-md grid-cols-3">
+            <TabsList className="grid w-full max-w-lg grid-cols-4">
               <TabsTrigger value="clients" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 Clients
+              </TabsTrigger>
+              <TabsTrigger value="carelog" className="flex items-center gap-2">
+                <ClipboardList className="h-4 w-4" />
+                Care Log
               </TabsTrigger>
               <TabsTrigger value="documents" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
@@ -110,6 +116,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="clients">
               <AdminClientsList />
+            </TabsContent>
+
+            <TabsContent value="carelog">
+              <AdminCareLog />
             </TabsContent>
 
             <TabsContent value="documents">
