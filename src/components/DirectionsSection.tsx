@@ -8,7 +8,7 @@ const ENCODED_ADDRESS = encodeURIComponent(ADDRESS);
 export const DirectionsSection = () => {
   const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${ENCODED_ADDRESS}`;
   const appleMapsUrl = `https://maps.apple.com/?daddr=${ENCODED_ADDRESS}`;
-  const embedUrl = `https://www.google.com/maps?q=${ENCODED_ADDRESS}&output=embed`;
+  const embedUrl = `https://www.google.com/maps?q=${ENCODED_ADDRESS}&t=k&output=embed`;
 
   return (
     <section className="py-24 bg-secondary/30">
