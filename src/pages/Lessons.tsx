@@ -25,8 +25,8 @@ const Lessons = () => {
                 Riding Lessons
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                Browse available times and book your private lesson with our expert instructors.
-                $40 per 60-minute session.
+                Browse available times and book your private lesson with our instructors.
+                $45 per 30-minute session.
               </p>
             </motion.div>
           </div>
