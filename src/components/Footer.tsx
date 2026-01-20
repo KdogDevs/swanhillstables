@@ -43,14 +43,9 @@ export const Footer = () => {
               Contact
             </h4>
             <ul className="space-y-3 text-primary-foreground/80">
-              <li>123 Meadow Lane</li>
-              <li>Countryside, ST 12345</li>
+              <li>5808 Harper Rd</li>
+              <li>Northport, Alabama</li>
               <li className="pt-2">
-                <a href="tel:+15551234567" className="hover:text-primary-foreground transition-colors">
-                  (555) 123-4567
-                </a>
-              </li>
-              <li>
                 <a href="mailto:info@swanhillstables.com" className="hover:text-primary-foreground transition-colors">
                   info@swanhillstables.com
                 </a>
