@@ -3,20 +3,16 @@ import horsePortrait from "@/assets/horse-portrait.jpg";
 
 const features = [
   {
-    title: "Premium Boarding",
-    description: "Spacious 12x12 stalls with daily turnout, quality feed, and personalized care for each horse.",
+    title: "Boarding",
+    description: "Spacious stalls with daily turnout, quality feed, and personalized care for each horse.",
   },
   {
-    title: "Expert Instruction",
-    description: "Certified trainers offering lessons from beginner to advanced in multiple disciplines.",
+    title: "Instruction",
+    description: "Lessons from beginner to advanced with one of our 4 experienced trainers.",
   },
   {
-    title: "Modern Facilities",
-    description: "Heated indoor arena, outdoor ring, round pen, and well-maintained trails on 50 acres.",
-  },
-  {
-    title: "Community",
-    description: "A welcoming family of horse lovers who support and inspire each other's equestrian journey.",
+    title: "Facilities",
+    description: "Indoor arena and outdoor ring for year-round riding in any weather.",
   },
 ];
 
