@@ -10,6 +10,14 @@ export const DirectionsSection = () => {
   const appleMapsUrl = `https://maps.apple.com/?address=${ENCODED_ADDRESS}`;
   const embedUrl = `https://www.google.com/maps?q=${ENCODED_ADDRESS}&t=k&output=embed`;
 
+  const openExternal = (url: string) => {
+    // Firefox can block cross-origin navigations from a COOP page;
+    // opening a blank tab first and then navigating is more reliable.
+    const win = window.open("about:blank", "_blank", "noopener,noreferrer");
+    if (win) win.location.href = url;
+    else window.location.href = url;
+  };
+
   return (
     <section className="py-24 bg-secondary/30">
       <div className="container mx-auto px-6">
@@ -50,26 +58,18 @@ export const DirectionsSection = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              asChild
-              size="lg"
-              className="gap-2"
-            >
-              <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
-                <Navigation className="h-5 w-5" />
-                Get Directions (Google Maps)
-              </a>
+            <Button size="lg" className="gap-2" onClick={() => openExternal(googleMapsUrl)}>
+              <Navigation className="h-5 w-5" />
+              Get Directions (Google Maps)
             </Button>
             <Button
-              asChild
               size="lg"
               variant="outline"
               className="gap-2"
+              onClick={() => openExternal(appleMapsUrl)}
             >
-              <a href={appleMapsUrl} target="_blank" rel="noopener noreferrer">
-                <Navigation className="h-5 w-5" />
-                Get Directions (Apple Maps)
-              </a>
+              <Navigation className="h-5 w-5" />
+              Get Directions (Apple Maps)
             </Button>
           </div>
         </motion.div>
