@@ -6,8 +6,8 @@ const ADDRESS = "5808 Harper Rd, Northport, Alabama";
 const ENCODED_ADDRESS = encodeURIComponent(ADDRESS);
 
 export const DirectionsSection = () => {
-  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${ENCODED_ADDRESS}`;
-  const appleMapsUrl = `https://maps.apple.com/?daddr=${ENCODED_ADDRESS}`;
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${ENCODED_ADDRESS}`;
+  const appleMapsUrl = `https://maps.apple.com/?address=${ENCODED_ADDRESS}`;
   const embedUrl = `https://www.google.com/maps?q=${ENCODED_ADDRESS}&t=k&output=embed`;
 
   return (
