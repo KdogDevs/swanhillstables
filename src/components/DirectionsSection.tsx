@@ -11,11 +11,7 @@ export const DirectionsSection = () => {
   const embedUrl = `https://www.google.com/maps?q=${ENCODED_ADDRESS}&t=k&output=embed`;
 
   const openExternal = (url: string) => {
-    // Firefox can block cross-origin navigations from a COOP page;
-    // opening a blank tab first and then navigating is more reliable.
-    const win = window.open("about:blank", "_blank", "noopener,noreferrer");
-    if (win) win.location.href = url;
-    else window.location.href = url;
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
