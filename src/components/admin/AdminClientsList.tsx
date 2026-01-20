@@ -8,7 +8,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Users, Search, Loader2, Mail, Phone, MapPin, AlertCircle, FileText, Eye } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Users, Search, Loader2, Mail, Phone, MapPin, AlertCircle, FileText, Eye, Stethoscope } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -21,6 +23,12 @@ interface Profile {
   avatar_url: string | null;
   emergency_contact_name: string | null;
   emergency_contact_phone: string | null;
+  secondary_emergency_contact_name: string | null;
+  secondary_emergency_contact_phone: string | null;
+  preferred_vet_name: string | null;
+  preferred_vet_phone: string | null;
+  preferred_farrier_name: string | null;
+  preferred_farrier_phone: string | null;
   is_boarder: boolean;
   created_at: string;
 }
@@ -101,6 +109,38 @@ export const AdminClientsList = () => {
     setSelectedClient(client);
     await fetchClientDocuments(client.user_id);
     setShowClientDialog(true);
+  };
+
+  const handleToggleBoarder = async (client: Profile, isBoarder: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ is_boarder: isBoarder })
+        .eq("id", client.id);
+
+      if (error) throw error;
+
+      // Update local state
+      setClients(prev => prev.map(c => 
+        c.id === client.id ? { ...c, is_boarder: isBoarder } : c
+      ));
+      
+      if (selectedClient?.id === client.id) {
+        setSelectedClient({ ...selectedClient, is_boarder: isBoarder });
+      }
+
+      toast({
+        title: "Status Updated",
+        description: `${client.full_name || "Client"} is now ${isBoarder ? "a boarder" : "lesson only"}`,
+      });
+    } catch (error) {
+      console.error("Error updating boarder status:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update client status",
+        variant: "destructive",
+      });
+    }
   };
 
   const getInitials = (name: string | null) => {
@@ -265,12 +305,21 @@ export const AdminClientsList = () => {
                       </span>
                     )}
                   </div>
-                  <div className="mt-2">
-                    {selectedClient.is_boarder ? (
-                      <Badge>Boarder</Badge>
-                    ) : (
-                      <Badge variant="outline">Lesson Only</Badge>
-                    )}
+                  {/* Client Status Toggle */}
+                  <div className="mt-4 p-4 rounded-lg bg-muted/50">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="boarder-toggle" className="font-medium">Boarder Status</Label>
+                        <p className="text-sm text-muted-foreground">
+                          Toggle to grant access to horse care preferences
+                        </p>
+                      </div>
+                      <Switch
+                        id="boarder-toggle"
+                        checked={selectedClient.is_boarder}
+                        onCheckedChange={(checked) => handleToggleBoarder(selectedClient, checked)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -298,6 +347,43 @@ export const AdminClientsList = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Horse Care Preferences - Only for Boarders */}
+              {selectedClient.is_boarder && (
+                <>
+                  <Separator />
+                  <div>
+                    <h4 className="font-medium flex items-center gap-2 mb-3">
+                      <Stethoscope className="h-4 w-4 text-primary" />
+                      Horse Care Preferences
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Preferred Vet</p>
+                        <p className="font-medium">
+                          {selectedClient.preferred_vet_name || "Not set"}
+                          {selectedClient.preferred_vet_phone && (
+                            <span className="text-muted-foreground ml-1">
+                              ({selectedClient.preferred_vet_phone})
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Preferred Farrier</p>
+                        <p className="font-medium">
+                          {selectedClient.preferred_farrier_name || "Not set"}
+                          {selectedClient.preferred_farrier_phone && (
+                            <span className="text-muted-foreground ml-1">
+                              ({selectedClient.preferred_farrier_phone})
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
 
               <Separator />
 
