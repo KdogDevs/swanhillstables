@@ -10,8 +10,8 @@ export const Footer = () => {
               Swan Hill Stables
             </h3>
             <p className="text-primary-foreground/80 max-w-md leading-relaxed">
-              Where passion meets excellence in equestrian care. Our family-owned facility 
-              has been nurturing horses and riders for over two decades.
+              Quality boarding and instruction for horses and riders of all levels. 
+              We're dedicated to exceptional care and a welcoming environment for everyone.
             </p>
           </div>
 
