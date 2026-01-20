@@ -18,7 +18,8 @@ import {
   Home,
   Stethoscope,
   Pencil,
-  Shield
+  Shield,
+  DollarSign
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ProfileEditDialog from "@/components/ProfileEditDialog";
@@ -112,7 +113,8 @@ const Dashboard = () => {
   };
 
   const quickActions = [
-    { icon: Calendar, label: "Book Lesson", description: "Schedule your next riding session", href: "/lessons" },
+    { icon: Calendar, label: "Book Lesson", description: "Schedule your next riding session", href: "/lessons", external: false },
+    { icon: DollarSign, label: "Pay for Lesson", description: "Send payment via Venmo", href: "https://venmo.com/u/YourVenmoUsername", external: true },
   ];
 
   return (
@@ -289,22 +291,41 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 sm:grid-cols-2">
-                {quickActions.map((action) => (
-                  <Link
-                    key={action.label}
-                    to={action.href}
-                    className="flex items-center gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors group"
-                  >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <action.icon className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium text-foreground">{action.label}</p>
-                      <p className="text-sm text-muted-foreground">{action.description}</p>
-                    </div>
-                    <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                  </Link>
-                ))}
+                {quickActions.map((action) => 
+                  action.external ? (
+                    <a
+                      key={action.label}
+                      href={action.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors group"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <action.icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-foreground">{action.label}</p>
+                        <p className="text-sm text-muted-foreground">{action.description}</p>
+                      </div>
+                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </a>
+                  ) : (
+                    <Link
+                      key={action.label}
+                      to={action.href}
+                      className="flex items-center gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors group"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <action.icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-foreground">{action.label}</p>
+                        <p className="text-sm text-muted-foreground">{action.description}</p>
+                      </div>
+                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </Link>
+                  )
+                )}
               </div>
             </CardContent>
           </Card>
