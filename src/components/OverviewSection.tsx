@@ -48,17 +48,13 @@ export const OverviewSection = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <p className="text-accent text-sm uppercase tracking-[0.2em] mb-4 font-medium">
-                About Our Barn
-              </p>
               <h2 className="font-serif text-4xl md:text-5xl font-semibold text-foreground mb-6">
-                A Fresh Start
-                <span className="italic block">Done Right</span>
+                About Our Barn
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-10">
-                Swan Hill Stables is a new barn built with care and passion for horses 
-                and riders of all ages. Our commitment to exceptional care and 
-                professional training sets us apart.
+                Swan Hill Stables offers quality boarding and instruction for horses 
+                and riders of all levels. We're dedicated to exceptional care and 
+                a welcoming environment for everyone.
               </p>
             </motion.div>
 
