@@ -7,25 +7,32 @@ import team3 from "@/assets/team-3.jpg";
 
 const teamMembers = [
   {
-    name: "Sarah Mitchell",
-    role: "Owner & Head Trainer",
+    name: "Nicole Barry",
+    role: "Owner & Trainer",
     image: team1,
-    bio: "With over 25 years of experience in the equestrian industry, Sarah founded Swan Hill Stables with a vision of creating a nurturing environment for both horses and riders. She holds certifications in dressage and hunter/jumper, and has trained countless students to national competition levels.",
-    credentials: ["USDF Gold Medalist", "CHA Certified", "25+ Years Experience"],
+    bio: "Nicole is a recent graduate of the University of Alabama with a passion for horses and teaching. As the owner of Swan Hill Stables, she brings fresh energy and dedication to creating a welcoming environment for riders of all skill levels.",
+    credentials: ["University of Alabama Graduate", "Trainer", "Owner"],
   },
   {
-    name: "Emma Rodriguez",
-    role: "Assistant Trainer",
+    name: "Lendy Johnston",
+    role: "Trainer",
     image: team2,
-    bio: "Emma brings youthful energy and a passion for teaching to our lesson program. A former junior champion, she specializes in working with young riders and helping nervous beginners find their confidence in the saddle.",
-    credentials: ["ARIA Certified", "Hunter/Jumper Specialist", "Youth Program Director"],
+    bio: "Lendy is a junior at the University of Alabama who brings enthusiasm and skill to every lesson. Her patience and attention to detail help students build confidence and develop their riding abilities.",
+    credentials: ["University of Alabama Junior", "Trainer"],
   },
   {
-    name: "Michael Thompson",
-    role: "Barn Manager",
+    name: "Sarah Figeritti",
+    role: "Trainer",
     image: team3,
-    bio: "Michael has been the heart of our daily operations for over 15 years. His expertise in equine care, facility management, and his calm demeanor with even the most spirited horses makes him invaluable to our team.",
-    credentials: ["Equine Care Specialist", "15+ Years Experience", "Emergency Response Certified"],
+    bio: "Sarah is a recent graduate of the University of Alabama with a deep love for equestrian sports. Her experience and dedication make her an invaluable part of our training team.",
+    credentials: ["University of Alabama Graduate", "Trainer"],
+  },
+  {
+    name: "Kagen Jensen",
+    role: "Farm Hand & Trainer",
+    image: team1,
+    bio: "Kagen is a freshman at the University of Alabama who wears many hats at Swan Hill Stables. As both a farm hand and trainer, he helps keep operations running smoothly while sharing his love of horses with students.",
+    credentials: ["University of Alabama Freshman", "Farm Hand", "Trainer"],
   },
 ];
 
