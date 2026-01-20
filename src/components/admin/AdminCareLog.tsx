@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ClipboardList, Plus, Loader2, Upload, Image, Trash2 } from "lucide-react";
+import { ClipboardList, Plus, Loader2, Upload, Image, Trash2, Camera } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -58,6 +58,7 @@ export const AdminCareLog = () => {
   const [incidentType, setIncidentType] = useState("general");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -95,17 +96,52 @@ export const AdminCareLog = () => {
     }
   };
 
+  const processFile = useCallback((file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+    setPhotoFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  }, [toast]);
+
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setPhotoFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      processFile(file);
     }
   };
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  }, [processFile]);
 
   const resetForm = () => {
     setSelectedBoarder("");
@@ -318,41 +354,76 @@ export const AdminCareLog = () => {
 
                 <div className="space-y-2">
                   <Label>Photo (optional)</Label>
-                  <div className="flex items-center gap-4">
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={handlePhotoChange}
-                      className="hidden"
-                      id="photo-upload"
-                    />
-                    <label
-                      htmlFor="photo-upload"
-                      className="flex items-center gap-2 px-4 py-2 border rounded-md cursor-pointer hover:bg-muted transition-colors"
+                  {/* Hidden file inputs */}
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                    id="photo-upload"
+                  />
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                    id="camera-capture"
+                  />
+                  
+                  {photoPreview ? (
+                    <div className="relative inline-block">
+                      <img
+                        src={photoPreview}
+                        alt="Preview"
+                        className="max-h-32 object-cover rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPhotoFile(null);
+                          setPhotoPreview(null);
+                        }}
+                        className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                        isDragging 
+                          ? "border-primary bg-primary/5" 
+                          : "border-muted-foreground/25 hover:border-muted-foreground/50"
+                      }`}
                     >
-                      <Upload className="h-4 w-4" />
-                      {photoFile ? "Change Photo" : "Upload Photo"}
-                    </label>
-                    {photoPreview && (
-                      <div className="relative">
-                        <img
-                          src={photoPreview}
-                          alt="Preview"
-                          className="h-16 w-16 object-cover rounded-md"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setPhotoFile(null);
-                            setPhotoPreview(null);
-                          }}
-                          className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </button>
+                      <div className="flex flex-col items-center gap-2">
+                        <Upload className="h-8 w-8 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          Drag and drop an image here
+                        </p>
+                        <div className="flex gap-2 mt-2">
+                          <label
+                            htmlFor="photo-upload"
+                            className="flex items-center gap-2 px-3 py-1.5 text-sm border rounded-md cursor-pointer hover:bg-muted transition-colors"
+                          >
+                            <Upload className="h-4 w-4" />
+                            Browse
+                          </label>
+                          <label
+                            htmlFor="camera-capture"
+                            className="flex items-center gap-2 px-3 py-1.5 text-sm border rounded-md cursor-pointer hover:bg-muted transition-colors md:hidden"
+                          >
+                            <Camera className="h-4 w-4" />
+                            Camera
+                          </label>
+                        </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4">
