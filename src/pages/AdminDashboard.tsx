@@ -9,6 +9,7 @@ import { AdminClientsList } from "@/components/admin/AdminClientsList";
 import { AdminDocuments } from "@/components/admin/AdminDocuments";
 import { AdminLessonSlots } from "@/components/AdminLessonSlots";
 import { AdminCareLog } from "@/components/admin/AdminCareLog";
+import { AdminHorseUseLog } from "@/components/admin/AdminHorseUseLog";
 import { 
   Loader2, 
   Users, 
@@ -17,7 +18,8 @@ import {
   Home,
   Shield,
   LogOut,
-  ClipboardList
+  ClipboardList,
+  Bookmark
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -95,7 +97,7 @@ const AdminDashboard = () => {
 
           {/* Tabs */}
           <Tabs defaultValue="clients" className="space-y-6">
-            <TabsList className="grid w-full max-w-lg grid-cols-4">
+            <TabsList className="grid w-full max-w-3xl grid-cols-5">
               <TabsTrigger value="clients" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 Clients
@@ -103,6 +105,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="carelog" className="flex items-center gap-2">
                 <ClipboardList className="h-4 w-4" />
                 Care Log
+              </TabsTrigger>
+              <TabsTrigger value="horseuse" className="flex items-center gap-2">
+                <Bookmark className="h-4 w-4" />
+                Horse Use
               </TabsTrigger>
               <TabsTrigger value="documents" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
@@ -120,6 +126,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="carelog">
               <AdminCareLog />
+            </TabsContent>
+
+            <TabsContent value="horseuse">
+              <AdminHorseUseLog />
             </TabsContent>
 
             <TabsContent value="documents">
