@@ -101,6 +101,42 @@ export type Database = {
         }
         Relationships: []
       }
+      horse_care_logs: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          incident_type: string
+          logged_by: string
+          photo_url: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          incident_type?: string
+          logged_by: string
+          photo_url?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          incident_type?: string
+          logged_by?: string
+          photo_url?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lesson_bookings: {
         Row: {
           created_at: string
