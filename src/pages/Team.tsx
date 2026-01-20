@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import nicolePhoto from "@/assets/nicole-barry.jpg";
 import lendyPhoto from "@/assets/lendy-johnston.jpg";
 import sarahPhoto from "@/assets/sarah-figeritti.jpg";
-import team1 from "@/assets/team-1.jpg";
+import kagenPhoto from "@/assets/kagen-jensen.jpg";
 
 const teamMembers = [
   {
@@ -31,7 +31,7 @@ const teamMembers = [
   {
     name: "Kagen Jensen",
     role: "Farm Hand & Trainer",
-    image: team1,
+    image: kagenPhoto,
     bio: "Kagen is a freshman at the University of Alabama who wears many hats at Swan Hill Stables. As both a farm hand and trainer, he helps keep operations running smoothly while sharing his love of horses with students.",
     credentials: ["University of Alabama Freshman", "Farm Hand", "Trainer"],
   },
