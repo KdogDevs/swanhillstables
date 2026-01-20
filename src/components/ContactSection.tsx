@@ -25,13 +25,12 @@ const socialProfiles = [
   {
     platform: "Instagram",
     icon: InstagramIcon,
-    handle: "@zaxbys",
+    handle: "@realzaxbys",
     name: "Zaxby's",
     followers: "412K",
     description: "Indescribably Good Chicken™",
-    profileImage: "https://pbs.twimg.com/profile_images/1745476070618710016/7sFGQnKe_400x400.jpg",
-    coverImage: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&h=200&fit=crop",
-    url: "https://instagram.com/zaxbys",
+    profileImage: "https://logo.clearbit.com/zaxbys.com",
+    url: "https://instagram.com/realzaxbys",
     gradient: "from-purple-500 via-pink-500 to-orange-400",
     buttonColor: "bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500",
   },
@@ -42,8 +41,7 @@ const socialProfiles = [
     name: "Zaxby's",
     followers: "2.1M",
     description: "Indescribably Good Chicken™ | Official Page",
-    profileImage: "https://pbs.twimg.com/profile_images/1745476070618710016/7sFGQnKe_400x400.jpg",
-    coverImage: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&h=200&fit=crop",
+    profileImage: "https://logo.clearbit.com/zaxbys.com",
     url: "https://facebook.com/zaxbys",
     gradient: "from-blue-600 to-blue-400",
     buttonColor: "bg-blue-600 hover:bg-blue-700",
@@ -55,8 +53,7 @@ const socialProfiles = [
     name: "Zaxby's",
     followers: "892K",
     description: "Chicken content 🐔",
-    profileImage: "https://pbs.twimg.com/profile_images/1745476070618710016/7sFGQnKe_400x400.jpg",
-    coverImage: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&h=200&fit=crop",
+    profileImage: "https://logo.clearbit.com/zaxbys.com",
     url: "https://tiktok.com/@zaxbys",
     gradient: "from-black via-gray-800 to-black",
     buttonColor: "bg-black hover:bg-gray-900",
@@ -147,14 +144,9 @@ export const ContactSection = () => {
                 viewport={{ once: true }}
               >
                 <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
-                  {/* Cover Image with Gradient Overlay */}
+                  {/* Cover with Gradient */}
                   <div className="relative h-24">
-                    <img
-                      src={profile.coverImage}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                    <div className={`absolute inset-0 bg-gradient-to-r ${profile.gradient} opacity-80`} />
+                    <div className={`absolute inset-0 bg-gradient-to-r ${profile.gradient}`} />
                     
                     {/* Platform Icon */}
                     <div className="absolute top-3 right-3 text-white/90">
