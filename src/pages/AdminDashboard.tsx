@@ -10,6 +10,7 @@ import { AdminDocuments } from "@/components/admin/AdminDocuments";
 import { AdminLessonSlots } from "@/components/AdminLessonSlots";
 import { AdminCareLog } from "@/components/admin/AdminCareLog";
 import { AdminHorseUseLog } from "@/components/admin/AdminHorseUseLog";
+import { AdminEmail } from "@/components/admin/AdminEmail";
 import { 
   Loader2, 
   Users, 
@@ -19,7 +20,8 @@ import {
   Shield,
   LogOut,
   ClipboardList,
-  Bookmark
+  Bookmark,
+  Mail
 } from "lucide-react";
 
 const AdminDashboard = () => {
