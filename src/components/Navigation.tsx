@@ -4,7 +4,7 @@ import { Menu, X, LogOut, User, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-transparent.png";
 import {
   DropdownMenu,
   DropdownMenuContent,

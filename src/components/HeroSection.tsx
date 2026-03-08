@@ -25,7 +25,7 @@ export const HeroSection = () => {
           transition={{ duration: 1, delay: 0.2 }}
           className="flex justify-center mb-8"
         >
-          <img src={logo} alt="Swan Hill Stables" className="h-32 md:h-44 w-auto brightness-0 invert drop-shadow-lg" />
+          <img src={logoWhite} alt="Swan Hill Stables" className="h-36 md:h-48 w-auto drop-shadow-2xl" />
         </motion.div>
 
         <motion.p
