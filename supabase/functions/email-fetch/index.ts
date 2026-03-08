@@ -6,15 +6,13 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const IMAP_HOST = "mx440c.netcup.net";
-const IMAP_PORT = 993;
-const IMAP_USER = "kagen@swanhillstables.com";
+const DEFAULT_IMAP_HOST = "mx440c.netcup.net";
+const DEFAULT_IMAP_PORT = 993;
+const DEFAULT_USER = "kagen@swanhillstables.com";
 
-async function verifyAdmin(req: Request) {
+async function getAuthAndRole(req: Request) {
   const authHeader = req.headers.get("Authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
-    throw new Error("Unauthorized");
-  }
+  if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -24,23 +22,69 @@ async function verifyAdmin(req: Request) {
 
   const token = authHeader.replace("Bearer ", "");
   const { data, error } = await supabase.auth.getClaims(token);
-  if (error || !data?.claims) {
-    throw new Error("Unauthorized");
-  }
+  if (error || !data?.claims) throw new Error("Unauthorized");
 
-  const userId = data.claims.sub;
-  const { data: roleData } = await supabase
+  const userId = data.claims.sub as string;
+
+  // Check admin or super_admin
+  const { data: roles } = await supabase
     .from("user_roles")
     .select("role")
-    .eq("user_id", userId)
-    .eq("role", "admin")
-    .maybeSingle();
+    .eq("user_id", userId);
 
-  if (!roleData) {
+  const roleSet = new Set((roles || []).map((r: any) => r.role));
+  if (!roleSet.has("admin") && !roleSet.has("super_admin")) {
     throw new Error("Forbidden: Admin access required");
   }
 
-  return userId;
+  return { userId, isSuperAdmin: roleSet.has("super_admin"), supabase };
+}
+
+async function getAccountCredentials(accountId: string | null, userId: string, isSuperAdmin: boolean) {
+  if (!accountId) {
+    // Legacy: use default credentials
+    return {
+      host: DEFAULT_IMAP_HOST,
+      port: DEFAULT_IMAP_PORT,
+      user: DEFAULT_USER,
+      pass: Deno.env.get("MAIL_PASSWORD")!,
+    };
+  }
+
+  // Use service role to read password (bypasses RLS)
+  const serviceClient = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+  );
+
+  const { data: account, error } = await serviceClient
+    .from("email_accounts")
+    .select("*")
+    .eq("id", accountId)
+    .single();
+
+  if (error || !account) throw new Error("Email account not found");
+
+  // Check access if not super_admin
+  if (!isSuperAdmin) {
+    const { data: access } = await serviceClient
+      .from("email_account_access")
+      .select("can_read, can_send, can_delete")
+      .eq("email_account_id", accountId)
+      .eq("user_id", userId)
+      .single();
+
+    if (!access || !access.can_read) {
+      throw new Error("No access to this email account");
+    }
+  }
+
+  return {
+    host: account.imap_host,
+    port: account.imap_port,
+    user: account.username,
+    pass: account.password,
+  };
 }
 
 Deno.serve(async (req) => {
@@ -49,30 +93,24 @@ Deno.serve(async (req) => {
   }
 
   try {
-    await verifyAdmin(req);
+    const { userId, isSuperAdmin } = await getAuthAndRole(req);
+    const body = await req.json();
+    const { action, folder, page, pageSize, uid, accountId } = body;
 
-    const { action, folder, page, pageSize, uid } = await req.json();
-    const password = Deno.env.get("MAIL_PASSWORD");
-
-    if (!password) {
-      throw new Error("Mail password not configured");
-    }
+    const creds = await getAccountCredentials(accountId || null, userId, isSuperAdmin);
+    if (!creds.pass) throw new Error("Mail password not configured");
 
     const { ImapFlow } = await import("npm:imapflow@1.0.164");
 
     const client = new ImapFlow({
-      host: IMAP_HOST,
-      port: IMAP_PORT,
+      host: creds.host,
+      port: creds.port,
       secure: true,
-      auth: {
-        user: IMAP_USER,
-        pass: password,
-      },
+      auth: { user: creds.user, pass: creds.pass },
       logger: false,
     });
 
     await client.connect();
-
     let result: unknown;
 
     try {
@@ -83,7 +121,6 @@ Deno.serve(async (req) => {
           path: f.path,
           specialUse: f.specialUse || null,
           delimiter: f.delimiter,
-          listed: f.listed,
           flags: Array.from(f.flags || []),
         }));
       } else if (action === "list") {
@@ -99,13 +136,8 @@ Deno.serve(async (req) => {
             result = { emails: [], total, page: currentPage, pageSize: perPage, totalPages: Math.ceil(total / perPage) };
           } else {
             const emails: any[] = [];
-            const range = `${start}:${end}`;
-
-            for await (const msg of client.fetch(range, {
-              envelope: true,
-              flags: true,
-              bodyStructure: true,
-              uid: true,
+            for await (const msg of client.fetch(`${start}:${end}`, {
+              envelope: true, flags: true, bodyStructure: true, uid: true,
             })) {
               emails.push({
                 uid: msg.uid,
@@ -114,33 +146,16 @@ Deno.serve(async (req) => {
                 envelope: {
                   date: msg.envelope?.date?.toISOString() || null,
                   subject: msg.envelope?.subject || "(No Subject)",
-                  from: msg.envelope?.from?.map((a: any) => ({
-                    name: a.name,
-                    address: `${a.mailbox}@${a.host}`,
-                  })) || [],
-                  to: msg.envelope?.to?.map((a: any) => ({
-                    name: a.name,
-                    address: `${a.mailbox}@${a.host}`,
-                  })) || [],
-                  cc: msg.envelope?.cc?.map((a: any) => ({
-                    name: a.name,
-                    address: `${a.mailbox}@${a.host}`,
-                  })) || [],
+                  from: (msg.envelope?.from || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+                  to: (msg.envelope?.to || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+                  cc: (msg.envelope?.cc || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+                  messageId: msg.envelope?.messageId || null,
+                  inReplyTo: msg.envelope?.inReplyTo || null,
                 },
-                hasAttachment: false,
               });
             }
-
-            // Reverse so newest first
             emails.reverse();
-
-            result = {
-              emails,
-              total,
-              page: currentPage,
-              pageSize: perPage,
-              totalPages: Math.ceil(total / perPage),
-            };
+            result = { emails, total, page: currentPage, pageSize: perPage, totalPages: Math.ceil(total / perPage) };
           }
         } finally {
           mailbox.release();
@@ -149,61 +164,35 @@ Deno.serve(async (req) => {
         const mailbox = await client.getMailboxLock(folder || "INBOX");
         try {
           const msg = await client.fetchOne(String(uid), {
-            envelope: true,
-            flags: true,
-            source: true,
-            bodyStructure: true,
-            uid: true,
+            envelope: true, flags: true, source: true, uid: true,
           }, { uid: true });
 
-          // Parse body from source
-          let body = "";
+          let textBody = "";
           let htmlBody = "";
           if (msg.source) {
             const source = msg.source.toString();
-            // Simple extraction - try to get text/html or text/plain
             const boundaryMatch = source.match(/boundary="?([^"\r\n;]+)"?/i);
             if (boundaryMatch) {
               const boundary = boundaryMatch[1];
               const parts = source.split(`--${boundary}`);
               for (const part of parts) {
-                if (part.includes("text/html")) {
-                  const bodyStart = part.indexOf("\r\n\r\n");
-                  if (bodyStart !== -1) {
-                    htmlBody = part.substring(bodyStart + 4).replace(/--$/, "").trim();
-                    // Handle transfer encoding
-                    if (part.toLowerCase().includes("quoted-printable")) {
-                      htmlBody = htmlBody.replace(/=\r?\n/g, "").replace(/=([0-9A-Fa-f]{2})/g, (_: string, hex: string) => String.fromCharCode(parseInt(hex, 16)));
-                    } else if (part.toLowerCase().includes("base64")) {
-                      try { htmlBody = atob(htmlBody.replace(/\s/g, "")); } catch {}
-                    }
-                  }
-                } else if (part.includes("text/plain") && !body) {
-                  const bodyStart = part.indexOf("\r\n\r\n");
-                  if (bodyStart !== -1) {
-                    body = part.substring(bodyStart + 4).replace(/--$/, "").trim();
-                    if (part.toLowerCase().includes("quoted-printable")) {
-                      body = body.replace(/=\r?\n/g, "").replace(/=([0-9A-Fa-f]{2})/g, (_: string, hex: string) => String.fromCharCode(parseInt(hex, 16)));
-                    } else if (part.toLowerCase().includes("base64")) {
-                      try { body = atob(body.replace(/\s/g, "")); } catch {}
-                    }
-                  }
+                const decoded = decodePart(part);
+                if (part.toLowerCase().includes("text/html") && !htmlBody) {
+                  htmlBody = decoded;
+                } else if (part.toLowerCase().includes("text/plain") && !textBody) {
+                  textBody = decoded;
                 }
               }
             } else {
-              // Simple single-part message
               const bodyStart = source.indexOf("\r\n\r\n");
               if (bodyStart !== -1) {
-                body = source.substring(bodyStart + 4);
-                if (source.toLowerCase().includes("text/html")) {
-                  htmlBody = body;
-                  body = "";
-                }
+                const content = source.substring(bodyStart + 4);
+                if (source.toLowerCase().includes("text/html")) htmlBody = content;
+                else textBody = content;
               }
             }
           }
 
-          // Mark as seen
           await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true });
 
           result = {
@@ -212,20 +201,13 @@ Deno.serve(async (req) => {
             envelope: {
               date: msg.envelope?.date?.toISOString() || null,
               subject: msg.envelope?.subject || "(No Subject)",
-              from: msg.envelope?.from?.map((a: any) => ({
-                name: a.name,
-                address: `${a.mailbox}@${a.host}`,
-              })) || [],
-              to: msg.envelope?.to?.map((a: any) => ({
-                name: a.name,
-                address: `${a.mailbox}@${a.host}`,
-              })) || [],
-              cc: msg.envelope?.cc?.map((a: any) => ({
-                name: a.name,
-                address: `${a.mailbox}@${a.host}`,
-              })) || [],
+              from: (msg.envelope?.from || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+              to: (msg.envelope?.to || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+              cc: (msg.envelope?.cc || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+              messageId: msg.envelope?.messageId || null,
+              inReplyTo: msg.envelope?.inReplyTo || null,
             },
-            body,
+            body: textBody,
             htmlBody,
           };
         } finally {
@@ -239,12 +221,59 @@ Deno.serve(async (req) => {
         } finally {
           mailbox.release();
         }
-      } else if (action === "move") {
-        const { destination } = await req.json().catch(() => ({}));
+      } else if (action === "star") {
         const mailbox = await client.getMailboxLock(folder || "INBOX");
         try {
-          await client.messageMove(String(uid), destination || "Trash", { uid: true });
+          const starred = body.starred;
+          if (starred) {
+            await client.messageFlagsAdd(String(uid), ["\\Flagged"], { uid: true });
+          } else {
+            await client.messageFlagsRemove(String(uid), ["\\Flagged"], { uid: true });
+          }
           result = { success: true };
+        } finally {
+          mailbox.release();
+        }
+      } else if (action === "move") {
+        const mailbox = await client.getMailboxLock(folder || "INBOX");
+        try {
+          await client.messageMove(String(uid), body.destination || "Trash", { uid: true });
+          result = { success: true };
+        } finally {
+          mailbox.release();
+        }
+      } else if (action === "search") {
+        const mailbox = await client.getMailboxLock(folder || "INBOX");
+        try {
+          const searchQuery = body.query;
+          const uids = await client.search({ or: [
+            { subject: searchQuery },
+            { from: searchQuery },
+            { to: searchQuery },
+          ]}, { uid: true });
+
+          const emails: any[] = [];
+          if (uids.length > 0) {
+            const uidRange = uids.slice(0, 50).join(",");
+            for await (const msg of client.fetch(uidRange, {
+              envelope: true, flags: true, uid: true,
+            }, { uid: true })) {
+              emails.push({
+                uid: msg.uid,
+                seq: msg.seq,
+                flags: Array.from(msg.flags || []),
+                envelope: {
+                  date: msg.envelope?.date?.toISOString() || null,
+                  subject: msg.envelope?.subject || "(No Subject)",
+                  from: (msg.envelope?.from || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+                  to: (msg.envelope?.to || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+                  cc: (msg.envelope?.cc || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+                },
+              });
+            }
+            emails.reverse();
+          }
+          result = { emails, total: uids.length };
         } finally {
           mailbox.release();
         }
@@ -261,9 +290,20 @@ Deno.serve(async (req) => {
   } catch (error: any) {
     console.error("Email fetch error:", error);
     const status = error.message === "Unauthorized" ? 401 : error.message?.includes("Forbidden") ? 403 : 500;
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ error: error.message }), {
+      status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
+
+function decodePart(part: string): string {
+  const bodyStart = part.indexOf("\r\n\r\n");
+  if (bodyStart === -1) return "";
+  let content = part.substring(bodyStart + 4).replace(/--$/, "").trim();
+  if (part.toLowerCase().includes("quoted-printable")) {
+    content = content.replace(/=\r?\n/g, "").replace(/=([0-9A-Fa-f]{2})/g, (_: string, hex: string) => String.fromCharCode(parseInt(hex, 16)));
+  } else if (part.toLowerCase().includes("base64")) {
+    try { content = atob(content.replace(/\s/g, "")); } catch {}
+  }
+  return content;
+}
