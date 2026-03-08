@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import heroBarn from "@/assets/hero-barn.jpg";
-import logo from "@/assets/logo.png";
+import logoWhite from "@/assets/logo-white.png";
 
 export const HeroSection = () => {
   return (
