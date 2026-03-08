@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Plus, Loader2, CheckCircle, Clock, AlertTriangle, Send, Eye } from "lucide-react";
+import { FileText, Plus, Loader2, CheckCircle, Clock, AlertTriangle, Send, Eye, ArrowLeft, Download, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -25,9 +25,16 @@ interface ClientDocument {
   created_at: string;
   recipient_email: string | null;
   signature_data: string | null;
-  profiles?: {
-    full_name: string | null;
-  } | null;
+  pdf_url: string | null;
+}
+
+interface ClientSummary {
+  user_id: string;
+  full_name: string | null;
+  email: string | null;
+  documentCount: number;
+  signedCount: number;
+  pendingCount: number;
 }
 
 interface Profile {
@@ -55,10 +62,11 @@ const STATUS_OPTIONS = [
 export const AdminDocuments = () => {
   const [documents, setDocuments] = useState<ClientDocument[]>([]);
   const [clients, setClients] = useState<Profile[]>([]);
+  const [clientSummaries, setClientSummaries] = useState<ClientSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selectedClientView, setSelectedClientView] = useState<string | null>(null);
   const [viewSignature, setViewSignature] = useState<string | null>(null);
 
   // Form state
@@ -76,7 +84,6 @@ export const AdminDocuments = () => {
 
   const fetchDocuments = async () => {
     try {
-      // Fetch documents separately, then match profiles
       const { data: docs, error: docsErr } = await supabase
         .from("client_documents")
         .select("*")
@@ -84,19 +91,37 @@ export const AdminDocuments = () => {
 
       if (docsErr) throw docsErr;
 
-      // Fetch all profiles to match
       const { data: profiles } = await supabase
         .from("profiles")
         .select("user_id, full_name");
 
       const profileMap = new Map((profiles || []).map(p => [p.user_id, p.full_name]));
 
-      const enriched = (docs || []).map(doc => ({
-        ...doc,
-        profiles: { full_name: profileMap.get(doc.user_id) || null },
-      }));
+      const allDocs = (docs || []) as ClientDocument[];
+      setDocuments(allDocs);
 
-      setDocuments(enriched);
+      // Build client summaries
+      const clientMap = new Map<string, ClientSummary>();
+      for (const doc of allDocs) {
+        if (!clientMap.has(doc.user_id)) {
+          clientMap.set(doc.user_id, {
+            user_id: doc.user_id,
+            full_name: profileMap.get(doc.user_id) || null,
+            email: doc.recipient_email,
+            documentCount: 0,
+            signedCount: 0,
+            pendingCount: 0,
+          });
+        }
+        const summary = clientMap.get(doc.user_id)!;
+        summary.documentCount++;
+        if (doc.status === "signed") summary.signedCount++;
+        if (doc.status === "pending" || doc.status === "sent") summary.pendingCount++;
+        if (!summary.email && doc.recipient_email) summary.email = doc.recipient_email;
+      }
+      setClientSummaries(Array.from(clientMap.values()).sort((a, b) =>
+        (a.full_name || "").localeCompare(b.full_name || "")
+      ));
     } catch (error) {
       console.error("Error fetching documents:", error);
     } finally {
@@ -122,7 +147,6 @@ export const AdminDocuments = () => {
       toast({ title: "Missing Information", description: "Please select a client and document type", variant: "destructive" });
       return;
     }
-
     setIsCreating(true);
     try {
       const { error } = await supabase.from("client_documents").insert({
@@ -132,7 +156,6 @@ export const AdminDocuments = () => {
         notes: notes || null,
         recipient_email: recipientEmail || null,
       });
-
       if (error) throw error;
       toast({ title: "Document Created", description: "The document has been added to the client's file" });
       setShowCreateDialog(false);
@@ -150,7 +173,6 @@ export const AdminDocuments = () => {
       const updateData: any = { status: newStatus };
       if (newStatus === "sent") updateData.sent_at = new Date().toISOString();
       else if (newStatus === "signed") updateData.signed_at = new Date().toISOString();
-
       const { error } = await supabase.from("client_documents").update(updateData).eq("id", docId);
       if (error) throw error;
       toast({ title: "Status Updated", description: `Document marked as ${newStatus}` });
@@ -180,80 +202,157 @@ export const AdminDocuments = () => {
   const formatDocumentType = (type: string) =>
     type.split("_").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
-  const filteredDocuments = statusFilter === "all" ? documents : documents.filter(doc => doc.status === statusFilter);
+  const selectedClientDocs = documents.filter(d => d.user_id === selectedClientView);
+  const selectedClientInfo = clientSummaries.find(c => c.user_id === selectedClientView);
 
-  const stats = {
-    pending: documents.filter(d => d.status === "pending").length,
-    sent: documents.filter(d => d.status === "sent").length,
-    signed: documents.filter(d => d.status === "signed").length,
-    expired: documents.filter(d => d.status === "expired").length,
-  };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-8">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
+  // Client detail view
+  if (selectedClientView) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm" onClick={() => setSelectedClientView(null)}>
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Clients
+          </Button>
+          <div>
+            <h3 className="font-serif text-xl font-semibold">{selectedClientInfo?.full_name || "Unknown Client"}</h3>
+            {selectedClientInfo?.email && (
+              <p className="text-sm text-muted-foreground">{selectedClientInfo.email}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Signature Preview Dialog */}
+        <Dialog open={!!viewSignature} onOpenChange={() => setViewSignature(null)}>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Signature Preview</DialogTitle></DialogHeader>
+            {viewSignature && (
+              <div className="flex justify-center p-4 bg-muted rounded-lg">
+                <img src={viewSignature} alt="Signature" className="max-w-full max-h-48" />
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Documents ({selectedClientDocs.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {selectedClientDocs.length === 0 ? (
+              <p className="text-center py-8 text-muted-foreground">No documents found for this client</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Document</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Signed</TableHead>
+                    <TableHead>Signature</TableHead>
+                    <TableHead>PDF</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {selectedClientDocs.map(doc => (
+                    <TableRow key={doc.id}>
+                      <TableCell>
+                        <span className="font-medium">{formatDocumentType(doc.document_type)}</span>
+                        {doc.notes && <p className="text-xs text-muted-foreground mt-0.5">{doc.notes}</p>}
+                      </TableCell>
+                      <TableCell>{getStatusBadge(doc.status)}</TableCell>
+                      <TableCell className="text-sm">
+                        {doc.signed_at ? format(new Date(doc.signed_at), "MMM d, yyyy") : "—"}
+                      </TableCell>
+                      <TableCell>
+                        {doc.signature_data ? (
+                          <Button size="sm" variant="ghost" onClick={() => setViewSignature(doc.signature_data)}>
+                            <Eye className="h-3.5 w-3.5 mr-1" /> View
+                          </Button>
+                        ) : "—"}
+                      </TableCell>
+                      <TableCell>
+                        {doc.pdf_url ? (
+                          <Button size="sm" variant="ghost" asChild>
+                            <a href={doc.pdf_url} target="_blank" rel="noopener noreferrer">
+                              <Download className="h-3.5 w-3.5 mr-1" /> PDF
+                            </a>
+                          </Button>
+                        ) : "—"}
+                      </TableCell>
+                      <TableCell>
+                        <Select value={doc.status} onValueChange={(v) => handleUpdateStatus(doc.id, v)}>
+                          <SelectTrigger className="w-[110px] h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {STATUS_OPTIONS.map(s => (
+                              <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Main clients list view
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
-        <Card className="cursor-pointer hover:bg-secondary/50" onClick={() => setStatusFilter("pending")}>
+      <div className="grid grid-cols-3 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Clients</p>
+                <p className="text-2xl font-bold">{clientSummaries.length}</p>
+              </div>
+              <Users className="h-8 w-8 text-muted-foreground opacity-50" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Documents</p>
+                <p className="text-2xl font-bold">{documents.length}</p>
+              </div>
+              <FileText className="h-8 w-8 text-muted-foreground opacity-50" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Pending</p>
-                <p className="text-2xl font-bold">{stats.pending}</p>
+                <p className="text-2xl font-bold">{documents.filter(d => d.status === "pending" || d.status === "sent").length}</p>
               </div>
               <Clock className="h-8 w-8 text-muted-foreground opacity-50" />
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:bg-secondary/50" onClick={() => setStatusFilter("sent")}>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Sent</p>
-                <p className="text-2xl font-bold">{stats.sent}</p>
-              </div>
-              <Send className="h-8 w-8 text-muted-foreground opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="cursor-pointer hover:bg-secondary/50" onClick={() => setStatusFilter("signed")}>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Signed</p>
-                <p className="text-2xl font-bold">{stats.signed}</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-muted-foreground opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="cursor-pointer hover:bg-secondary/50" onClick={() => setStatusFilter("expired")}>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Expired</p>
-                <p className="text-2xl font-bold">{stats.expired}</p>
-              </div>
-              <AlertTriangle className="h-8 w-8 text-muted-foreground opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
-      {/* Signature Preview Dialog */}
-      <Dialog open={!!viewSignature} onOpenChange={() => setViewSignature(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Signature Preview</DialogTitle>
-          </DialogHeader>
-          {viewSignature && (
-            <div className="flex justify-center p-4 bg-muted rounded-lg">
-              <img src={viewSignature} alt="Signature" className="max-w-full max-h-48" />
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Documents Table */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -262,119 +361,92 @@ export const AdminDocuments = () => {
                 <FileText className="h-5 w-5" />
                 Paperwork & Documents
               </CardTitle>
-              <CardDescription>Track waivers, agreements, and required forms</CardDescription>
+              <CardDescription>Click a client to view their documents</CardDescription>
             </div>
-            <div className="flex items-center gap-2">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[130px]">
-                  <SelectValue placeholder="Filter" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  {STATUS_OPTIONS.map(s => (
-                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-                <DialogTrigger asChild>
-                  <Button><Plus className="h-4 w-4 mr-2" /> Add Document</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Create Document Record</DialogTitle>
-                    <DialogDescription>Add a new document to a client's file</DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label>Client</Label>
-                      <Select value={selectedClient} onValueChange={setSelectedClient}>
-                        <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
-                        <SelectContent>
-                          {clients.map(c => (
-                            <SelectItem key={c.user_id} value={c.user_id}>{c.full_name || "Unnamed"}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Document Type</Label>
-                      <Select value={documentType} onValueChange={setDocumentType}>
-                        <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
-                        <SelectContent>
-                          {DOCUMENT_TYPES.map(d => (
-                            <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Recipient Email (optional)</Label>
-                      <Input value={recipientEmail} onChange={e => setRecipientEmail(e.target.value)} placeholder="client@email.com" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Notes (optional)</Label>
-                      <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Any additional notes" />
-                    </div>
+            <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+              <DialogTrigger asChild>
+                <Button><Plus className="h-4 w-4 mr-2" /> Add Document</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create Document Record</DialogTitle>
+                  <DialogDescription>Add a new document to a client's file</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label>Client</Label>
+                    <Select value={selectedClient} onValueChange={setSelectedClient}>
+                      <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
+                      <SelectContent>
+                        {clients.map(c => (
+                          <SelectItem key={c.user_id} value={c.user_id}>{c.full_name || "Unnamed"}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Cancel</Button>
-                    <Button onClick={handleCreateDocument} disabled={isCreating}>
-                      {isCreating ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Creating...</> : "Create"}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
+                  <div className="space-y-2">
+                    <Label>Document Type</Label>
+                    <Select value={documentType} onValueChange={setDocumentType}>
+                      <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                      <SelectContent>
+                        {DOCUMENT_TYPES.map(d => (
+                          <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Recipient Email (optional)</Label>
+                    <Input value={recipientEmail} onChange={e => setRecipientEmail(e.target.value)} placeholder="client@email.com" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Notes (optional)</Label>
+                    <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Any additional notes" />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Cancel</Button>
+                  <Button onClick={handleCreateDocument} disabled={isCreating}>
+                    {isCreating ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Creating...</> : "Create"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
-          ) : filteredDocuments.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground"><p>No documents found</p></div>
+          {clientSummaries.length === 0 ? (
+            <p className="text-center py-8 text-muted-foreground">No documents found</p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Client</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Document</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Documents</TableHead>
                   <TableHead>Signed</TableHead>
-                  <TableHead>Signature</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Pending</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredDocuments.map(doc => (
-                  <TableRow key={doc.id}>
-                    <TableCell className="font-medium">{doc.profiles?.full_name || doc.recipient_email || "Unknown"}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{doc.recipient_email || "—"}</TableCell>
+                {clientSummaries.map(client => (
+                  <TableRow
+                    key={client.user_id}
+                    className="cursor-pointer hover:bg-secondary/50"
+                    onClick={() => setSelectedClientView(client.user_id)}
+                  >
+                    <TableCell className="font-medium">{client.full_name || "Unknown"}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{client.email || "—"}</TableCell>
+                    <TableCell><Badge variant="secondary">{client.documentCount}</Badge></TableCell>
                     <TableCell>
-                      {formatDocumentType(doc.document_type)}
-                      {doc.notes && <p className="text-xs text-muted-foreground mt-0.5">{doc.notes}</p>}
-                    </TableCell>
-                    <TableCell>{getStatusBadge(doc.status)}</TableCell>
-                    <TableCell className="text-sm">{doc.signed_at ? format(new Date(doc.signed_at), "MMM d, yyyy") : "—"}</TableCell>
-                    <TableCell>
-                      {doc.signature_data ? (
-                        <Button size="sm" variant="ghost" onClick={() => setViewSignature(doc.signature_data)}>
-                          <Eye className="h-3.5 w-3.5 mr-1" /> View
-                        </Button>
+                      {client.signedCount > 0 ? (
+                        <Badge className="bg-green-500">{client.signedCount}</Badge>
                       ) : "—"}
                     </TableCell>
                     <TableCell>
-                      <Select value={doc.status} onValueChange={(v) => handleUpdateStatus(doc.id, v)}>
-                        <SelectTrigger className="w-[110px] h-8 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {STATUS_OPTIONS.map(s => (
-                            <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      {client.pendingCount > 0 ? (
+                        <Badge variant="outline">{client.pendingCount}</Badge>
+                      ) : "—"}
                     </TableCell>
                   </TableRow>
                 ))}

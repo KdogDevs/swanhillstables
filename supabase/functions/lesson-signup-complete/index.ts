@@ -117,7 +117,7 @@ Deno.serve(async (req) => {
       if (subErr) console.error("Mailing list error:", subErr);
     }
 
-    // 6. Generate PDFs and send confirmation email via stables account
+    // 6. Generate PDFs, upload to storage, and send confirmation email
     try {
       const date = new Date().toLocaleDateString("en-US", {
         year: "numeric", month: "long", day: "numeric",
@@ -125,6 +125,42 @@ Deno.serve(async (req) => {
 
       const barnRulesPdf = generateBarnRulesPdf(formData.full_name, date, barnRulesSignature);
       const waiverPdf = generateWaiverPdf(formData.full_name, date, waiverSignature);
+
+      const barnRulesBytes = new Uint8Array(barnRulesPdf);
+      const waiverBytes = new Uint8Array(waiverPdf);
+
+      // Upload PDFs to storage
+      const timestamp = Date.now();
+      const barnPath = `${userId}/barn-rules-signed-${timestamp}.pdf`;
+      const waiverPath = `${userId}/liability-waiver-signed-${timestamp}.pdf`;
+
+      const { error: barnUpErr } = await supabaseAdmin.storage
+        .from("signed-documents")
+        .upload(barnPath, barnRulesBytes, { contentType: "application/pdf", upsert: true });
+      if (barnUpErr) console.error("Barn rules upload error:", barnUpErr);
+
+      const { error: waiverUpErr } = await supabaseAdmin.storage
+        .from("signed-documents")
+        .upload(waiverPath, waiverBytes, { contentType: "application/pdf", upsert: true });
+      if (waiverUpErr) console.error("Waiver upload error:", waiverUpErr);
+
+      // Get public URLs
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const barnPdfUrl = `${supabaseUrl}/storage/v1/object/public/signed-documents/${barnPath}`;
+      const waiverPdfUrl = `${supabaseUrl}/storage/v1/object/public/signed-documents/${waiverPath}`;
+
+      // Update client_documents with PDF URLs
+      await supabaseAdmin.from("client_documents")
+        .update({ pdf_url: barnPdfUrl })
+        .eq("user_id", userId)
+        .eq("document_type", "barn_rules")
+        .eq("signed_at", now);
+
+      await supabaseAdmin.from("client_documents")
+        .update({ pdf_url: waiverPdfUrl })
+        .eq("user_id", userId)
+        .eq("document_type", "liability_waiver")
+        .eq("signed_at", now);
 
       // Get stables email account credentials
       const { data: stablesAccount } = await supabaseAdmin
@@ -158,12 +194,12 @@ Deno.serve(async (req) => {
         attachments: [
           {
             filename: "Swan-Hill-Stables-Barn-Rules-Signed.pdf",
-            content: new Uint8Array(barnRulesPdf),
+            content: barnRulesBytes,
             contentType: "application/pdf",
           },
           {
             filename: "Swan-Hill-Stables-Liability-Waiver-Signed.pdf",
-            content: new Uint8Array(waiverPdf),
+            content: waiverBytes,
             contentType: "application/pdf",
           },
         ],
