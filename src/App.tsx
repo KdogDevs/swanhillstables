@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Pricing from "./pages/Pricing";
 import Team from "./pages/Team";
+import Lessons from "./pages/Lessons";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 
