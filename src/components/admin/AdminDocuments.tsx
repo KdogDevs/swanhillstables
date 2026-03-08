@@ -37,6 +37,7 @@ interface Profile {
 
 const DOCUMENT_TYPES = [
   { value: "liability_waiver", label: "Liability Waiver" },
+  { value: "barn_rules", label: "Barn Rules" },
   { value: "boarding_agreement", label: "Boarding Agreement" },
   { value: "lesson_registration", label: "Lesson Registration" },
   { value: "emergency_contact_form", label: "Emergency Contact Form" },
