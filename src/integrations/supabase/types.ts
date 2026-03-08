@@ -677,6 +677,86 @@ export type Database = {
           },
         ]
       }
+      supply_inventory: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          last_restocked_at: string | null
+          low_threshold: number | null
+          notes: string | null
+          quantity: number
+          supply_name: string
+          unit: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          last_restocked_at?: string | null
+          low_threshold?: number | null
+          notes?: string | null
+          quantity?: number
+          supply_name: string
+          unit?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          last_restocked_at?: string | null
+          low_threshold?: number | null
+          notes?: string | null
+          quantity?: number
+          supply_name?: string
+          unit?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      supply_log: {
+        Row: {
+          change_amount: number
+          change_type: string
+          created_at: string
+          id: string
+          logged_by: string
+          notes: string | null
+          supply_id: string
+        }
+        Insert: {
+          change_amount: number
+          change_type?: string
+          created_at?: string
+          id?: string
+          logged_by: string
+          notes?: string | null
+          supply_id: string
+        }
+        Update: {
+          change_amount?: number
+          change_type?: string
+          created_at?: string
+          id?: string
+          logged_by?: string
+          notes?: string | null
+          supply_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supply_log_supply_id_fkey"
+            columns: ["supply_id"]
+            isOneToOne: false
+            referencedRelation: "supply_inventory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
