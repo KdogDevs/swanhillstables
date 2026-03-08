@@ -7,7 +7,7 @@ export const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
-            <img src={logo} alt="Swan Hill Stables" className="h-20 w-auto mb-4 mix-blend-screen" />
+            <img src={logoTransparent} alt="Swan Hill Stables" className="h-20 w-auto mb-4" style={{ filter: 'brightness(0) invert(1)' }} />
             <p className="text-primary-foreground/80 max-w-md leading-relaxed">
               Quality boarding and instruction for horses and riders of all levels. 
               We're dedicated to exceptional care and a welcoming environment for everyone.
