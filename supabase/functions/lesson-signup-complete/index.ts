@@ -413,7 +413,7 @@ function buildConfirmationEmail(name: string, date: string): string {
 <body style="margin:0;padding:0;background:#f5f3f0;font-family:Georgia,'Times New Roman',serif;">
 <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
   <div style="text-align:center;margin-bottom:30px;">
-    <img src="https://swanhillstables.lovable.app/logo.png" alt="Swan Hill Stables" style="height:80px;width:auto;margin:0 auto 12px;" />
+    <img src="https://swanhillstables.lovable.app/logo-transparent.png" alt="Swan Hill Stables" style="height:80px;width:auto;margin:0 auto 12px;" />
     <p style="color:#c5a55a;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-top:8px;">Document Confirmation</p>
   </div>
 
