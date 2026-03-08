@@ -10,6 +10,13 @@ const DEFAULT_IMAP_HOST = "mx440c.netcup.net";
 const DEFAULT_IMAP_PORT = 993;
 const DEFAULT_USER = "kagen@swanhillstables.com";
 
+function formatAddress(a: any): { name: string; address: string } {
+  const mailbox = a.mailbox || "";
+  const host = a.host || "";
+  const address = mailbox && host ? `${mailbox}@${host}` : a.address || "";
+  return { name: a.name || "", address };
+}
+
 async function getAuthAndRole(req: Request) {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
@@ -26,7 +33,6 @@ async function getAuthAndRole(req: Request) {
 
   const userId = data.claims.sub as string;
 
-  // Check admin or super_admin
   const { data: roles } = await supabase
     .from("user_roles")
     .select("role")
@@ -42,7 +48,6 @@ async function getAuthAndRole(req: Request) {
 
 async function getAccountCredentials(accountId: string | null, userId: string, isSuperAdmin: boolean) {
   if (!accountId) {
-    // Legacy: use default credentials
     return {
       host: DEFAULT_IMAP_HOST,
       port: DEFAULT_IMAP_PORT,
@@ -51,7 +56,6 @@ async function getAccountCredentials(accountId: string | null, userId: string, i
     };
   }
 
-  // Use service role to read password (bypasses RLS)
   const serviceClient = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -65,7 +69,6 @@ async function getAccountCredentials(accountId: string | null, userId: string, i
 
   if (error || !account) throw new Error("Email account not found");
 
-  // Check access if not super_admin
   if (!isSuperAdmin) {
     const { data: access } = await serviceClient
       .from("email_account_access")
@@ -146,9 +149,9 @@ Deno.serve(async (req) => {
                 envelope: {
                   date: msg.envelope?.date?.toISOString() || null,
                   subject: msg.envelope?.subject || "(No Subject)",
-                  from: (msg.envelope?.from || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
-                  to: (msg.envelope?.to || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
-                  cc: (msg.envelope?.cc || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+                  from: (msg.envelope?.from || []).map(formatAddress),
+                  to: (msg.envelope?.to || []).map(formatAddress),
+                  cc: (msg.envelope?.cc || []).map(formatAddress),
                   messageId: msg.envelope?.messageId || null,
                   inReplyTo: msg.envelope?.inReplyTo || null,
                 },
@@ -201,9 +204,9 @@ Deno.serve(async (req) => {
             envelope: {
               date: msg.envelope?.date?.toISOString() || null,
               subject: msg.envelope?.subject || "(No Subject)",
-              from: (msg.envelope?.from || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
-              to: (msg.envelope?.to || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
-              cc: (msg.envelope?.cc || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+              from: (msg.envelope?.from || []).map(formatAddress),
+              to: (msg.envelope?.to || []).map(formatAddress),
+              cc: (msg.envelope?.cc || []).map(formatAddress),
               messageId: msg.envelope?.messageId || null,
               inReplyTo: msg.envelope?.inReplyTo || null,
             },
@@ -265,9 +268,9 @@ Deno.serve(async (req) => {
                 envelope: {
                   date: msg.envelope?.date?.toISOString() || null,
                   subject: msg.envelope?.subject || "(No Subject)",
-                  from: (msg.envelope?.from || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
-                  to: (msg.envelope?.to || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
-                  cc: (msg.envelope?.cc || []).map((a: any) => ({ name: a.name, address: `${a.mailbox}@${a.host}` })),
+                  from: (msg.envelope?.from || []).map(formatAddress),
+                  to: (msg.envelope?.to || []).map(formatAddress),
+                  cc: (msg.envelope?.cc || []).map(formatAddress),
                 },
               });
             }
