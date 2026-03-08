@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.png";
 
 export const Footer = () => {
   return (
@@ -6,9 +7,7 @@ export const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
-            <h3 className="font-serif text-2xl font-semibold mb-4">
-              Swan Hill Stables
-            </h3>
+            <img src={logo} alt="Swan Hill Stables" className="h-16 w-auto mb-4 brightness-0 invert" />
             <p className="text-primary-foreground/80 max-w-md leading-relaxed">
               Quality boarding and instruction for horses and riders of all levels. 
               We're dedicated to exceptional care and a welcoming environment for everyone.

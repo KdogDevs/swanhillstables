@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import heroBarn from "@/assets/hero-barn.jpg";
+import logo from "@/assets/logo.png";
 
 export const HeroSection = () => {
   return (
@@ -18,24 +19,14 @@ export const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-primary-foreground/90 text-sm uppercase tracking-[0.3em] mb-6 font-medium"
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="flex justify-center mb-8"
         >
-          Premium Equestrian Facility
-        </motion.p>
-        
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="font-serif text-5xl md:text-7xl lg:text-8xl font-semibold text-primary-foreground mb-6 text-shadow"
-        >
-          Swan Hill
-          <span className="block italic font-normal mt-2">Stables</span>
-        </motion.h1>
+          <img src={logo} alt="Swan Hill Stables" className="h-32 md:h-44 w-auto brightness-0 invert drop-shadow-lg" />
+        </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}

@@ -4,6 +4,7 @@ import { Menu, X, LogOut, User, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
+import logo from "@/assets/logo.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,10 +32,10 @@ export const Navigation = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="container mx-auto px-6 py-4">
+      <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
-          <Link to="/" className="font-serif text-2xl font-semibold text-foreground tracking-wide">
-            Swan Hill Stables
+          <Link to="/" className="flex items-center gap-3">
+            <img src={logo} alt="Swan Hill Stables" className="h-12 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}

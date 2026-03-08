@@ -413,22 +413,22 @@ function buildConfirmationEmail(name: string, date: string): string {
 <body style="margin:0;padding:0;background:#f5f3f0;font-family:Georgia,'Times New Roman',serif;">
 <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
   <div style="text-align:center;margin-bottom:30px;">
-    <h1 style="color:#2d4a3e;font-size:28px;margin:0;">Swan Hill Stables</h1>
-    <p style="color:#8b7355;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-top:8px;">Document Confirmation</p>
+    <img src="https://swanhillstables.lovable.app/logo.png" alt="Swan Hill Stables" style="height:80px;width:auto;margin:0 auto 12px;" />
+    <p style="color:#c5a55a;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-top:8px;">Document Confirmation</p>
   </div>
 
   <div style="background:#ffffff;border-radius:8px;padding:30px;margin-bottom:20px;border:1px solid #e5ddd0;">
-    <p style="color:#3d3529;font-size:16px;">Dear ${name},</p>
-    <p style="color:#6b6050;font-size:14px;line-height:1.6;">Thank you for registering for lessons at Swan Hill Stables! Attached to this email are PDF copies of the documents you signed on ${date}:</p>
-    <ul style="color:#6b6050;font-size:14px;line-height:1.8;">
+    <p style="color:#1e3a5f;font-size:16px;">Dear ${name},</p>
+    <p style="color:#4a5568;font-size:14px;line-height:1.6;">Thank you for registering for lessons at Swan Hill Stables! Attached to this email are PDF copies of the documents you signed on ${date}:</p>
+    <ul style="color:#4a5568;font-size:14px;line-height:1.8;">
       <li><strong>Barn Rules & Safety Policies</strong> — signed copy</li>
       <li><strong>Equine Activity Release & Hold Harmless Agreement</strong> — signed copy</li>
     </ul>
-    <p style="color:#6b6050;font-size:14px;line-height:1.6;">Please save these PDFs for your records. We'll be in touch soon to schedule your first lesson!</p>
+    <p style="color:#4a5568;font-size:14px;line-height:1.6;">Please save these PDFs for your records. We'll be in touch soon to schedule your first lesson!</p>
   </div>
 
-  <div style="text-align:center;color:#8b7355;font-size:11px;padding:20px;">
-    <p style="margin:0 0 4px;">Swan Hill Stables</p>
+  <div style="text-align:center;color:#c5a55a;font-size:11px;padding:20px;">
+    <p style="margin:0 0 4px;color:#1e3a5f;font-weight:600;">Swan Hill Stables</p>
     <p style="margin:0;">This is an automated confirmation. Please keep for your records.</p>
   </div>
 </div>
