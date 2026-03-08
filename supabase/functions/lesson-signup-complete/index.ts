@@ -117,7 +117,7 @@ Deno.serve(async (req) => {
       if (subErr) console.error("Mailing list error:", subErr);
     }
 
-    // 6. Generate PDFs and send confirmation email
+    // 6. Generate PDFs and send confirmation email via stables account
     try {
       const date = new Date().toLocaleDateString("en-US", {
         year: "numeric", month: "long", day: "numeric",
@@ -126,33 +126,44 @@ Deno.serve(async (req) => {
       const barnRulesPdf = generateBarnRulesPdf(formData.full_name, date, barnRulesSignature);
       const waiverPdf = generateWaiverPdf(formData.full_name, date, waiverSignature);
 
+      // Get stables email account credentials
+      const { data: stablesAccount } = await supabaseAdmin
+        .from("email_accounts")
+        .select("*")
+        .eq("email_address", "stables@swanhillstables.com")
+        .single();
+
+      const smtpUser = stablesAccount?.username || "stables@swanhillstables.com";
+      const smtpPass = stablesAccount?.password || Deno.env.get("MAIL_PASSWORD")!;
+      const smtpHost = stablesAccount?.smtp_host || "mx440c.netcup.net";
+      const smtpPort = stablesAccount?.smtp_port || 465;
+      const fromEmail = stablesAccount?.email_address || "stables@swanhillstables.com";
+      const fromName = stablesAccount?.display_name || "Swan Hill Stables";
+
       const nodemailer = await import("npm:nodemailer@6.9.16");
       const transporter = nodemailer.default.createTransport({
-        host: "mx440c.netcup.net",
-        port: 465,
+        host: smtpHost,
+        port: smtpPort,
         secure: true,
-        auth: {
-          user: "kagen@swanhillstables.com",
-          pass: Deno.env.get("MAIL_PASSWORD")!,
-        },
+        auth: { user: smtpUser, pass: smtpPass },
       });
 
       const emailHtml = buildConfirmationEmail(formData.full_name, date);
 
       await transporter.sendMail({
-        from: '"Swan Hill Stables" <kagen@swanhillstables.com>',
+        from: `"${fromName}" <${fromEmail}>`,
         to: formData.email,
         subject: "Your Signed Documents - Swan Hill Stables",
         html: emailHtml,
         attachments: [
           {
             filename: "Swan-Hill-Stables-Barn-Rules-Signed.pdf",
-            content: Buffer.from(barnRulesPdf),
+            content: new Uint8Array(barnRulesPdf),
             contentType: "application/pdf",
           },
           {
             filename: "Swan-Hill-Stables-Liability-Waiver-Signed.pdf",
-            content: Buffer.from(waiverPdf),
+            content: new Uint8Array(waiverPdf),
             contentType: "application/pdf",
           },
         ],
