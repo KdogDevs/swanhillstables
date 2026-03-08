@@ -99,7 +99,7 @@ const AdminDashboard = () => {
 
           {/* Tabs */}
           <Tabs defaultValue="clients" className="space-y-6">
-            <TabsList className="grid w-full max-w-3xl grid-cols-5">
+            <TabsList className="grid w-full max-w-4xl grid-cols-6">
               <TabsTrigger value="clients" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 Clients
@@ -119,6 +119,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="lessons" className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 Lessons
+              </TabsTrigger>
+              <TabsTrigger value="email" className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                Email
               </TabsTrigger>
             </TabsList>
 
@@ -140,6 +144,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="lessons">
               <AdminLessonSlots />
+            </TabsContent>
+
+            <TabsContent value="email">
+              <AdminEmail />
             </TabsContent>
           </Tabs>
         </motion.div>
