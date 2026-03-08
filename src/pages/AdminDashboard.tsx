@@ -103,8 +103,8 @@ const AdminDashboard = () => {
               <TabsTrigger value="documents" className="flex items-center gap-1.5 text-xs">
                 <FileText className="h-3.5 w-3.5" /> Paperwork
               </TabsTrigger>
-              <TabsTrigger value="lessons" className="flex items-center gap-1.5 text-xs">
-                <Calendar className="h-3.5 w-3.5" /> Lessons
+              <TabsTrigger value="supplies" className="flex items-center gap-1.5 text-xs">
+                <Package className="h-3.5 w-3.5" /> Supplies
               </TabsTrigger>
               {isSuperAdmin && (
                 <TabsTrigger value="settings" className="flex items-center gap-1.5 text-xs">
@@ -120,7 +120,7 @@ const AdminDashboard = () => {
             <TabsContent value="carelog"><AdminCareLog /></TabsContent>
             <TabsContent value="horseuse"><AdminHorseUseLog /></TabsContent>
             <TabsContent value="documents"><AdminDocuments /></TabsContent>
-            <TabsContent value="lessons"><AdminLessonSlots /></TabsContent>
+            <TabsContent value="supplies"><AdminSupplyTracker /></TabsContent>
             {isSuperAdmin && (
               <TabsContent value="settings"><AdminSuperSettings /></TabsContent>
             )}
