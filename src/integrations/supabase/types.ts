@@ -65,6 +65,105 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_group_members: {
+        Row: {
+          contact_id: string
+          created_at: string
+          group_id: string
+          id: string
+        }
+        Insert: {
+          contact_id: string
+          created_at?: string
+          group_id: string
+          id?: string
+        }
+        Update: {
+          contact_id?: string
+          created_at?: string
+          group_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_group_members_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "contact_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_groups: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      contacts: {
+        Row: {
+          company: string | null
+          created_at: string
+          created_by: string
+          email: string
+          id: string
+          name: string | null
+          notes: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          created_by: string
+          email: string
+          id?: string
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          created_by?: string
+          email?: string
+          id?: string
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       docusign_tokens: {
         Row: {
           access_token: string
@@ -100,6 +199,130 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      email_account_access: {
+        Row: {
+          can_delete: boolean
+          can_read: boolean
+          can_send: boolean
+          created_at: string
+          email_account_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          can_delete?: boolean
+          can_read?: boolean
+          can_send?: boolean
+          created_at?: string
+          email_account_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          can_delete?: boolean
+          can_read?: boolean
+          can_send?: boolean
+          created_at?: string
+          email_account_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_account_access_email_account_id_fkey"
+            columns: ["email_account_id"]
+            isOneToOne: false
+            referencedRelation: "email_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_accounts: {
+        Row: {
+          created_at: string
+          display_name: string
+          email_address: string
+          id: string
+          imap_host: string
+          imap_port: number
+          is_shared: boolean
+          password: string
+          smtp_host: string
+          smtp_port: number
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string
+          email_address: string
+          id?: string
+          imap_host?: string
+          imap_port?: number
+          is_shared?: boolean
+          password: string
+          smtp_host?: string
+          smtp_port?: number
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          email_address?: string
+          id?: string
+          imap_host?: string
+          imap_port?: number
+          is_shared?: boolean
+          password?: string
+          smtp_host?: string
+          smtp_port?: number
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      email_signatures: {
+        Row: {
+          created_at: string
+          email_account_id: string | null
+          id: string
+          is_default: boolean
+          name: string
+          signature_html: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_account_id?: string | null
+          id?: string
+          is_default?: boolean
+          name?: string
+          signature_html?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_account_id?: string | null
+          id?: string
+          is_default?: boolean
+          name?: string
+          signature_html?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_signatures_email_account_id_fkey"
+            columns: ["email_account_id"]
+            isOneToOne: false
+            referencedRelation: "email_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       horse_care_logs: {
         Row: {
@@ -263,6 +486,71 @@ export type Database = {
           recurring_day_of_week?: number | null
           slot_date?: string
           start_time?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mailing_list_subscribers: {
+        Row: {
+          email: string
+          id: string
+          list_id: string
+          name: string | null
+          subscribed: boolean
+          subscribed_at: string
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          email: string
+          id?: string
+          list_id: string
+          name?: string | null
+          subscribed?: boolean
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          list_id?: string
+          name?: string | null
+          subscribed?: boolean
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mailing_list_subscribers_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "mailing_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mailing_lists: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
           updated_at?: string
         }
         Relationships: []
