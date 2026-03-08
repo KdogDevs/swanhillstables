@@ -7,16 +7,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { AdminClientsList } from "@/components/admin/AdminClientsList";
 import { AdminDocuments } from "@/components/admin/AdminDocuments";
-import { AdminLessonSlots } from "@/components/AdminLessonSlots";
 import { AdminCareLog } from "@/components/admin/AdminCareLog";
 import { AdminHorseUseLog } from "@/components/admin/AdminHorseUseLog";
 import { AdminEmail } from "@/components/admin/AdminEmail";
 import { AdminContacts } from "@/components/admin/AdminContacts";
 import { AdminMailingLists } from "@/components/admin/AdminMailingLists";
 import { AdminSuperSettings } from "@/components/admin/AdminSuperSettings";
+import { AdminSupplyTracker } from "@/components/admin/AdminSupplyTracker";
 import { 
-  Loader2, Users, FileText, Calendar, Home, Shield, LogOut,
-  ClipboardList, Bookmark, Mail, Contact, Megaphone, Settings
+  Loader2, Users, FileText, Home, Shield, LogOut,
+  ClipboardList, Bookmark, Mail, Contact, Megaphone, Settings, Package
 } from "lucide-react";
 
 const AdminDashboard = () => {
