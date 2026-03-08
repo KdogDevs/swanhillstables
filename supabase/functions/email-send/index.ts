@@ -8,6 +8,8 @@ const corsHeaders = {
 
 const DEFAULT_SMTP_HOST = "mx440c.netcup.net";
 const DEFAULT_SMTP_PORT = 465;
+const DEFAULT_IMAP_HOST = "mx440c.netcup.net";
+const DEFAULT_IMAP_PORT = 993;
 const DEFAULT_USER = "kagen@swanhillstables.com";
 
 async function getAuthAndRole(req: Request) {
@@ -38,6 +40,34 @@ async function getAuthAndRole(req: Request) {
   return { userId, isSuperAdmin: roleSet.has("super_admin"), supabase };
 }
 
+async function appendToSentFolder(
+  imapHost: string,
+  imapPort: number,
+  imapUser: string,
+  imapPass: string,
+  rawMessage: string
+) {
+  try {
+    const { ImapFlow } = await import("npm:imapflow@1.0.164");
+    const client = new ImapFlow({
+      host: imapHost,
+      port: imapPort,
+      secure: true,
+      auth: { user: imapUser, pass: imapPass },
+      logger: false,
+    });
+
+    await client.connect();
+    try {
+      await client.append("Sent", rawMessage, ["\\Seen"]);
+    } finally {
+      await client.logout();
+    }
+  } catch (err) {
+    console.error("Failed to append to Sent folder:", err);
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -48,12 +78,15 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { to, cc, bcc, subject, body: emailBody, accountId, signature, replyTo, bulk } = body;
 
-    // Get SMTP credentials
+    // Get credentials
     let smtpHost = DEFAULT_SMTP_HOST;
     let smtpPort = DEFAULT_SMTP_PORT;
+    let imapHost = DEFAULT_IMAP_HOST;
+    let imapPort = DEFAULT_IMAP_PORT;
     let smtpUser = DEFAULT_USER;
     let smtpPass = Deno.env.get("MAIL_PASSWORD")!;
     let fromName = "Swan Hill Stables";
+    let fromEmail = DEFAULT_USER;
 
     if (accountId) {
       const serviceClient = createClient(
@@ -82,9 +115,12 @@ Deno.serve(async (req) => {
 
       smtpHost = account.smtp_host;
       smtpPort = account.smtp_port;
+      imapHost = account.imap_host;
+      imapPort = account.imap_port;
       smtpUser = account.username;
       smtpPass = account.password;
       fromName = account.display_name || account.email_address;
+      fromEmail = account.email_address;
     }
 
     if (!smtpPass) throw new Error("Mail password not configured");
@@ -109,7 +145,7 @@ Deno.serve(async (req) => {
       for (const recipient of bulk.recipients) {
         try {
           const info = await transporter.sendMail({
-            from: `"${fromName}" <${smtpUser}>`,
+            from: `"${fromName}" <${fromEmail}>`,
             to: recipient.email,
             subject: subject || "",
             html: fullBody.replace(/\{\{name\}\}/g, recipient.name || ""),
@@ -127,9 +163,10 @@ Deno.serve(async (req) => {
     // Single email
     if (!to || !subject) throw new Error("'to' and 'subject' are required");
 
+    const toStr = Array.isArray(to) ? to.join(", ") : to;
     const mailOptions: any = {
-      from: `"${fromName}" <${smtpUser}>`,
-      to: Array.isArray(to) ? to.join(", ") : to,
+      from: `"${fromName}" <${fromEmail}>`,
+      to: toStr,
       subject,
       html: fullBody,
     };
@@ -138,6 +175,26 @@ Deno.serve(async (req) => {
     if (replyTo) mailOptions.inReplyTo = replyTo;
 
     const info = await transporter.sendMail(mailOptions);
+
+    // Build raw RFC822 message and append to Sent folder
+    const boundary = `----=_Part_${Date.now()}`;
+    const dateStr = new Date().toUTCString();
+    const rawMessage = [
+      `From: "${fromName}" <${fromEmail}>`,
+      `To: ${toStr}`,
+      cc ? `Cc: ${Array.isArray(cc) ? cc.join(", ") : cc}` : null,
+      `Subject: ${subject}`,
+      `Date: ${dateStr}`,
+      `Message-ID: ${info.messageId}`,
+      `MIME-Version: 1.0`,
+      `Content-Type: text/html; charset=utf-8`,
+      `Content-Transfer-Encoding: 7bit`,
+      ``,
+      fullBody,
+    ].filter(Boolean).join("\r\n");
+
+    // Append to Sent folder asynchronously (don't block the response)
+    appendToSentFolder(imapHost, imapPort, smtpUser, smtpPass, rawMessage);
 
     return new Response(JSON.stringify({ success: true, messageId: info.messageId }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
