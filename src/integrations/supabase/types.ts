@@ -615,6 +615,68 @@ export type Database = {
         }
         Relationships: []
       }
+      scheduled_emails: {
+        Row: {
+          account_id: string | null
+          bcc_addresses: string[] | null
+          body: string
+          cc_addresses: string[] | null
+          created_at: string
+          created_by: string
+          error: string | null
+          id: string
+          scheduled_at: string
+          sent_at: string | null
+          signature: string | null
+          status: string
+          subject: string
+          to_addresses: string[]
+          updated_at: string
+        }
+        Insert: {
+          account_id?: string | null
+          bcc_addresses?: string[] | null
+          body: string
+          cc_addresses?: string[] | null
+          created_at?: string
+          created_by: string
+          error?: string | null
+          id?: string
+          scheduled_at: string
+          sent_at?: string | null
+          signature?: string | null
+          status?: string
+          subject: string
+          to_addresses: string[]
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string | null
+          bcc_addresses?: string[] | null
+          body?: string
+          cc_addresses?: string[] | null
+          created_at?: string
+          created_by?: string
+          error?: string | null
+          id?: string
+          scheduled_at?: string
+          sent_at?: string | null
+          signature?: string | null
+          status?: string
+          subject?: string
+          to_addresses?: string[]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_emails_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "email_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
