@@ -23,6 +23,7 @@ export type Database = {
           expires_at: string | null
           id: string
           notes: string | null
+          pdf_url: string | null
           recipient_email: string | null
           sent_at: string | null
           signature_data: string | null
@@ -40,6 +41,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           notes?: string | null
+          pdf_url?: string | null
           recipient_email?: string | null
           sent_at?: string | null
           signature_data?: string | null
@@ -57,6 +59,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           notes?: string | null
+          pdf_url?: string | null
           recipient_email?: string | null
           sent_at?: string | null
           signature_data?: string | null

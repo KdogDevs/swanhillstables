@@ -1,0 +1,1 @@
+ALTER TABLE public.client_documents ADD COLUMN IF NOT EXISTS pdf_url text;
