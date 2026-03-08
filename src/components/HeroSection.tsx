@@ -28,7 +28,7 @@ export const HeroSection = () => {
           <img
             src={logoFull}
             alt="Swan Hill Stables"
-            className="h-48 md:h-64 lg:h-72 w-auto drop-shadow-2xl mix-blend-screen brightness-150"
+            className="h-48 md:h-64 lg:h-72 w-auto drop-shadow-2xl"
           />
         </motion.div>
 
