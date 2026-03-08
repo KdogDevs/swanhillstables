@@ -60,10 +60,10 @@ const AdminDashboard = () => {
               <span className="text-sm">Member Portal</span>
             </Link>
           </div>
-          <div className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-primary" />
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="Swan Hill Stables" className="h-10 w-auto" />
             <h1 className="font-serif text-xl font-semibold text-foreground">
-              {isSuperAdmin ? "Super Admin" : "Admin"} Dashboard
+              {isSuperAdmin ? "Super Admin" : "Admin"}
             </h1>
           </div>
           <Button variant="ghost" size="sm" onClick={handleSignOut}>
