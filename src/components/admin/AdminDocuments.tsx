@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Plus, Loader2, CheckCircle, Clock, AlertTriangle, Send } from "lucide-react";
+import { FileText, Plus, Loader2, CheckCircle, Clock, AlertTriangle, Send, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -24,9 +24,10 @@ interface ClientDocument {
   notes: string | null;
   created_at: string;
   recipient_email: string | null;
+  signature_data: string | null;
   profiles?: {
     full_name: string | null;
-  };
+  } | null;
 }
 
 interface Profile {
@@ -58,6 +59,7 @@ export const AdminDocuments = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [viewSignature, setViewSignature] = useState<string | null>(null);
 
   // Form state
   const [selectedClient, setSelectedClient] = useState("");
@@ -74,13 +76,27 @@ export const AdminDocuments = () => {
 
   const fetchDocuments = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch documents separately, then match profiles
+      const { data: docs, error: docsErr } = await supabase
         .from("client_documents")
-        .select(`*, profiles:user_id (full_name)`)
+        .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      setDocuments((data as unknown as ClientDocument[]) || []);
+      if (docsErr) throw docsErr;
+
+      // Fetch all profiles to match
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name");
+
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p.full_name]));
+
+      const enriched = (docs || []).map(doc => ({
+        ...doc,
+        profiles: { full_name: profileMap.get(doc.user_id) || null },
+      }));
+
+      setDocuments(enriched);
     } catch (error) {
       console.error("Error fetching documents:", error);
     } finally {
@@ -223,6 +239,20 @@ export const AdminDocuments = () => {
         </Card>
       </div>
 
+      {/* Signature Preview Dialog */}
+      <Dialog open={!!viewSignature} onOpenChange={() => setViewSignature(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Signature Preview</DialogTitle>
+          </DialogHeader>
+          {viewSignature && (
+            <div className="flex justify-center p-4 bg-muted rounded-lg">
+              <img src={viewSignature} alt="Signature" className="max-w-full max-h-48" />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {/* Documents Table */}
       <Card>
         <CardHeader>
@@ -308,24 +338,32 @@ export const AdminDocuments = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Client</TableHead>
+                  <TableHead>Email</TableHead>
                   <TableHead>Document</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Sent</TableHead>
                   <TableHead>Signed</TableHead>
+                  <TableHead>Signature</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredDocuments.map(doc => (
                   <TableRow key={doc.id}>
-                    <TableCell className="font-medium">{doc.profiles?.full_name || "Unknown"}</TableCell>
+                    <TableCell className="font-medium">{doc.profiles?.full_name || doc.recipient_email || "Unknown"}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{doc.recipient_email || "—"}</TableCell>
                     <TableCell>
                       {formatDocumentType(doc.document_type)}
                       {doc.notes && <p className="text-xs text-muted-foreground mt-0.5">{doc.notes}</p>}
                     </TableCell>
                     <TableCell>{getStatusBadge(doc.status)}</TableCell>
-                    <TableCell className="text-sm">{doc.sent_at ? format(new Date(doc.sent_at), "MMM d, yyyy") : "—"}</TableCell>
                     <TableCell className="text-sm">{doc.signed_at ? format(new Date(doc.signed_at), "MMM d, yyyy") : "—"}</TableCell>
+                    <TableCell>
+                      {doc.signature_data ? (
+                        <Button size="sm" variant="ghost" onClick={() => setViewSignature(doc.signature_data)}>
+                          <Eye className="h-3.5 w-3.5 mr-1" /> View
+                        </Button>
+                      ) : "—"}
+                    </TableCell>
                     <TableCell>
                       <Select value={doc.status} onValueChange={(v) => handleUpdateStatus(doc.id, v)}>
                         <SelectTrigger className="w-[110px] h-8 text-xs">

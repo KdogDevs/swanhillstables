@@ -15,7 +15,7 @@ export const WaiverDocument = ({ fullName }: { fullName: string }) => {
         <p>
           2. I understand the potential dangers that I could incur in mounting, riding, walking, boarding, feeding said
           horse; including, but not limited to, any interactions with other horses. Understanding those risks I hereby
-          release the Company, its officers, directors, shareholders, employees and anyone else directly or indirectly
+          release that Company, its officers, directors, shareholders, employees and anyone else directly or indirectly
           connected with that Company from any liability whatsoever in the event of injury or damage of any nature (or
           perhaps even death) to me or anyone else caused by or incidental to my electing to mount and ride a horse owned
           or operated by Swan Hill Stables.

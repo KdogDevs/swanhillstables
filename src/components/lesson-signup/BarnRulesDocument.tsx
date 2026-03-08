@@ -26,7 +26,7 @@ export const BarnRulesDocument = () => (
       <li>No feeding horses without owner or staff approval.</li>
       <li>Treats must be given flat-handed and approved by staff.</li>
       <li>Do not enter stalls or paddocks without permission.</li>
-      <li>When putting horses in stalls or pastures, turn them to face the gate/door before removing halter.</li>
+      <li>When putting horses in stalls or pastures turn them to face the gate/door before removing halter.</li>
       <li>Report any injuries, loose horses, or unsafe behavior immediately.</li>
     </Section>
 
@@ -40,7 +40,7 @@ export const BarnRulesDocument = () => (
       <li>Faster gaits have the right of way.</li>
       <li>No lunging in the main arena during lessons.</li>
       <li>Pick up manure after riding.</li>
-      <li>Properly store equipment after use (jumps, barrels, lunge lines/whips).</li>
+      <li>Properly store equipment after use (ex. Jumps, barrels, lunge lines/whips)</li>
       <li>No spectators inside the arena unless approved.</li>
     </Section>
 
