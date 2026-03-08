@@ -1,6 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { LessonCalendar } from "@/components/LessonCalendar";
+import { LessonSignupForm } from "@/components/LessonSignupForm";
 import { motion } from "framer-motion";
 
 const Lessons = () => {
@@ -19,23 +19,23 @@ const Lessons = () => {
               className="text-center max-w-3xl mx-auto"
             >
               <p className="text-accent text-sm uppercase tracking-[0.2em] mb-4 font-medium">
-                Book Your Lesson
+                Get Started
               </p>
               <h1 className="font-serif text-5xl md:text-6xl font-semibold text-foreground mb-6">
                 Riding Lessons
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                Browse available times and book your private lesson with our instructors.
-                $45 per 30-minute session.
+                Fill out the form below and we'll get back to you to schedule your first lesson.
+                Private lessons are $45 per 30-minute session.
               </p>
             </motion.div>
           </div>
         </section>
 
-        {/* Calendar Section */}
-        <section className="py-12 bg-background">
-          <div className="container mx-auto px-6">
-            <LessonCalendar />
+        {/* Form Section */}
+        <section className="py-16 bg-background">
+          <div className="container mx-auto px-6 max-w-2xl">
+            <LessonSignupForm />
           </div>
         </section>
       </main>

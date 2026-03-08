@@ -448,6 +448,69 @@ export type Database = {
           },
         ]
       }
+      lesson_signups: {
+        Row: {
+          admin_notes: string | null
+          age: number | null
+          created_at: string
+          email: string
+          emergency_contact_name: string
+          emergency_contact_phone: string
+          experience_level: string
+          full_name: string
+          goals: string | null
+          horse_preference: string
+          id: string
+          own_horse_name: string | null
+          phone: string | null
+          preferred_days: string[] | null
+          preferred_time: string | null
+          special_needs: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          age?: number | null
+          created_at?: string
+          email: string
+          emergency_contact_name: string
+          emergency_contact_phone: string
+          experience_level?: string
+          full_name: string
+          goals?: string | null
+          horse_preference?: string
+          id?: string
+          own_horse_name?: string | null
+          phone?: string | null
+          preferred_days?: string[] | null
+          preferred_time?: string | null
+          special_needs?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          age?: number | null
+          created_at?: string
+          email?: string
+          emergency_contact_name?: string
+          emergency_contact_phone?: string
+          experience_level?: string
+          full_name?: string
+          goals?: string | null
+          horse_preference?: string
+          id?: string
+          own_horse_name?: string | null
+          phone?: string | null
+          preferred_days?: string[] | null
+          preferred_time?: string | null
+          special_needs?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lesson_slots: {
         Row: {
           created_at: string
