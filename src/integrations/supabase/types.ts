@@ -25,6 +25,7 @@ export type Database = {
           notes: string | null
           recipient_email: string | null
           sent_at: string | null
+          signature_data: string | null
           signed_at: string | null
           signing_url: string | null
           status: string
@@ -41,6 +42,7 @@ export type Database = {
           notes?: string | null
           recipient_email?: string | null
           sent_at?: string | null
+          signature_data?: string | null
           signed_at?: string | null
           signing_url?: string | null
           status?: string
@@ -57,6 +59,7 @@ export type Database = {
           notes?: string | null
           recipient_email?: string | null
           sent_at?: string | null
+          signature_data?: string | null
           signed_at?: string | null
           signing_url?: string | null
           status?: string

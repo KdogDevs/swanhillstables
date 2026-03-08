@@ -1,6 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { LessonSignupForm } from "@/components/LessonSignupForm";
+import { LessonSignupWizard } from "@/components/lesson-signup/LessonSignupWizard";
 import { motion } from "framer-motion";
 
 const Lessons = () => {
@@ -9,7 +9,6 @@ const Lessons = () => {
       <Navigation />
       
       <main className="pt-24">
-        {/* Page Header */}
         <section className="py-16 section-gradient">
           <div className="container mx-auto px-6">
             <motion.div
@@ -25,17 +24,16 @@ const Lessons = () => {
                 Riding Lessons
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                Fill out the form below and we'll get back to you to schedule your first lesson.
-                Private lessons are $45 per 30-minute session.
+                Complete the application below to get started. You'll create an account,
+                review our barn rules, and sign the required documents — all in one place.
               </p>
             </motion.div>
           </div>
         </section>
 
-        {/* Form Section */}
         <section className="py-16 bg-background">
           <div className="container mx-auto px-6 max-w-2xl">
-            <LessonSignupForm />
+            <LessonSignupWizard />
           </div>
         </section>
       </main>
