@@ -1,0 +1,2 @@
+ALTER TABLE public.client_documents DROP CONSTRAINT client_documents_document_type_check;
+ALTER TABLE public.client_documents ADD CONSTRAINT client_documents_document_type_check CHECK (document_type = ANY (ARRAY['liability_waiver'::text, 'barn_rules'::text, 'boarding_agreement'::text, 'lesson_registration'::text, 'emergency_contact_form'::text, 'other'::text]));
