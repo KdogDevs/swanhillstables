@@ -6,9 +6,37 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SMTP_HOST = "mx440c.netcup.net";
-const SMTP_PORT = 465;
-const SMTP_USER = "kagen@swanhillstables.com";
+const DEFAULT_SMTP_HOST = "mx440c.netcup.net";
+const DEFAULT_SMTP_PORT = 465;
+const DEFAULT_USER = "kagen@swanhillstables.com";
+
+async function getAuthAndRole(req: Request) {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
+
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_ANON_KEY")!,
+    { global: { headers: { Authorization: authHeader } } }
+  );
+
+  const token = authHeader.replace("Bearer ", "");
+  const { data, error } = await supabase.auth.getClaims(token);
+  if (error || !data?.claims) throw new Error("Unauthorized");
+
+  const userId = data.claims.sub as string;
+  const { data: roles } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId);
+
+  const roleSet = new Set((roles || []).map((r: any) => r.role));
+  if (!roleSet.has("admin") && !roleSet.has("super_admin")) {
+    throw new Error("Forbidden");
+  }
+
+  return { userId, isSuperAdmin: roleSet.has("super_admin"), supabase };
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -16,90 +44,109 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify admin
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    const { userId, isSuperAdmin } = await getAuthAndRole(req);
+    const body = await req.json();
+    const { to, cc, bcc, subject, body: emailBody, accountId, signature, replyTo, bulk } = body;
+
+    // Get SMTP credentials
+    let smtpHost = DEFAULT_SMTP_HOST;
+    let smtpPort = DEFAULT_SMTP_PORT;
+    let smtpUser = DEFAULT_USER;
+    let smtpPass = Deno.env.get("MAIL_PASSWORD")!;
+    let fromName = "Swan Hill Stables";
+
+    if (accountId) {
+      const serviceClient = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      );
+
+      const { data: account, error } = await serviceClient
+        .from("email_accounts")
+        .select("*")
+        .eq("id", accountId)
+        .single();
+
+      if (error || !account) throw new Error("Email account not found");
+
+      if (!isSuperAdmin) {
+        const { data: access } = await serviceClient
+          .from("email_account_access")
+          .select("can_send")
+          .eq("email_account_id", accountId)
+          .eq("user_id", userId)
+          .single();
+
+        if (!access?.can_send) throw new Error("No send permission for this account");
+      }
+
+      smtpHost = account.smtp_host;
+      smtpPort = account.smtp_port;
+      smtpUser = account.username;
+      smtpPass = account.password;
+      fromName = account.display_name || account.email_address;
     }
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const userId = claimsData.claims.sub;
-    const { data: roleData } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .eq("role", "admin")
-      .maybeSingle();
-
-    if (!roleData) {
-      return new Response(JSON.stringify({ error: "Forbidden" }), {
-        status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const { to, cc, bcc, subject, body, replyTo } = await req.json();
-    const password = Deno.env.get("MAIL_PASSWORD");
-
-    if (!password) {
-      throw new Error("Mail password not configured");
-    }
-
-    if (!to || !subject) {
-      throw new Error("'to' and 'subject' are required");
-    }
+    if (!smtpPass) throw new Error("Mail password not configured");
 
     const nodemailer = await import("npm:nodemailer@6.9.16");
-
     const transporter = nodemailer.default.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
+      host: smtpHost,
+      port: smtpPort,
       secure: true,
-      auth: {
-        user: SMTP_USER,
-        pass: password,
-      },
+      auth: { user: smtpUser, pass: smtpPass },
     });
 
+    // Build HTML body with optional signature
+    let fullBody = emailBody || "";
+    if (signature) {
+      fullBody += `<br><br>--<br>${signature}`;
+    }
+
+    // Handle bulk sending
+    if (bulk && Array.isArray(bulk.recipients)) {
+      const results: any[] = [];
+      for (const recipient of bulk.recipients) {
+        try {
+          const info = await transporter.sendMail({
+            from: `"${fromName}" <${smtpUser}>`,
+            to: recipient.email,
+            subject: subject || "",
+            html: fullBody.replace(/\{\{name\}\}/g, recipient.name || ""),
+          });
+          results.push({ email: recipient.email, success: true, messageId: info.messageId });
+        } catch (err: any) {
+          results.push({ email: recipient.email, success: false, error: err.message });
+        }
+      }
+      return new Response(JSON.stringify({ success: true, results }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Single email
+    if (!to || !subject) throw new Error("'to' and 'subject' are required");
+
     const mailOptions: any = {
-      from: `"Swan Hill Stables" <${SMTP_USER}>`,
+      from: `"${fromName}" <${smtpUser}>`,
       to: Array.isArray(to) ? to.join(", ") : to,
       subject,
-      html: body,
+      html: fullBody,
     };
-
     if (cc) mailOptions.cc = Array.isArray(cc) ? cc.join(", ") : cc;
     if (bcc) mailOptions.bcc = Array.isArray(bcc) ? bcc.join(", ") : bcc;
     if (replyTo) mailOptions.inReplyTo = replyTo;
 
     const info = await transporter.sendMail(mailOptions);
 
-    return new Response(
-      JSON.stringify({ success: true, messageId: info.messageId }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ success: true, messageId: info.messageId }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error: any) {
     console.error("Email send error:", error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    const status = error.message === "Unauthorized" ? 401 : error.message?.includes("Forbidden") ? 403 : 500;
+    return new Response(JSON.stringify({ error: error.message }), {
+      status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
