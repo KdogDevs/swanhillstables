@@ -10,7 +10,7 @@ import Pricing from "./pages/Pricing";
 import Team from "./pages/Team";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
-import Lessons from "./pages/Lessons";
+
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
