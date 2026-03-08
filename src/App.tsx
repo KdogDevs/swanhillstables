@@ -10,7 +10,7 @@ import Pricing from "./pages/Pricing";
 import Team from "./pages/Team";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
-import Lessons from "./pages/Lessons";
+
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -30,7 +30,7 @@ const App = () => (
             <Route path="/team" element={<Team />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/lessons" element={<Lessons />} />
+            
             <Route path="/admin" element={<AdminDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
