@@ -93,6 +93,16 @@ Deno.serve(async (req) => {
     ]);
     if (docErr) console.error("Document error:", docErr);
 
+    // 3b. Update user profile with collected info
+    const { error: profileErr } = await supabaseAdmin.from("profiles").update({
+      full_name: formData.full_name,
+      phone: formData.phone || null,
+      emergency_contact_name: formData.emergency_contact_name || null,
+      emergency_contact_phone: formData.emergency_contact_phone || null,
+      address: formData.address || null,
+    }).eq("user_id", userId);
+    if (profileErr) console.error("Profile update error:", profileErr);
+
     // 4. Add to contacts
     const { error: contactErr } = await supabaseAdmin.from("contacts").insert({
       email: formData.email,
