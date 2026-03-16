@@ -17,7 +17,6 @@ export const HeroSection = () => {
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
-    layoutEffect: false,
   });
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
