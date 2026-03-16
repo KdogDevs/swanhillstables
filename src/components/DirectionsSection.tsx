@@ -30,10 +30,10 @@ export const DirectionsSection = () => {
     <section className="py-24 bg-secondary/30">
       <div className="container mx-auto px-6">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: true, margin: "-100px" }}
           className="text-center mb-12"
         >
           <h2 className="font-serif text-4xl md:text-5xl font-semibold text-foreground mb-4">
@@ -46,10 +46,10 @@ export const DirectionsSection = () => {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 40, scale: 0.96 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: true, margin: "-80px" }}
           className="max-w-4xl mx-auto"
         >
           <div className="aspect-video rounded-lg overflow-hidden card-shadow mb-8">
@@ -65,7 +65,13 @@ export const DirectionsSection = () => {
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
             <Button size="lg" className="gap-2" onClick={() => openExternal(googleMapsUrl)}>
               <GoogleMapsIcon />
               Google Maps
@@ -79,7 +85,7 @@ export const DirectionsSection = () => {
               <AppleMapsIcon />
               Apple Maps
             </Button>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
