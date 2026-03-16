@@ -31,8 +31,8 @@ export const Navigation = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="container mx-auto px-6 py-3">
+    <nav className="fixed top-0 left-0 right-0 z-50 py-3 px-4">
+      <div className="container mx-auto px-6 py-3 bg-background/60 backdrop-blur-xl border border-border/40 rounded-lg shadow-sm">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <img src={logo} alt="Swan Hill Stables" className="h-12 w-auto rounded-md" />
