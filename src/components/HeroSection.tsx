@@ -5,11 +5,19 @@ import { useRef } from "react";
 import heroBarn from "@/assets/hero-barn.jpg";
 import logoFull from "@/assets/logo-full-transparent.png";
 
+// Preload hero image immediately
+const preloadLink = document.createElement("link");
+preloadLink.rel = "preload";
+preloadLink.as = "image";
+preloadLink.href = heroBarn;
+document.head.appendChild(preloadLink);
+
 export const HeroSection = () => {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
+    layoutEffect: false,
   });
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
@@ -21,20 +29,25 @@ export const HeroSection = () => {
       ref={ref}
       className="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden"
     >
-      {/* Parallax Background Image */}
-      <motion.div className="absolute inset-0" style={{ y: backgroundY }}>
+      {/* Parallax Background Image - GPU accelerated */}
+      <motion.div
+        className="absolute inset-0 will-change-transform"
+        style={{ y: backgroundY, translateZ: 0 }}
+      >
         <img
           src={heroBarn}
           alt="Swan Hill Stables at sunset"
           className="w-full h-[130%] object-cover"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 hero-overlay" />
       </motion.div>
 
-      {/* Content with scroll fade */}
+      {/* Content with scroll fade - GPU accelerated */}
       <motion.div
-        className="relative z-10 text-center px-6 max-w-4xl mx-auto"
-        style={{ opacity: contentOpacity, y: contentY }}
+        className="relative z-10 text-center px-6 max-w-4xl mx-auto will-change-transform"
+        style={{ opacity: contentOpacity, y: contentY, translateZ: 0 }}
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -46,13 +59,14 @@ export const HeroSection = () => {
             src={logoFull}
             alt="Swan Hill Stables"
             className="h-48 md:h-64 lg:h-72 w-auto rounded-md mix-blend-multiply"
+            fetchPriority="high"
           />
         </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.9, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="text-primary-foreground/90 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           Where horses thrive and riders grow. Experience exceptional boarding,
@@ -62,7 +76,7 @@ export const HeroSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.9, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <Button variant="hero" size="xl" asChild>
@@ -78,7 +92,7 @@ export const HeroSection = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.4, duration: 0.8 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
         style={{ opacity: contentOpacity }}
       >
