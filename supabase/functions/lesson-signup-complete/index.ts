@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
       email: formData.email,
       name: formData.full_name,
       phone: formData.phone || null,
-      notes: `Lesson signup - ${formData.experience_level} rider`,
+      notes: `Lesson signup - ${formData.experience_level} rider | Horse: ${formData.horse_preference}${formData.own_horse_name ? ` (${formData.own_horse_name})` : ''} | Preferred: ${(formData.preferred_days || []).join(', ')} ${formData.preferred_time || 'flexible'}${formData.goals ? ` | Goals: ${formData.goals}` : ''}${formData.special_needs ? ` | Special needs: ${formData.special_needs}` : ''}${formData.age ? ` | Age: ${formData.age}` : ''} | Emergency: ${formData.emergency_contact_name} ${formData.emergency_contact_phone}`,
       created_by: userId,
     });
     if (contactErr && contactErr.code !== "23505") console.error("Contact error:", contactErr);
