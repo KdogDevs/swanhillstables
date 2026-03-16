@@ -93,12 +93,22 @@ Deno.serve(async (req) => {
     ]);
     if (docErr) console.error("Document error:", docErr);
 
+    // 3b. Update user profile with collected info
+    const { error: profileErr } = await supabaseAdmin.from("profiles").update({
+      full_name: formData.full_name,
+      phone: formData.phone || null,
+      emergency_contact_name: formData.emergency_contact_name || null,
+      emergency_contact_phone: formData.emergency_contact_phone || null,
+      address: formData.address || null,
+    }).eq("user_id", userId);
+    if (profileErr) console.error("Profile update error:", profileErr);
+
     // 4. Add to contacts
     const { error: contactErr } = await supabaseAdmin.from("contacts").insert({
       email: formData.email,
       name: formData.full_name,
       phone: formData.phone || null,
-      notes: `Lesson signup - ${formData.experience_level} rider`,
+      notes: `Lesson signup - ${formData.experience_level} rider | Horse: ${formData.horse_preference}${formData.own_horse_name ? ` (${formData.own_horse_name})` : ''} | Preferred: ${(formData.preferred_days || []).join(', ')} ${formData.preferred_time || 'flexible'}${formData.goals ? ` | Goals: ${formData.goals}` : ''}${formData.special_needs ? ` | Special needs: ${formData.special_needs}` : ''}${formData.age ? ` | Age: ${formData.age}` : ''} | Emergency: ${formData.emergency_contact_name} ${formData.emergency_contact_phone}`,
       created_by: userId,
     });
     if (contactErr && contactErr.code !== "23505") console.error("Contact error:", contactErr);
