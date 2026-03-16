@@ -35,7 +35,7 @@ export const Navigation = () => {
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <img src={logo} alt="Swan Hill Stables" className="h-12 w-auto" />
+            <img src={logo} alt="Swan Hill Stables" className="h-12 w-auto rounded-md" />
           </Link>
 
           {/* Desktop Navigation */}

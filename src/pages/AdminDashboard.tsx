@@ -61,7 +61,7 @@ const AdminDashboard = () => {
             </Link>
           </div>
           <div className="flex items-center gap-3">
-            <img src={logo} alt="Swan Hill Stables" className="h-10 w-auto" />
+            <img src={logo} alt="Swan Hill Stables" className="h-10 w-auto rounded-md" />
             <h1 className="font-serif text-xl font-semibold text-foreground">
               {isSuperAdmin ? "Super Admin" : "Admin"}
             </h1>
