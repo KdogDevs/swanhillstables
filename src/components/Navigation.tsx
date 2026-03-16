@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Menu, X, LogOut, User, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,16 +23,34 @@ export const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { user, signOut } = useAuth();
 
-  const handleSignOut = async () => {
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleSignOut = useCallback(async () => {
     await signOut();
     navigate("/");
-  };
+  }, [signOut, navigate]);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 py-3 px-4">
-      <div className="container mx-auto px-6 py-3 bg-background/60 backdrop-blur-xl border border-border/40 rounded-lg shadow-sm">
+    <motion.nav
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed top-0 left-0 right-0 z-50 py-3 px-4"
+    >
+      <div
+        className={`container mx-auto px-6 py-3 backdrop-blur-xl border rounded-lg transition-all duration-500 ${
+          scrolled
+            ? "bg-background/85 border-border/60 shadow-md"
+            : "bg-background/60 border-border/40 shadow-sm"
+        }`}
+      >
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <img src={logo} alt="Swan Hill Stables" className="h-12 w-auto rounded-md" />
@@ -98,6 +116,7 @@ export const Navigation = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="md:hidden overflow-hidden"
             >
               <div className="flex flex-col gap-4 pt-4 pb-2">
@@ -160,6 +179,6 @@ export const Navigation = () => {
           )}
         </AnimatePresence>
       </div>
-    </nav>
+    </motion.nav>
   );
 };

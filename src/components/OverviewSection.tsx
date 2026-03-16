@@ -42,8 +42,8 @@ export const OverviewSection = () => {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Image Side */}
           <motion.div
-            initial={{ opacity: 0, x: -50, scale: 0.95 }}
-            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             viewport={{ once: true, margin: "-100px" }}
             className="relative"
@@ -53,6 +53,8 @@ export const OverviewSection = () => {
                 src={horsePortrait}
                 alt="Beautiful horse at Swan Hill Stables"
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <motion.div

@@ -10,6 +10,10 @@
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://swanhillstables.com" />
 
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <meta property="og:title" content="Swan Hill Stables | Premium Equestrian Facility" />
     <meta property="og:description" content="Where horses thrive and riders grow. Premium boarding, expert lessons, and a welcoming community." />
     <meta property="og:type" content="website" />
@@ -18,6 +22,11 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@SwanHillStables" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <style>
+      /* Prevent FOUC - match background color */
+      body { background: hsl(40, 30%, 97%); }
+    </style>
   </head>
 
   <body>
