@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import logo from "@/assets/logo-transparent.png";
+import logo from "@/assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -170,7 +170,7 @@ const Auth = () => {
       >
         <div className="bg-card rounded-lg shadow-lg p-8 border border-border">
           <div className="text-center mb-8">
-            <img src={logo} alt="Swan Hill Stables" className="h-20 w-auto mx-auto mb-4 rounded-md" />
+            <img src={logo} alt="Swan Hill Stables" className="h-20 w-auto mx-auto mb-4 rounded-full border-2 border-border shadow-sm" />
             <p className="text-muted-foreground">
               {isSignUp ? "Create your account" : "Sign in to access your member portal"}
             </p>
