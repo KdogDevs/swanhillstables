@@ -208,14 +208,11 @@ export const AdminCareLog = () => {
     }
   };
 
-  const handleDelete = async (logId: string, photoUrl: string | null) => {
+  const handleDelete = async (logId: string, photoPath: string | null) => {
     try {
       // Delete photo from storage if exists
-      if (photoUrl) {
-        const path = photoUrl.split("/care-log-photos/")[1];
-        if (path) {
-          await supabase.storage.from("care-log-photos").remove([path]);
-        }
+      if (photoPath) {
+        await supabase.storage.from("care-log-photos").remove([photoPath]);
       }
 
       const { error } = await supabase
