@@ -239,6 +239,7 @@ export const AdminDocuments = () => {
           signerName={selectedClientInfo?.full_name || null}
           signatureData={previewDoc?.signature_data || null}
           signedAt={previewDoc?.signed_at || null}
+          pdfUrl={previewDoc?.pdf_url || null}
         />
 
         <Card>
