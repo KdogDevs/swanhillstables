@@ -12,8 +12,6 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { SignaturePad } from "./SignaturePad";
-import { BarnRulesDocument } from "./BarnRulesDocument";
-import { WaiverDocument } from "./WaiverDocument";
 import {
   User, Trophy, CalendarDays, UserPlus, ScrollText, Shield,
   Check, ChevronRight, ChevronLeft, CheckCircle, Loader2,
@@ -30,6 +28,8 @@ const STEPS = [
 ];
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const BARN_RULES_PDF_URL = "/documents/barn-rules-template.pdf";
+const WAIVER_PDF_URL = "/documents/equine-release-template.pdf";
 
 interface FormData {
   full_name: string; email: string; phone: string; age: string;
