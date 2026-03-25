@@ -51,7 +51,7 @@ export const Footer = () => {
               <li>5808 Harper Rd</li>
               <li>Northport, Alabama</li>
               <li className="pt-2">
-                <a href="mailto:info@swanhillstables.com" className="hover:text-primary-foreground transition-colors">
+                <a href="mailto:stables@swanhillstables.com" className="hover:text-primary-foreground transition-colors">
                   info@swanhillstables.com
                 </a>
               </li>
