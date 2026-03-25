@@ -39,7 +39,7 @@ const boardingOptions = [
 const lessonOptions = [
   {
     name: "Private Lesson",
-    price: "$40",
+    price: "$50",
     period: "/session",
     description: "One-on-one instruction tailored to your goals.",
     duration: "60 minutes",
@@ -193,6 +193,10 @@ const Pricing = () => {
                     <span className="text-muted-foreground text-sm">{lesson.period}</span>
                   </div>
                   <p className="text-muted-foreground text-sm mb-6">{lesson.duration}</p>
+                  <div className="p-4 rounded-lg bg-secondary border border-border mb-6">
+                    <p className="text-sm font-medium text-foreground">Pay via Venmo</p>
+                    <p className="text-muted-foreground text-sm">Send payment to <span className="font-semibold text-foreground">@swanhillstables</span></p>
+                  </div>
                   <Button variant="default" size="lg" className="w-full" asChild>
                     <Link to="/lessons">Book a Lesson</Link>
                   </Button>
