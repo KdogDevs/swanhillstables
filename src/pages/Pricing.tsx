@@ -195,7 +195,7 @@ const Pricing = () => {
                   <p className="text-muted-foreground text-sm mb-6">{lesson.duration}</p>
                   <div className="p-4 rounded-lg bg-secondary border border-border mb-6">
                     <p className="text-sm font-medium text-foreground">Pay via Venmo</p>
-                    <p className="text-muted-foreground text-sm">Send payment to <a href="https://venmo.com/swanhillstables" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">@swanhillstables</a></p>
+                    <p className="text-muted-foreground text-sm">Send payment to <a href="https://venmo.com/swanhillstables?txn=pay&amount=50&note=Riding%20Lesson" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">@swanhillstables</a></p>
                   </div>
                   <Button variant="default" size="lg" className="w-full" asChild>
                     <Link to="/lessons">Book a Lesson</Link>
