@@ -358,7 +358,7 @@ END:VCALENDAR`;
                           {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Private Lesson • $40
+                          Private Lesson • $50
                         </p>
                         {slot.notes && (
                           <p className="text-xs text-muted-foreground mt-1">
