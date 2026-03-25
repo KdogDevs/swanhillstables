@@ -13,6 +13,7 @@ import { ClipboardList, Plus, Loader2, Upload, Image, Trash2, Camera } from "luc
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { SignedLink } from "@/components/SignedStorageMedia";
 
 interface Profile {
   id: string;
