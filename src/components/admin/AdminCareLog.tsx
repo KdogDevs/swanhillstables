@@ -171,11 +171,7 @@ export const AdminCareLog = () => {
 
         if (uploadError) throw uploadError;
 
-        const { data: urlData } = supabase.storage
-          .from("care-log-photos")
-          .getPublicUrl(fileName);
-
-        photoUrl = urlData.publicUrl;
+        photoUrl = fileName;
       }
 
       // Create care log entry
