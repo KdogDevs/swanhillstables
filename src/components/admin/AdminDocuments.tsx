@@ -231,17 +231,15 @@ export const AdminDocuments = () => {
           </div>
         </div>
 
-        {/* Signature Preview Dialog */}
-        <Dialog open={!!viewSignature} onOpenChange={() => setViewSignature(null)}>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Signature Preview</DialogTitle></DialogHeader>
-            {viewSignature && (
-              <div className="flex justify-center p-4 bg-muted rounded-lg">
-                <img src={viewSignature} alt="Signature" className="max-w-full max-h-48" />
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+        {/* Document Preview Dialog */}
+        <DocumentPreviewDialog
+          open={!!previewDoc}
+          onOpenChange={() => setPreviewDoc(null)}
+          documentType={previewDoc?.document_type || ""}
+          signerName={selectedClientInfo?.full_name || null}
+          signatureData={previewDoc?.signature_data || null}
+          signedAt={previewDoc?.signed_at || null}
+        />
 
         <Card>
           <CardHeader>
