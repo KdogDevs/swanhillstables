@@ -286,15 +286,11 @@ export const AdminDocuments = () => {
                            </Button>
                          ) : "—"}
                       </TableCell>
-                      <TableCell>
-                        {doc.pdf_url ? (
-                          <Button size="sm" variant="ghost" asChild>
-                            <a href={doc.pdf_url} target="_blank" rel="noopener noreferrer">
-                              <Download className="h-3.5 w-3.5 mr-1" /> PDF
-                            </a>
-                          </Button>
-                        ) : "—"}
-                      </TableCell>
+                       <TableCell>
+                         {doc.pdf_url ? (
+                           <PdfDownloadButton storagePath={doc.pdf_url} />
+                         ) : "—"}
+                       </TableCell>
                       <TableCell>
                         <Select value={doc.status} onValueChange={(v) => handleUpdateStatus(doc.id, v)}>
                           <SelectTrigger className="w-[110px] h-8 text-xs">
