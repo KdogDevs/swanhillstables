@@ -39,7 +39,7 @@ const boardingOptions = [
 const lessonOptions = [
   {
     name: "Private Lesson",
-    price: "$40",
+    price: "$50",
     period: "/session",
     description: "One-on-one instruction tailored to your goals.",
     duration: "60 minutes",
