@@ -357,9 +357,13 @@ export const LessonSignupWizard = () => {
 
           {step === 4 && (
             <div className="space-y-6">
-              <div><h2 className="font-serif text-2xl font-semibold text-foreground mb-1">Barn Rules &amp; Safety Policies</h2><p className="text-sm text-muted-foreground">Please read carefully and sign below</p></div>
-              <div className="max-h-80 overflow-y-auto border border-border rounded-lg p-6 bg-card">
-                <BarnRulesDocument />
+              <div><h2 className="font-serif text-2xl font-semibold text-foreground mb-1">Barn Rules &amp; Safety Policies</h2><p className="text-sm text-muted-foreground">Please review the exact PDF and sign below</p></div>
+              <div className="border border-border rounded-lg bg-card p-2">
+                <iframe
+                  src={`${BARN_RULES_PDF_URL}#toolbar=1&navpanes=0`}
+                  title="Barn Rules PDF"
+                  className="w-full h-[28rem] rounded-md border border-border"
+                />
               </div>
               <div className="flex items-start gap-3">
                 <Checkbox id="barn-rules-agree" checked={barnRulesAgreed} onCheckedChange={v => { setBarnRulesAgreed(!!v); setErrors(prev => { const n = { ...prev }; delete n.barn_rules_agreed; return n; }); }} />
@@ -373,9 +377,13 @@ export const LessonSignupWizard = () => {
 
           {step === 5 && (
             <div className="space-y-6">
-              <div><h2 className="font-serif text-2xl font-semibold text-foreground mb-1">Liability Waiver</h2><p className="text-sm text-muted-foreground">Please read the waiver carefully and sign below</p></div>
-              <div className="max-h-80 overflow-y-auto border border-border rounded-lg p-6 bg-card">
-                <WaiverDocument fullName={formData.full_name} />
+              <div><h2 className="font-serif text-2xl font-semibold text-foreground mb-1">Liability Waiver</h2><p className="text-sm text-muted-foreground">Please review the exact PDF and sign below</p></div>
+              <div className="border border-border rounded-lg bg-card p-2">
+                <iframe
+                  src={`${WAIVER_PDF_URL}#toolbar=1&navpanes=0`}
+                  title="Liability Waiver PDF"
+                  className="w-full h-[28rem] rounded-md border border-border"
+                />
               </div>
               <div className="flex items-start gap-3">
                 <Checkbox id="waiver-agree" checked={waiverAgreed} onCheckedChange={v => { setWaiverAgreed(!!v); setErrors(prev => { const n = { ...prev }; delete n.waiver_agreed; return n; }); }} />
