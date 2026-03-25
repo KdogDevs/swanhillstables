@@ -52,7 +52,7 @@ export const Footer = () => {
               <li>Northport, Alabama</li>
               <li className="pt-2">
                 <a href="mailto:stables@swanhillstables.com" className="hover:text-primary-foreground transition-colors">
-                  info@swanhillstables.com
+                  stables@swanhillstables.com
                 </a>
               </li>
             </ul>
