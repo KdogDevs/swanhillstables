@@ -411,7 +411,11 @@ END:VCALENDAR`;
                 <p className="text-sm text-muted-foreground">
                   {formatTime(selectedSlot.start_time)} - {formatTime(selectedSlot.end_time)}
                 </p>
-                <p className="text-lg font-semibold mt-2">$40</p>
+                <p className="text-lg font-semibold mt-2">$50</p>
+                <div className="mt-3 p-3 rounded-md bg-muted border border-border">
+                  <p className="text-sm font-medium text-foreground">Payment via Venmo</p>
+                  <p className="text-sm text-muted-foreground">Send $50 to <span className="font-semibold text-foreground">@swanhillstables</span> before your lesson</p>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="notes">Notes (optional)</Label>
