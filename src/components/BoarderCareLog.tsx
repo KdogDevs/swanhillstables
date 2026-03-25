@@ -165,8 +165,9 @@ export const BoarderCareLog = () => {
 
               {selectedLog.photo_url && (
                 <div className="rounded-lg overflow-hidden">
-                  <img
-                    src={selectedLog.photo_url}
+                  <SignedImage
+                    storagePath={selectedLog.photo_url}
+                    bucket="care-log-photos"
                     alt="Care log photo"
                     className="w-full max-h-96 object-contain bg-muted"
                   />
