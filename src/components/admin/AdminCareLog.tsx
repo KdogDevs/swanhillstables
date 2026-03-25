@@ -479,15 +479,14 @@ export const AdminCareLog = () => {
                   <TableCell>{log.title}</TableCell>
                   <TableCell>
                     {log.photo_url ? (
-                      <a
-                        href={log.photo_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SignedLink
+                        storagePath={log.photo_url}
+                        bucket="care-log-photos"
                         className="flex items-center gap-1 text-primary hover:underline"
                       >
                         <Image className="h-4 w-4" />
                         View
-                      </a>
+                      </SignedLink>
                     ) : (
                       <span className="text-muted-foreground">—</span>
                     )}
