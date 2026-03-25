@@ -414,7 +414,7 @@ END:VCALENDAR`;
                 <p className="text-lg font-semibold mt-2">$50</p>
                 <div className="mt-3 p-3 rounded-md bg-muted border border-border">
                   <p className="text-sm font-medium text-foreground">Payment via Venmo</p>
-                  <p className="text-sm text-muted-foreground">Send $50 to <span className="font-semibold text-foreground">@swanhillstables</span> before your lesson</p>
+                  <p className="text-sm text-muted-foreground">Send $50 to <a href="https://venmo.com/swanhillstables?txn=pay&amount=50&note=Riding%20Lesson" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">@swanhillstables</a> before your lesson</p>
                 </div>
               </div>
               <div className="space-y-2">
