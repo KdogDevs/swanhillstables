@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FileText, Plus, Loader2, CheckCircle, Clock, AlertTriangle, Send, Eye, ArrowLeft, Download, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { DocumentPreviewDialog } from "./DocumentPreviewDialog";
 
 interface ClientDocument {
   id: string;
