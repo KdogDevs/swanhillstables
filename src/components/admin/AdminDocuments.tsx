@@ -13,6 +13,13 @@ import { FileText, Plus, Loader2, CheckCircle, Clock, AlertTriangle, Send, Eye, 
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DocumentPreviewDialog } from "./DocumentPreviewDialog";
+import { SignedLink } from "@/components/SignedStorageMedia";
+
+const PdfDownloadButton = ({ storagePath }: { storagePath: string }) => (
+  <SignedLink storagePath={storagePath} className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+    <Download className="h-3.5 w-3.5" /> PDF
+  </SignedLink>
+);
 
 interface ClientDocument {
   id: string;
@@ -286,15 +293,11 @@ export const AdminDocuments = () => {
                            </Button>
                          ) : "—"}
                       </TableCell>
-                      <TableCell>
-                        {doc.pdf_url ? (
-                          <Button size="sm" variant="ghost" asChild>
-                            <a href={doc.pdf_url} target="_blank" rel="noopener noreferrer">
-                              <Download className="h-3.5 w-3.5 mr-1" /> PDF
-                            </a>
-                          </Button>
-                        ) : "—"}
-                      </TableCell>
+                       <TableCell>
+                         {doc.pdf_url ? (
+                           <PdfDownloadButton storagePath={doc.pdf_url} />
+                         ) : "—"}
+                       </TableCell>
                       <TableCell>
                         <Select value={doc.status} onValueChange={(v) => handleUpdateStatus(doc.id, v)}>
                           <SelectTrigger className="w-[110px] h-8 text-xs">

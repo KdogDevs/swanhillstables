@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { ClipboardList, Loader2, Image } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { SignedImage } from "@/components/SignedStorageMedia";
 
 interface CareLog {
   id: string;
@@ -125,8 +126,9 @@ export const BoarderCareLog = () => {
                   {log.photo_url && (
                     <div className="flex-shrink-0">
                       <div className="h-16 w-16 rounded-md overflow-hidden bg-muted">
-                        <img
-                          src={log.photo_url}
+                        <SignedImage
+                          storagePath={log.photo_url}
+                          bucket="care-log-photos"
                           alt=""
                           className="h-full w-full object-cover"
                         />
@@ -163,8 +165,9 @@ export const BoarderCareLog = () => {
 
               {selectedLog.photo_url && (
                 <div className="rounded-lg overflow-hidden">
-                  <img
-                    src={selectedLog.photo_url}
+                  <SignedImage
+                    storagePath={selectedLog.photo_url}
+                    bucket="care-log-photos"
                     alt="Care log photo"
                     className="w-full max-h-96 object-contain bg-muted"
                   />

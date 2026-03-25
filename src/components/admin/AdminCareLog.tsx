@@ -13,6 +13,7 @@ import { ClipboardList, Plus, Loader2, Upload, Image, Trash2, Camera } from "luc
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { SignedLink } from "@/components/SignedStorageMedia";
 
 interface Profile {
   id: string;
@@ -171,11 +172,7 @@ export const AdminCareLog = () => {
 
         if (uploadError) throw uploadError;
 
-        const { data: urlData } = supabase.storage
-          .from("care-log-photos")
-          .getPublicUrl(fileName);
-
-        photoUrl = urlData.publicUrl;
+        photoUrl = fileName;
       }
 
       // Create care log entry
@@ -212,14 +209,11 @@ export const AdminCareLog = () => {
     }
   };
 
-  const handleDelete = async (logId: string, photoUrl: string | null) => {
+  const handleDelete = async (logId: string, photoPath: string | null) => {
     try {
       // Delete photo from storage if exists
-      if (photoUrl) {
-        const path = photoUrl.split("/care-log-photos/")[1];
-        if (path) {
-          await supabase.storage.from("care-log-photos").remove([path]);
-        }
+      if (photoPath) {
+        await supabase.storage.from("care-log-photos").remove([photoPath]);
       }
 
       const { error } = await supabase
@@ -486,15 +480,14 @@ export const AdminCareLog = () => {
                   <TableCell>{log.title}</TableCell>
                   <TableCell>
                     {log.photo_url ? (
-                      <a
-                        href={log.photo_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SignedLink
+                        storagePath={log.photo_url}
+                        bucket="care-log-photos"
                         className="flex items-center gap-1 text-primary hover:underline"
                       >
                         <Image className="h-4 w-4" />
                         View
-                      </a>
+                      </SignedLink>
                     ) : (
                       <span className="text-muted-foreground">—</span>
                     )}

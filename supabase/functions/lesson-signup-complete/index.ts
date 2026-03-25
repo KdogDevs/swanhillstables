@@ -190,19 +190,16 @@ Deno.serve(async (req) => {
 
       if (waiverUpErr) console.error("Waiver upload error:", waiverUpErr);
 
-      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-      const barnPdfUrl = `${supabaseUrl}/storage/v1/object/public/signed-documents/${barnPath}`;
-      const waiverPdfUrl = `${supabaseUrl}/storage/v1/object/public/signed-documents/${waiverPath}`;
-
+      // Store the storage paths (not public URLs since buckets are private)
       const barnDocId = insertedDocs?.find((doc: any) => doc.document_type === "barn_rules")?.id;
       const waiverDocId = insertedDocs?.find((doc: any) => doc.document_type === "liability_waiver")?.id;
 
       if (barnDocId) {
-        await supabaseAdmin.from("client_documents").update({ pdf_url: barnPdfUrl }).eq("id", barnDocId);
+        await supabaseAdmin.from("client_documents").update({ pdf_url: `signed-documents/${barnPath}` }).eq("id", barnDocId);
       }
 
       if (waiverDocId) {
-        await supabaseAdmin.from("client_documents").update({ pdf_url: waiverPdfUrl }).eq("id", waiverDocId);
+        await supabaseAdmin.from("client_documents").update({ pdf_url: `signed-documents/${waiverPath}` }).eq("id", waiverDocId);
       }
 
       // 7. Send confirmation email with signed PDF attachments

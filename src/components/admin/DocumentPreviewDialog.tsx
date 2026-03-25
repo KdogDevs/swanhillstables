@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSignedUrl } from "@/hooks/useSignedUrl";
 
 interface DocumentPreviewDialogProps {
   open: boolean;
@@ -22,10 +23,13 @@ export const DocumentPreviewDialog = ({
   documentType,
   pdfUrl,
 }: DocumentPreviewDialogProps) => {
+  const signedUrl = useSignedUrl(pdfUrl || null);
+
   const formatDocumentType = (type: string) =>
     type.split("_").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
-  const previewUrl = pdfUrl || TEMPLATE_URLS[documentType] || null;
+  // Use signed URL for stored PDFs, fall back to template for preview
+  const previewUrl = signedUrl || TEMPLATE_URLS[documentType] || null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
