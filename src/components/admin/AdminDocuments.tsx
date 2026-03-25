@@ -13,6 +13,13 @@ import { FileText, Plus, Loader2, CheckCircle, Clock, AlertTriangle, Send, Eye, 
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DocumentPreviewDialog } from "./DocumentPreviewDialog";
+import { SignedLink } from "@/components/SignedStorageMedia";
+
+const PdfDownloadButton = ({ storagePath }: { storagePath: string }) => (
+  <SignedLink storagePath={storagePath} className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+    <Download className="h-3.5 w-3.5" /> PDF
+  </SignedLink>
+);
 
 interface ClientDocument {
   id: string;
