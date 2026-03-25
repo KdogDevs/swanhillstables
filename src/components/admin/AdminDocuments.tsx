@@ -69,6 +69,7 @@ export const AdminDocuments = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [selectedClientView, setSelectedClientView] = useState<string | null>(null);
   const [viewSignature, setViewSignature] = useState<string | null>(null);
+  const [previewDoc, setPreviewDoc] = useState<ClientDocument | null>(null);
 
   // Form state
   const [selectedClient, setSelectedClient] = useState("");
