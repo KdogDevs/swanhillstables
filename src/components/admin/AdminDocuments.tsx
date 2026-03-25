@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FileText, Plus, Loader2, CheckCircle, Clock, AlertTriangle, Send, Eye, ArrowLeft, Download, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { DocumentPreviewDialog } from "./DocumentPreviewDialog";
 
 interface ClientDocument {
   id: string;
@@ -68,6 +69,7 @@ export const AdminDocuments = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [selectedClientView, setSelectedClientView] = useState<string | null>(null);
   const [viewSignature, setViewSignature] = useState<string | null>(null);
+  const [previewDoc, setPreviewDoc] = useState<ClientDocument | null>(null);
 
   // Form state
   const [selectedClient, setSelectedClient] = useState("");
@@ -229,17 +231,15 @@ export const AdminDocuments = () => {
           </div>
         </div>
 
-        {/* Signature Preview Dialog */}
-        <Dialog open={!!viewSignature} onOpenChange={() => setViewSignature(null)}>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Signature Preview</DialogTitle></DialogHeader>
-            {viewSignature && (
-              <div className="flex justify-center p-4 bg-muted rounded-lg">
-                <img src={viewSignature} alt="Signature" className="max-w-full max-h-48" />
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+        {/* Document Preview Dialog */}
+        <DocumentPreviewDialog
+          open={!!previewDoc}
+          onOpenChange={() => setPreviewDoc(null)}
+          documentType={previewDoc?.document_type || ""}
+          signerName={selectedClientInfo?.full_name || null}
+          signatureData={previewDoc?.signature_data || null}
+          signedAt={previewDoc?.signed_at || null}
+        />
 
         <Card>
           <CardHeader>
@@ -255,31 +255,35 @@ export const AdminDocuments = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Document</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Signed</TableHead>
-                    <TableHead>Signature</TableHead>
-                    <TableHead>PDF</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {selectedClientDocs.map(doc => (
-                    <TableRow key={doc.id}>
-                      <TableCell>
-                        <span className="font-medium">{formatDocumentType(doc.document_type)}</span>
-                        {doc.notes && <p className="text-xs text-muted-foreground mt-0.5">{doc.notes}</p>}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(doc.status)}</TableCell>
-                      <TableCell className="text-sm">
-                        {doc.signed_at ? format(new Date(doc.signed_at), "MMM d, yyyy") : "—"}
-                      </TableCell>
-                      <TableCell>
-                        {doc.signature_data ? (
-                          <Button size="sm" variant="ghost" onClick={() => setViewSignature(doc.signature_data)}>
-                            <Eye className="h-3.5 w-3.5 mr-1" /> View
-                          </Button>
-                        ) : "—"}
+                     <TableHead>Document</TableHead>
+                     <TableHead>Status</TableHead>
+                     <TableHead>Signed</TableHead>
+                     <TableHead>Preview</TableHead>
+                     <TableHead>PDF</TableHead>
+                     <TableHead>Actions</TableHead>
+                   </TableRow>
+                 </TableHeader>
+                 <TableBody>
+                   {selectedClientDocs.map(doc => (
+                     <TableRow key={doc.id}>
+                       <TableCell>
+                         <span className="font-medium">{formatDocumentType(doc.document_type)}</span>
+                         {doc.notes && <p className="text-xs text-muted-foreground mt-0.5">{doc.notes}</p>}
+                       </TableCell>
+                       <TableCell>{getStatusBadge(doc.status)}</TableCell>
+                       <TableCell className="text-sm">
+                         {doc.signed_at ? format(new Date(doc.signed_at), "MMM d, yyyy") : "—"}
+                       </TableCell>
+                       <TableCell>
+                         {(doc.document_type === "liability_waiver" || doc.document_type === "barn_rules") ? (
+                           <Button size="sm" variant="ghost" onClick={() => setPreviewDoc(doc)}>
+                             <Eye className="h-3.5 w-3.5 mr-1" /> View
+                           </Button>
+                         ) : doc.signature_data ? (
+                           <Button size="sm" variant="ghost" onClick={() => setPreviewDoc(doc)}>
+                             <Eye className="h-3.5 w-3.5 mr-1" /> View
+                           </Button>
+                         ) : "—"}
                       </TableCell>
                       <TableCell>
                         {doc.pdf_url ? (
