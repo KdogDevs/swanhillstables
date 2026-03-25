@@ -135,10 +135,10 @@ export const ContactSection = () => {
                   <div>
                     <p className="text-sm text-muted-foreground">Email</p>
                     <a
-                      href="mailto:contact@swanhillstables.com"
+                      href="mailto:stables@swanhillstables.com"
                       className="text-lg font-medium text-foreground hover:text-primary transition-colors"
                     >
-                      contact@swanhillstables.com
+                      stables@swanhillstables.com
                     </a>
                   </div>
                 </CardContent>
