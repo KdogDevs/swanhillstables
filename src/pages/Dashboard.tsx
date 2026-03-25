@@ -332,6 +332,9 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
+          {/* My Documents */}
+          <MyDocuments />
+
           {/* Horse Care Log - Only for Boarders */}
           {profile?.is_boarder && (
             <BoarderCareLog />
