@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import horsePortrait from "@/assets/horse-portrait.jpg";
+import horsesFence from "@/assets/horses-fence.jpg";
 
 const features = [
   {
