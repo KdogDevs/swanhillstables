@@ -40,7 +40,7 @@ export const HeroSection = () => {
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 hero-overlay" />
+        
       </motion.div>
 
       {/* Content with scroll fade - GPU accelerated */}
