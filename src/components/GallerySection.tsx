@@ -1,28 +1,40 @@
 import { motion } from "framer-motion";
-import stallsImage from "@/assets/stalls.jpg";
-import arenaImage from "@/assets/arena.jpg";
-import heroImage from "@/assets/hero-barn.jpg";
-import horsePortrait from "@/assets/horse-portrait.jpg";
+import barnEntrance from "@/assets/barn-entrance.jpg";
+import creekFencing from "@/assets/creek-fencing.jpg";
+import indoorArena from "@/assets/indoor-arena.jpg";
+import stallsExterior from "@/assets/stalls-exterior.jpg";
+import paddockHorses from "@/assets/paddock-horses.jpg";
+import ridingField from "@/assets/riding-field.jpg";
 
 const galleryImages = [
   {
-    src: heroImage,
-    alt: "Swan Hill Stables exterior at golden hour",
+    src: barnEntrance,
+    alt: "Swan Hill Stables barn entrance at golden hour",
     span: "col-span-2 row-span-2",
   },
   {
-    src: stallsImage,
-    alt: "Clean, well-maintained horse stalls",
+    src: indoorArena,
+    alt: "Spacious indoor riding arena",
     span: "col-span-1 row-span-1",
   },
   {
-    src: arenaImage,
-    alt: "Outdoor riding arena with white fencing",
+    src: stallsExterior,
+    alt: "Covered stalls and barn exterior",
     span: "col-span-1 row-span-1",
   },
   {
-    src: horsePortrait,
-    alt: "Beautiful chestnut horse portrait",
+    src: creekFencing,
+    alt: "Property creek and wooden fencing with treeline",
+    span: "col-span-1 row-span-1",
+  },
+  {
+    src: paddockHorses,
+    alt: "Horses grazing in the paddock at dusk",
+    span: "col-span-1 row-span-1",
+  },
+  {
+    src: ridingField,
+    alt: "Open riding field surrounded by trees",
     span: "col-span-2 row-span-1",
   },
 ];
