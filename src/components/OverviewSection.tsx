@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import horsePortrait from "@/assets/horse-portrait.jpg";
+import horsesFence from "@/assets/horses-fence.jpg";
 
 const features = [
   {
@@ -50,8 +50,8 @@ export const OverviewSection = () => {
           >
             <div className="aspect-[4/5] rounded-lg overflow-hidden card-shadow">
               <img
-                src={horsePortrait}
-                alt="Beautiful horse at Swan Hill Stables"
+                src={horsesFence}
+                alt="Horses in paddock at Swan Hill Stables"
                 className="w-full h-full object-cover"
                 loading="lazy"
                 decoding="async"

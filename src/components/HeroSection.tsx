@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
-import heroBarn from "@/assets/hero-barn.jpg";
+import heroBarn from "@/assets/barn-entrance.jpg";
 import logoFull from "@/assets/logo-full-transparent.png";
 
 // Preload hero image immediately
