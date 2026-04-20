@@ -15,17 +15,17 @@ const teamMembers = [
   },
   {
     name: "Lendy Johnston",
-    role: "Trainer",
+    role: "Farm Hand & Trainer",
     image: lendyPhoto,
     bio: "Lendy brings enthusiasm and skill to every lesson. Her patience and attention to detail help students build confidence and develop their riding abilities.",
-    credentials: ["Trainer"],
+    credentials: ["Farm Hand", "Trainer"],
   },
   {
     name: "Kagen Jensen",
-    role: "Farm Hand & Trainer",
+    role: "Farm Foreman",
     image: kagenPhoto,
-    bio: "Kagen wears many hats at Swan Hill Stables. As both a farm hand and trainer, he helps keep operations running smoothly while sharing his love of horses with students.",
-    credentials: ["Farm Hand", "Trainer"],
+    bio: "Kagen wears many hats at Swan Hill Stables. As farm foreman, he helps keep operations running smoothly while sharing his love of horses with students.",
+    credentials: ["Farm Foreman"],
   },
 ];
 
