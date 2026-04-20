@@ -3,7 +3,6 @@ import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import nicolePhoto from "@/assets/nicole-barry.jpg";
 import lendyPhoto from "@/assets/lendy-johnston.jpg";
-import sarahPhoto from "@/assets/sarah-figeritti.jpg";
 import kagenPhoto from "@/assets/kagen-jensen.jpg";
 
 const teamMembers = [
@@ -12,28 +11,21 @@ const teamMembers = [
     role: "Owner & Trainer",
     image: nicolePhoto,
     bio: "Nicole is a dedicated horsewoman and instructor with 19 years of hands-on experience in the equine industry. As the owner of Swan Hill Stables, she has worked under several trainers as both an instructor and barn manager, gaining extensive knowledge in horse care, rider development, and barn operations. Nicole also has experience starting young horses and finishing them for successful riding careers, bringing skill, patience, and a welcoming approach to riders of all levels.",
-    credentials: ["University of Alabama Graduate", "Trainer", "Owner"],
+    credentials: ["Owner", "Trainer", "19 Years Experience"],
   },
   {
     name: "Lendy Johnston",
     role: "Trainer",
     image: lendyPhoto,
-    bio: "Lendy is a junior at the University of Alabama who brings enthusiasm and skill to every lesson. Her patience and attention to detail help students build confidence and develop their riding abilities.",
-    credentials: ["University of Alabama Junior", "Trainer"],
-  },
-  {
-    name: "Sarah Figeritti",
-    role: "Trainer",
-    image: sarahPhoto,
-    bio: "Sarah is a recent graduate of the University of Alabama with a deep love for equestrian sports. Her experience and dedication make her an invaluable part of our training team.",
-    credentials: ["University of Alabama Graduate", "Trainer"],
+    bio: "Lendy brings enthusiasm and skill to every lesson. Her patience and attention to detail help students build confidence and develop their riding abilities.",
+    credentials: ["Trainer"],
   },
   {
     name: "Kagen Jensen",
     role: "Farm Hand & Trainer",
     image: kagenPhoto,
-    bio: "Kagen is a freshman at the University of Alabama who wears many hats at Swan Hill Stables. As both a farm hand and trainer, he helps keep operations running smoothly while sharing his love of horses with students.",
-    credentials: ["University of Alabama Freshman", "Farm Hand", "Trainer"],
+    bio: "Kagen wears many hats at Swan Hill Stables. As both a farm hand and trainer, he helps keep operations running smoothly while sharing his love of horses with students.",
+    credentials: ["Farm Hand", "Trainer"],
   },
 ];
 
