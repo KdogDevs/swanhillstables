@@ -8,6 +8,7 @@ import stallsExterior from "@/assets/stalls-exterior.jpg";
 import paddockHorses from "@/assets/paddock-horses.jpg";
 import horsesFence from "@/assets/horses-fence.jpg";
 import ridingField from "@/assets/riding-field.jpg";
+import { StallTour3D } from "@/components/StallTour3D";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -201,6 +202,9 @@ const About = () => {
             </div>
           </div>
         </section>
+
+        {/* 3D Stall Tour */}
+        <StallTour3D />
 
         {/* Property Overview */}
         <section className="py-20 section-gradient">
