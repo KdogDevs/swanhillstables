@@ -11,7 +11,7 @@ const teamMembers = [
     name: "Nicole Barry",
     role: "Owner & Trainer",
     image: nicolePhoto,
-    bio: "Nicole is a recent graduate of the University of Alabama with a passion for horses and teaching. As the owner of Swan Hill Stables, she brings fresh energy and dedication to creating a welcoming environment for riders of all skill levels.",
+    bio: "Nicole is a dedicated horsewoman and instructor with 19 years of hands-on experience in the equine industry. As the owner of Swan Hill Stables, she has worked under several trainers as both an instructor and barn manager, gaining extensive knowledge in horse care, rider development, and barn operations. Nicole also has experience starting young horses and finishing them for successful riding careers, bringing skill, patience, and a welcoming approach to riders of all levels.",
     credentials: ["University of Alabama Graduate", "Trainer", "Owner"],
   },
   {
