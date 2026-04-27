@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import nicolePhoto from "@/assets/nicole-barry.jpg";
 import lendyPhoto from "@/assets/lendy-johnston.jpg";
 import kagenPhoto from "@/assets/kagen-jensen.jpg";
+import sarahPhoto from "@/assets/sarah-figeritti.jpg";
 
 const teamMembers = [
   {
@@ -26,6 +27,13 @@ const teamMembers = [
     image: kagenPhoto,
     bio: "Kagen wears many hats at Swan Hill Stables. As farm foreman, he helps keep operations running smoothly while sharing his love of horses with students.",
     credentials: ["Farm Foreman"],
+  },
+  {
+    name: "Sarah Figeritti",
+    role: "Part-Time Instructor",
+    image: sarahPhoto,
+    bio: "Sarah brings warmth and dedication to every lesson she teaches. As a part-time instructor at Swan Hill Stables, she helps riders build confidence and refine their skills in a supportive, encouraging environment.",
+    credentials: ["Part-Time Instructor"],
   },
 ];
 
