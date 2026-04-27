@@ -36,14 +36,14 @@ const tierCards: Array<{
     tier: "outdoor",
     name: "Outdoor / Shed-Row Stall",
     icon: Home,
-    description: "Covered bedded stall with arena and trail access.",
+    description: "Covered 11x12 bedded stall with arena and trail access.",
     featured: true,
   },
   {
     tier: "indoor",
     name: "Indoor Stall",
     icon: Sparkles,
-    description: "Premium indoor stall with full arena access.",
+    description: "Premium 10x10 indoor stall with full arena access.",
   },
 ];
 

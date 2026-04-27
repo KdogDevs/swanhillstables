@@ -84,14 +84,14 @@ export function calculateMonthly(
 
 export const TIER_INCLUDES: Record<Tier, string[]> = {
   indoor: [
-    "Premium bedded indoor stall",
+    "Premium bedded indoor stall (10x10)",
     "Stall cleaning as needed",
     "Turnout/in",
     "Feeding twice daily",
     "Full arena and facility access",
   ],
   outdoor: [
-    "Covered bedded stall",
+    "Covered bedded stall (11x12)",
     "Stall cleaning as needed",
     "Turnout/in",
     "Feeding twice daily",
