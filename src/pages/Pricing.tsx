@@ -15,7 +15,7 @@ const lessonOptions = [
     price: "$50",
     period: "/session",
     description: "One-on-one instruction tailored to your goals.",
-    duration: "30 minutes",
+    duration: "1 hour",
   },
 ];
 
