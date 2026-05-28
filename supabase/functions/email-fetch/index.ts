@@ -172,27 +172,41 @@ Deno.serve(async (req) => {
 
           let textBody = "";
           let htmlBody = "";
+          let attachments: Array<{ filename: string; contentType: string; size: number; dataUrl: string }> = [];
+
           if (msg.source) {
-            const source = msg.source.toString();
-            const boundaryMatch = source.match(/boundary="?([^"\r\n;]+)"?/i);
-            if (boundaryMatch) {
-              const boundary = boundaryMatch[1];
-              const parts = source.split(`--${boundary}`);
-              for (const part of parts) {
-                const decoded = decodePart(part);
-                if (part.toLowerCase().includes("text/html") && !htmlBody) {
-                  htmlBody = decoded;
-                } else if (part.toLowerCase().includes("text/plain") && !textBody) {
-                  textBody = decoded;
+            try {
+              const { simpleParser } = await import("npm:mailparser@3.7.1");
+              const parsed: any = await simpleParser(msg.source);
+              textBody = parsed.text || "";
+              htmlBody = parsed.html || (parsed.textAsHtml || "");
+
+              // Replace cid: references with data URLs for inline images,
+              // and collect non-inline attachments for download.
+              for (const att of (parsed.attachments || [])) {
+                const b64 = att.content?.toString("base64") || "";
+                const dataUrl = `data:${att.contentType};base64,${b64}`;
+                if (att.cid && htmlBody) {
+                  const cidEscaped = att.cid.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                  htmlBody = htmlBody.replace(
+                    new RegExp(`cid:${cidEscaped}`, "gi"),
+                    dataUrl,
+                  );
+                }
+                if (!att.related) {
+                  attachments.push({
+                    filename: att.filename || "attachment",
+                    contentType: att.contentType || "application/octet-stream",
+                    size: att.size || 0,
+                    dataUrl,
+                  });
                 }
               }
-            } else {
+            } catch (e) {
+              console.error("mailparser failed, falling back:", e);
+              const source = msg.source.toString();
               const bodyStart = source.indexOf("\r\n\r\n");
-              if (bodyStart !== -1) {
-                const content = source.substring(bodyStart + 4);
-                if (source.toLowerCase().includes("text/html")) htmlBody = content;
-                else textBody = content;
-              }
+              if (bodyStart !== -1) textBody = source.substring(bodyStart + 4);
             }
           }
 
@@ -212,6 +226,7 @@ Deno.serve(async (req) => {
             },
             body: textBody,
             htmlBody,
+            attachments,
           };
         } finally {
           mailbox.release();
