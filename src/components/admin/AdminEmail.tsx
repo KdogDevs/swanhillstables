@@ -478,7 +478,7 @@ export const AdminEmail = ({ isSuperAdmin }: AdminEmailProps) => {
               <Button variant="ghost" size="sm" onClick={() => deleteEmail(selectedEmail.uid)} className="text-destructive hover:text-destructive"><Trash2 className="h-4 w-4 mr-1" /> Delete</Button>
             </div>
             <ScrollArea className="flex-1">
-              <div className="p-6 max-w-4xl">
+              <div className="p-6 max-w-5xl mx-auto w-full">
                 <h2 className="text-xl font-semibold text-foreground mb-4">{selectedEmail.envelope.subject}</h2>
                 <div className="space-y-1 mb-6 text-sm">
                   <div className="flex gap-2"><span className="text-muted-foreground w-12">From:</span><span className="text-foreground">{formatFullAddr(selectedEmail.envelope.from)}</span></div>
