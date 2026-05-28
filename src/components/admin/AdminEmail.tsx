@@ -15,8 +15,9 @@ import { cn } from "@/lib/utils";
 import {
   Loader2, Inbox, Send, Trash2, RefreshCw, ChevronLeft, ChevronRight,
   ArrowLeft, PenSquare, FolderOpen, Mail, MailOpen, Star, Reply,
-  Search, X, Forward, Users, Clock, CalendarIcon,
+  Search, X, Forward, Users, Clock, CalendarIcon, Paperclip, Download,
 } from "lucide-react";
+import { EmailHtmlViewer } from "./EmailHtmlViewer";
 
 interface EmailAddress { name: string; address: string; }
 interface EmailEnvelope {
@@ -25,7 +26,11 @@ interface EmailEnvelope {
   messageId?: string | null; inReplyTo?: string | null;
 }
 interface EmailSummary { uid: number; seq: number; flags: string[]; envelope: EmailEnvelope; }
-interface EmailFull { uid: number; flags: string[]; envelope: EmailEnvelope; body: string; htmlBody: string; }
+interface EmailAttachment { filename: string; contentType: string; size: number; dataUrl: string; }
+interface EmailFull {
+  uid: number; flags: string[]; envelope: EmailEnvelope;
+  body: string; htmlBody: string; attachments?: EmailAttachment[];
+}
 interface Folder { name: string; path: string; specialUse: string | null; delimiter: string; flags: string[]; }
 interface EmailListResult { emails: EmailSummary[]; total: number; page: number; pageSize: number; totalPages: number; }
 interface EmailAccount { id: string; email_address: string; display_name: string; }
@@ -481,9 +486,30 @@ export const AdminEmail = ({ isSuperAdmin }: AdminEmailProps) => {
                   {selectedEmail.envelope.cc.length > 0 && <div className="flex gap-2"><span className="text-muted-foreground w-12">CC:</span><span className="text-foreground">{formatFullAddr(selectedEmail.envelope.cc)}</span></div>}
                   <div className="flex gap-2"><span className="text-muted-foreground w-12">Date:</span><span className="text-foreground">{formatFullDate(selectedEmail.envelope.date)}</span></div>
                 </div>
-                <Separator className="mb-6" />
+                <Separator className="mb-4" />
+                {selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {selectedEmail.attachments.map((att, i) => (
+                      <a
+                        key={i}
+                        href={att.dataUrl}
+                        download={att.filename}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-muted/40 hover:bg-muted text-xs text-foreground transition-colors"
+                      >
+                        <Paperclip className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="truncate max-w-[200px]">{att.filename}</span>
+                        <span className="text-muted-foreground">
+                          {att.size > 1024 * 1024
+                            ? `${(att.size / 1024 / 1024).toFixed(1)} MB`
+                            : `${Math.max(1, Math.round(att.size / 1024))} KB`}
+                        </span>
+                        <Download className="h-3.5 w-3.5 text-muted-foreground" />
+                      </a>
+                    ))}
+                  </div>
+                )}
                 {selectedEmail.htmlBody ? (
-                  <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: selectedEmail.htmlBody }} />
+                  <EmailHtmlViewer html={selectedEmail.htmlBody} />
                 ) : (
                   <pre className="whitespace-pre-wrap text-sm text-foreground font-sans leading-relaxed">{selectedEmail.body || "(No content)"}</pre>
                 )}
