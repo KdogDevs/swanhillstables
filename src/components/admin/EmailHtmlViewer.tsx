@@ -102,7 +102,7 @@ ${safe}
     <iframe
       ref={iframeRef}
       title="Email content"
-      sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+      sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
       srcDoc={srcDoc}
       style={{ width: "100%", height, border: 0, display: "block", background: "#fff" }}
     />
