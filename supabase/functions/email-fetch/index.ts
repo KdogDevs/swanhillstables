@@ -313,15 +313,3 @@ Deno.serve(async (req) => {
     });
   }
 });
-
-function decodePart(part: string): string {
-  const bodyStart = part.indexOf("\r\n\r\n");
-  if (bodyStart === -1) return "";
-  let content = part.substring(bodyStart + 4).replace(/--$/, "").trim();
-  if (part.toLowerCase().includes("quoted-printable")) {
-    content = content.replace(/=\r?\n/g, "").replace(/=([0-9A-Fa-f]{2})/g, (_: string, hex: string) => String.fromCharCode(parseInt(hex, 16)));
-  } else if (part.toLowerCase().includes("base64")) {
-    try { content = atob(content.replace(/\s/g, "")); } catch {}
-  }
-  return content;
-}
