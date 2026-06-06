@@ -11,8 +11,9 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Loader2, Trash2, Upload, Receipt as ReceiptIcon, Image as ImageIcon, TrendingUp, DollarSign } from "lucide-react";
+import { Plus, Loader2, Trash2, Upload, Receipt as ReceiptIcon, Image as ImageIcon, TrendingUp, DollarSign, ScanLine, FileText } from "lucide-react";
 import { format, parseISO, subMonths } from "date-fns";
+import { PDFDocument } from "pdf-lib";
 import {
   ResponsiveContainer,
   LineChart,
@@ -64,6 +65,7 @@ export const AdminReceipts = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [saving, setSaving] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [scanning, setScanning] = useState(false);
 
   // form
   const [vendor, setVendor] = useState("");
@@ -86,6 +88,56 @@ export const AdminReceipts = () => {
     setUnit("bags");
     setNotes("");
     setFile(null);
+  };
+
+  const fileToBase64 = (f: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => {
+        const s = r.result as string;
+        resolve(s.split(",")[1] || "");
+      };
+      r.onerror = reject;
+      r.readAsDataURL(f);
+    });
+
+  const imageToPdfBytes = async (f: File): Promise<Uint8Array> => {
+    const bytes = new Uint8Array(await f.arrayBuffer());
+    const pdf = await PDFDocument.create();
+    const isPng = f.type.includes("png");
+    const img = isPng ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes);
+    const maxW = 612; // letter width pt
+    const scale = Math.min(1, maxW / img.width);
+    const w = img.width * scale;
+    const h = img.height * scale;
+    const page = pdf.addPage([w, h]);
+    page.drawImage(img, { x: 0, y: 0, width: w, height: h });
+    return await pdf.save();
+  };
+
+  const handleScan = async (f: File) => {
+    setFile(f);
+    setScanning(true);
+    try {
+      const base64 = await fileToBase64(f);
+      const { data, error } = await supabase.functions.invoke("parse-receipt", {
+        body: { imageBase64: base64, mimeType: f.type },
+      });
+      if (error) throw error;
+      const r = (data as any)?.result || {};
+      if (r.vendor) setVendor(r.vendor);
+      if (r.amount != null) setAmount(String(r.amount));
+      if (r.purchase_date) setPurchaseDate(r.purchase_date);
+      if (r.category && CATEGORIES.includes(r.category)) setCategory(r.category);
+      if (r.quantity != null) setQuantity(String(r.quantity));
+      if (r.unit && UNITS.includes(r.unit)) setUnit(r.unit);
+      if (r.notes) setNotes(r.notes);
+      toast({ title: "Receipt scanned", description: "Review the extracted fields before saving." });
+    } catch (e: any) {
+      toast({ title: "Scan failed", description: e.message, variant: "destructive" });
+    } finally {
+      setScanning(false);
+    }
   };
 
   const fetchAll = async () => {
@@ -126,11 +178,21 @@ export const AdminReceipts = () => {
     try {
       let imagePath: string | null = null;
       if (file) {
-        const ext = file.name.split(".").pop();
+        // Convert any uploaded image to a PDF for archival
+        const isImage = file.type.startsWith("image/");
+        let uploadBody: Blob | File = file;
+        let ext = file.name.split(".").pop() || "bin";
+        let contentType = file.type || "application/octet-stream";
+        if (isImage) {
+          const pdfBytes = await imageToPdfBytes(file);
+          uploadBody = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
+          ext = "pdf";
+          contentType = "application/pdf";
+        }
         const path = `${user!.id}/${Date.now()}.${ext}`;
         const { error: upErr } = await supabase.storage
           .from("supply-receipts")
-          .upload(path, file, { cacheControl: "3600", upsert: false });
+          .upload(path, uploadBody, { cacheControl: "3600", upsert: false, contentType });
         if (upErr) throw upErr;
         imagePath = path;
       }
@@ -397,8 +459,48 @@ export const AdminReceipts = () => {
                 </div>
                 <div>
                   <Label>Receipt Photo</Label>
-                  <Input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-                  {file && <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1"><Upload className="h-3 w-3" /> {file.name}</p>}
+                  <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className="cursor-pointer">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleScan(f);
+                          }}
+                        />
+                        <div className="flex items-center justify-center gap-2 border border-dashed border-border rounded-md py-2 text-sm hover:bg-muted">
+                          {scanning ? <Loader2 className="h-4 w-4 animate-spin" /> : <ScanLine className="h-4 w-4" />}
+                          {scanning ? "Scanning…" : "Scan with Camera"}
+                        </div>
+                      </label>
+                      <label className="cursor-pointer">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleScan(f);
+                          }}
+                        />
+                        <div className="flex items-center justify-center gap-2 border border-dashed border-border rounded-md py-2 text-sm hover:bg-muted">
+                          <Upload className="h-4 w-4" /> Upload Image
+                        </div>
+                      </label>
+                    </div>
+                    {file && (
+                      <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <FileText className="h-3 w-3" /> {file.name} — will be archived as PDF
+                      </p>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      Tip: scanning auto-fills vendor, amount, date, and category. Review before saving.
+                    </p>
+                  </div>
                 </div>
               </div>
               <DialogFooter>
@@ -435,12 +537,19 @@ export const AdminReceipts = () => {
                   {receipts.map((r) => {
                     const supplyName = supplies.find((s) => s.id === r.supply_id)?.supply_name;
                     const url = signedUrls[r.id];
+                    const isPdf = r.receipt_image_url?.toLowerCase().endsWith(".pdf");
                     return (
                       <TableRow key={r.id}>
                         <TableCell>
                           {url ? (
                             <button onClick={() => setPreviewUrl(url)} className="block">
-                              <img src={url} alt="receipt" className="h-12 w-12 object-cover rounded border border-border" />
+                              {isPdf ? (
+                                <div className="h-12 w-12 rounded border border-border bg-muted flex items-center justify-center hover:bg-muted/70">
+                                  <FileText className="h-5 w-5 text-primary" />
+                                </div>
+                              ) : (
+                                <img src={url} alt="receipt" className="h-12 w-12 object-cover rounded border border-border" />
+                              )}
                             </button>
                           ) : (
                             <div className="h-12 w-12 rounded border border-border bg-muted flex items-center justify-center">
@@ -473,7 +582,11 @@ export const AdminReceipts = () => {
       <Dialog open={!!previewUrl} onOpenChange={(o) => !o && setPreviewUrl(null)}>
         <DialogContent className="max-w-3xl">
           <DialogHeader><DialogTitle>Receipt</DialogTitle></DialogHeader>
-          {previewUrl && <img src={previewUrl} alt="Receipt" className="w-full h-auto rounded" />}
+          {previewUrl && (previewUrl.includes(".pdf") ? (
+            <iframe src={previewUrl} title="Receipt PDF" className="w-full h-[75vh] rounded border border-border" />
+          ) : (
+            <img src={previewUrl} alt="Receipt" className="w-full h-auto rounded" />
+          ))}
         </DialogContent>
       </Dialog>
     </div>
