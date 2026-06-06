@@ -1,7 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
-import { Check, Home, Sparkles, Trees, FileText } from "lucide-react";
+import { Check, Home, Sparkles, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -26,12 +26,6 @@ const tierCards: Array<{
   description: string;
   featured?: boolean;
 }> = [
-  {
-    tier: "pasture",
-    name: "Pasture Board",
-    icon: Trees,
-    description: "Herd turnout with full facility access.",
-  },
   {
     tier: "outdoor",
     name: "Outdoor / Shed-Row Stall",
@@ -103,7 +97,7 @@ const Pricing = () => {
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {tierCards.map((card, index) => {
                 const Icon = card.icon;
                 const startPrice = PRICE_MATRIX[card.tier].boarder;
@@ -202,7 +196,6 @@ const Pricing = () => {
                       <th className="text-left p-4 font-medium text-muted-foreground">Feed Plan</th>
                       <th className="text-right p-4 font-medium text-foreground">Indoor Stall</th>
                       <th className="text-right p-4 font-medium text-foreground">Outdoor / Shed-Row</th>
-                      <th className="text-right p-4 font-medium text-foreground">Pasture</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -211,7 +204,6 @@ const Pricing = () => {
                         <td className="p-4 text-foreground">{FEED_LABELS[fp]}</td>
                         <td className="p-4 text-right font-semibold">${PRICE_MATRIX.indoor[fp]}</td>
                         <td className="p-4 text-right font-semibold">${PRICE_MATRIX.outdoor[fp]}</td>
-                        <td className="p-4 text-right font-semibold">${PRICE_MATRIX.pasture[fp]}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -226,7 +218,6 @@ const Pricing = () => {
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li>• <strong className="text-foreground">Hay</strong> — $100/month</li>
                     <li>• <strong className="text-foreground">Pelletized bedding</strong> — $60/month</li>
-                    <li>• <strong className="text-foreground">Twice-daily feeding</strong> (pasture only) — $50–65/month</li>
                     {ADDON_NOTES.map((note) => (
                       <li key={note}>• {note}</li>
                     ))}
