@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Phone, Mail, ExternalLink } from "lucide-react";
+import { Phone, Mail, ExternalLink, MessageSquare } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import zaxbysLogo from "@/assets/zaxbys-logo.jpeg";
