@@ -332,9 +332,14 @@ export const AdminSupplyTracker = () => {
           <h2 className="text-2xl font-serif font-semibold">Supply Tracker</h2>
           <p className="text-muted-foreground">Monitor feed, hay, pellets, and other inventory</p>
         </div>
-        <Button onClick={() => { resetForm(); setEditingSupply(null); setShowAddDialog(true); }}>
-          <Plus className="h-4 w-4 mr-2" /> Add Supply
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={openRecipients}>
+            <Mail className="h-4 w-4 mr-2" /> Alert Recipients
+          </Button>
+          <Button onClick={() => { resetForm(); setEditingSupply(null); setShowAddDialog(true); }}>
+            <Plus className="h-4 w-4 mr-2" /> Add Supply
+          </Button>
+        </div>
       </div>
 
       {/* Low stock alerts */}
@@ -370,6 +375,7 @@ export const AdminSupplyTracker = () => {
             <div className="overflow-x-auto"><Table className="min-w-[580px]">
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[60px]">Photo</TableHead>
                   <TableHead>Supply</TableHead>
                   <TableHead>Quantity</TableHead>
                   <TableHead>Status</TableHead>
@@ -381,6 +387,17 @@ export const AdminSupplyTracker = () => {
               <TableBody>
                 {items.map(s => (
                   <TableRow key={s.id}>
+                    <TableCell>
+                      {photoUrls[s.id] ? (
+                        <a href={photoUrls[s.id]} target="_blank" rel="noreferrer">
+                          <img src={photoUrls[s.id]} alt={s.supply_name} className="h-12 w-12 object-cover rounded border border-border" />
+                        </a>
+                      ) : (
+                        <div className="h-12 w-12 rounded border border-dashed border-border flex items-center justify-center text-muted-foreground">
+                          <ImageIcon className="h-4 w-4" />
+                        </div>
+                      )}
+                    </TableCell>
                     <TableCell className="font-medium">
                       {s.supply_name}
                       {s.notes && <p className="text-xs text-muted-foreground mt-0.5">{s.notes}</p>}
@@ -475,6 +492,43 @@ export const AdminSupplyTracker = () => {
             <div className="space-y-2">
               <Label>Notes</Label>
               <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Brand, supplier, etc." />
+            </div>
+            <div className="space-y-2">
+              <Label>Photo</Label>
+              {imagePreview ? (
+                <div className="flex items-center gap-3">
+                  <img src={imagePreview} alt="Supply" className="h-20 w-20 object-cover rounded border border-border" />
+                  <Button type="button" variant="outline" size="sm" onClick={clearImage}>
+                    <X className="h-4 w-4 mr-1" /> Remove
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <input
+                    id="supply-photo-input"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleImageUpload(f);
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={uploadingImage}
+                    onClick={() => document.getElementById("supply-photo-input")?.click()}
+                  >
+                    {uploadingImage ? (
+                      <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Uploading...</>
+                    ) : (
+                      <><Upload className="h-4 w-4 mr-2" /> Upload Photo</>
+                    )}
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-1">Optional. Helps identify the product at a glance.</p>
+                </div>
+              )}
             </div>
           </div>
           <DialogFooter>
