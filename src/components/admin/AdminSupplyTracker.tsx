@@ -502,7 +502,7 @@ export const AdminSupplyTracker = () => {
 
       {/* Add/Edit Dialog */}
       <Dialog open={showAddDialog} onOpenChange={(o) => { setShowAddDialog(o); if (!o) setEditingSupply(null); }}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingSupply ? "Edit Supply" : "Add Supply"}</DialogTitle>
             <DialogDescription>Track a supply item in your inventory</DialogDescription>
@@ -593,7 +593,7 @@ export const AdminSupplyTracker = () => {
 
       {/* Log Change Dialog */}
       <Dialog open={showLogDialog} onOpenChange={setShowLogDialog}>
-        <DialogContent className="sm:max-w-[400px]">
+        <DialogContent className="w-[95vw] sm:max-w-[400px]">
           <DialogHeader>
             <DialogTitle>{logType === "add" ? "Restock Supply" : "Log Usage"}</DialogTitle>
             <DialogDescription>
@@ -621,7 +621,7 @@ export const AdminSupplyTracker = () => {
 
       {/* History Dialog */}
       <Dialog open={showHistoryDialog} onOpenChange={setShowHistoryDialog}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Usage History</DialogTitle>
             <DialogDescription>
@@ -665,7 +665,7 @@ export const AdminSupplyTracker = () => {
 
       {/* Alert Recipients Dialog */}
       <Dialog open={showRecipientsDialog} onOpenChange={setShowRecipientsDialog}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Low-Stock Alert Recipients</DialogTitle>
             <DialogDescription>
