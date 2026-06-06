@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
+import { SEO } from "@/components/SEO";
 import nicolePhoto from "@/assets/nicole-barry.jpg.asset.json";
 import lendyPhoto from "@/assets/lendy-johnston.jpg";
 import kagenPhoto from "@/assets/kagen-jensen.jpg";
@@ -40,6 +41,11 @@ const teamMembers = [
 const Team = () => {
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Meet Our Team | Swan Hill Stables"
+        description="Meet the trainers, instructors, and staff behind Swan Hill Stables — dedicated horsewomen and horsemen committed to exceptional care and instruction."
+        path="/team"
+      />
       <Navigation />
       
       <main className="pt-24">

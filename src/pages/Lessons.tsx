@@ -2,10 +2,16 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { LessonSignupWizard } from "@/components/lesson-signup/LessonSignupWizard";
 import { motion } from "framer-motion";
+import { SEO } from "@/components/SEO";
 
 const Lessons = () => {
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Riding Lessons | Swan Hill Stables"
+        description="Book private riding lessons at Swan Hill Stables. Personalized instruction for all ages and skill levels in a welcoming, professional environment."
+        path="/lessons"
+      />
       <Navigation />
       
       <main className="pt-24">

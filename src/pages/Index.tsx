@@ -2,6 +2,7 @@ import { Navigation } from "@/components/Navigation";
 import { HeroSection } from "@/components/HeroSection";
 import { lazy, Suspense } from "react";
 import { Footer } from "@/components/Footer";
+import { SEO } from "@/components/SEO";
 
 // Lazy load below-fold sections
 const OverviewSection = lazy(() => import("@/components/OverviewSection").then(m => ({ default: m.OverviewSection })));
@@ -13,6 +14,11 @@ const CTASection = lazy(() => import("@/components/CTASection").then(m => ({ def
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Swan Hill Stables | Premium Horse Boarding & Riding Lessons"
+        description="Swan Hill Stables offers premium horse boarding, expert riding lessons, and a welcoming equestrian community. Experience exceptional care for your horse."
+        path="/"
+      />
       <Navigation />
       <main>
         <HeroSection />

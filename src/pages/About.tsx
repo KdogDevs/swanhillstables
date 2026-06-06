@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { SEO } from "@/components/SEO";
 import { motion } from "framer-motion";
 import barnEntrance from "@/assets/barn-entrance.jpg";
 import creekFencing from "@/assets/creek-fencing.jpg";
@@ -18,6 +19,11 @@ const fadeUp = {
 const About = () => {
   return (
     <div className="min-h-screen">
+      <SEO
+        title="About Swan Hill Stables | Our Story & Facility"
+        description="Learn about Swan Hill Stables — our mission, our facility, and the welcoming equestrian community we've built for horses and riders."
+        path="/about"
+      />
       <Navigation />
       <main>
         {/* Hero Banner */}

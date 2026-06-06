@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { SEO } from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Check, Home, Sparkles, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,11 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Horse Boarding Pricing | Swan Hill Stables"
+        description="Transparent horse boarding pricing at Swan Hill Stables. Indoor and outdoor stall options with arena access, expert care, and flexible add-ons."
+        path="/pricing"
+      />
       <Navigation />
 
       <main className="pt-24">
