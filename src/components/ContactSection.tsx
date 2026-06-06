@@ -244,53 +244,87 @@ export const ContactSection = () => {
             whileInView="visible"
             viewport={{ once: true, margin: "-60px" }}
           >
-            {socialProfiles.map((profile) => (
-              <motion.div key={profile.platform} variants={cardVariants}>
-                <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
-                  <div className="relative h-24">
-                    <div className={`absolute inset-0 bg-gradient-to-r ${profile.gradient}`} />
-                    <div className="absolute top-3 right-3 text-white/90">
-                      <profile.icon />
-                    </div>
-                  </div>
+            {socialProfiles.map((profile) => {
+              const isInstagram = profile.platform === "Instagram";
+              const displayName = isInstagram ? igData.fullName : profile.name;
+              const displayBio = isInstagram ? igData.biography : profile.description;
+              const displayFollowers = isInstagram
+                ? igData.loading
+                  ? "…"
+                  : igData.followers
+                : profile.followers;
+              const displayPic =
+                isInstagram && igData.profilePic ? igData.profilePic : profile.profileImage;
+              const isVerified = isInstagram ? igData.isVerified : true;
 
-                  <CardContent className="pt-0 relative">
-                    <div className="absolute -top-10 left-4">
-                      <div className="w-20 h-20 rounded-full border-4 border-card overflow-hidden shadow-lg">
-                        <img
-                          src={profile.profileImage}
-                          alt={profile.name}
-                          className="w-full h-full object-cover"
-                        />
+              return (
+                <motion.div key={profile.platform} variants={cardVariants}>
+                  <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+                    <div className="relative h-24 overflow-hidden">
+                      {isInstagram && igData.profilePic ? (
+                        <>
+                          <img
+                            src={igData.profilePic}
+                            alt=""
+                            aria-hidden
+                            className="absolute inset-0 w-full h-full object-cover scale-125 blur-xl"
+                          />
+                          <div className={`absolute inset-0 bg-gradient-to-r ${profile.gradient} opacity-60 mix-blend-overlay`} />
+                        </>
+                      ) : (
+                        <div className={`absolute inset-0 bg-gradient-to-r ${profile.gradient}`} />
+                      )}
+                      <div className="absolute top-3 right-3 text-white drop-shadow">
+                        <profile.icon />
                       </div>
+                      {isInstagram && !igData.loading && (
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-black/40 backdrop-blur px-2 py-0.5 text-[10px] font-medium text-white">
+                          <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+                          Live
+                        </div>
+                      )}
                     </div>
 
-                    <div className="pt-12 pb-4">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-bold text-foreground">{profile.name}</h3>
-                        <svg viewBox="0 0 24 24" className="h-4 w-4 text-blue-500 fill-current">
-                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
-                        </svg>
+                    <CardContent className="pt-0 relative">
+                      <div className="absolute -top-10 left-4">
+                        <div className="w-20 h-20 rounded-full border-4 border-card overflow-hidden shadow-lg bg-muted">
+                          <img
+                            src={displayPic}
+                            alt={displayName}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-2">{profile.handle}</p>
-                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                        {profile.description}
-                      </p>
-                      <p className="text-sm font-medium text-foreground mb-4">
-                        {profile.followers} followers
-                      </p>
 
-                      <a href={profile.url} target="_blank" rel="noopener noreferrer" className="block">
-                        <Button className={`w-full ${profile.buttonColor} text-white gap-2`}>
-                          Follow
-                          <ExternalLink className="h-4 w-4" />
-                        </Button>
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                      <div className="pt-12 pb-4">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-bold text-foreground">{displayName}</h3>
+                          {isVerified && (
+                            <svg viewBox="0 0 24 24" className="h-4 w-4 text-blue-500 fill-current">
+                              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                            </svg>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">{profile.handle}</p>
+                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                          {displayBio}
+                        </p>
+                        <p className="text-sm font-medium text-foreground mb-4">
+                          {displayFollowers} followers
+                        </p>
+
+                        <a href={profile.url} target="_blank" rel="noopener noreferrer" className="block">
+                          <Button className={`w-full ${profile.buttonColor} text-white gap-2`}>
+                            Follow
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </a>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </div>
