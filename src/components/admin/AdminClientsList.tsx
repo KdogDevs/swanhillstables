@@ -270,7 +270,7 @@ export const AdminClientsList = () => {
 
       {/* Client Detail Dialog */}
       <Dialog open={showClientDialog} onOpenChange={setShowClientDialog}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Client Details</DialogTitle>
             <DialogDescription>
