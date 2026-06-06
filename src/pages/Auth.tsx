@@ -171,8 +171,11 @@ const Auth = () => {
         <div className="bg-card rounded-lg shadow-lg p-5 sm:p-8 border border-border">
           <div className="text-center mb-8">
             <img src={logo} alt="Swan Hill Stables" className="h-20 w-auto mx-auto mb-4 rounded-full border-2 border-border shadow-sm" />
-            <p className="text-muted-foreground">
-              {isSignUp ? "Create your account" : "Sign in to access your member portal"}
+            <h1 className="text-xl font-serif font-semibold text-foreground mb-1">
+              {isSignUp ? "Create your Swan Hill Stables account" : "Sign in to Swan Hill Stables"}
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              {isSignUp ? "Join our member portal" : "Access your member portal"}
             </p>
           </div>
 

@@ -1,0 +1,13 @@
+# Swan Hill Stables
+
+> Premium horse boarding, riding lessons, and a welcoming equestrian community.
+
+Swan Hill Stables provides full-service indoor and outdoor horse boarding, professional English and Western riding lessons for all ages and skill levels, and a friendly community of riders and horse owners. Contact: stables@swanhillstables.com.
+
+## Pages
+
+- [Home](/): Overview of the stables, services, and facility.
+- [About](/about): Our story, mission, facility details, and what makes Swan Hill Stables special.
+- [Pricing](/pricing): Boarding tiers (indoor and outdoor) and add-on services with monthly rates.
+- [Lessons](/lessons): Riding lesson programs, pricing, and how to book.
+- [Team](/team): Meet our trainers and staff.

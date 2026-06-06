@@ -54,6 +54,9 @@ export const HeroSection = () => {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           className="flex justify-center mb-8"
         >
+          <h1 className="sr-only">
+            Swan Hill Stables — Premium Horse Boarding &amp; Riding Lessons
+          </h1>
           <img
             src={logoFull}
             alt="Swan Hill Stables"
