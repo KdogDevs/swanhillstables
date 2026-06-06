@@ -48,6 +48,9 @@ async function getAuthAndRole(req: Request) {
 
 async function getAccountCredentials(accountId: string | null, userId: string, isSuperAdmin: boolean) {
   if (!accountId) {
+    if (!isSuperAdmin) {
+      throw new Error("Forbidden: No email account selected");
+    }
     return {
       host: DEFAULT_IMAP_HOST,
       port: DEFAULT_IMAP_PORT,
