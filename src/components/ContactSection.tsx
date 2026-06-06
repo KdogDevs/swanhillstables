@@ -3,6 +3,8 @@ import { Phone, Mail, ExternalLink, MessageSquare } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import zaxbysLogo from "@/assets/zaxbys-logo.jpeg";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 // ... keep existing code (icon components + socialProfiles array unchanged)
 const InstagramIcon = () => (
