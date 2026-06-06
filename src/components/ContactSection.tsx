@@ -113,14 +113,23 @@ export const ContactSection = () => {
                   <div className="p-3 rounded-full bg-primary/10">
                     <Phone className="h-6 w-6 text-primary" />
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-sm text-muted-foreground">Phone</p>
                     <a
-                      href="tel:------"
+                      href="tel:+16175137262"
                       className="text-lg font-medium text-foreground hover:text-primary transition-colors"
                     >
-                      ------
+                      +1 (617) 513-7262
                     </a>
+                    <div className="flex items-center gap-3 mt-1">
+                      <a
+                        href="sms:+16175137262"
+                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                      >
+                        <MessageSquare className="h-3 w-3" />
+                        Send a message
+                      </a>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
