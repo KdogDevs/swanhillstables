@@ -67,7 +67,11 @@ async function fetchInstagramProfile(username: string) {
   const ogDesc = html.match(/<meta(?: name| property)="(?:og:)?description" content="([^"]+)"/)?.[1] ?? '';
   const ogTitle = html.match(/<meta property="og:title" content="([^"]+)"/)?.[1] ?? '';
 
-  console.log('IG fetch', { username, htmlLen: html.length, hasOg: !!ogImage, ogDesc: ogDesc.slice(0, 200), ogTitle });
+  // Debug: peek at meta tags & key tokens
+  const metas = html.match(/<meta[^>]*>/gi)?.slice(0, 12) ?? [];
+  const idxFollowers = html.toLowerCase().indexOf('followers');
+  const followersSnippet = idxFollowers >= 0 ? html.slice(Math.max(0, idxFollowers - 100), idxFollowers + 100) : '';
+  console.log('IG fetch', { username, htmlLen: html.length, metas, followersSnippet });
 
   const desc = decodeEntities(ogDesc);
   const title = decodeEntities(ogTitle);
