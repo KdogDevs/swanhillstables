@@ -88,6 +88,10 @@ Deno.serve(async (req) => {
     let fromName = "Swan Hill Stables";
     let fromEmail = DEFAULT_USER;
 
+    if (!accountId && !isSuperAdmin) {
+      throw new Error("Forbidden: No email account selected");
+    }
+
     if (accountId) {
       const serviceClient = createClient(
         Deno.env.get("SUPABASE_URL")!,
