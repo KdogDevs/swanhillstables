@@ -537,12 +537,19 @@ export const AdminReceipts = () => {
                   {receipts.map((r) => {
                     const supplyName = supplies.find((s) => s.id === r.supply_id)?.supply_name;
                     const url = signedUrls[r.id];
+                    const isPdf = r.receipt_image_url?.toLowerCase().endsWith(".pdf");
                     return (
                       <TableRow key={r.id}>
                         <TableCell>
                           {url ? (
                             <button onClick={() => setPreviewUrl(url)} className="block">
-                              <img src={url} alt="receipt" className="h-12 w-12 object-cover rounded border border-border" />
+                              {isPdf ? (
+                                <div className="h-12 w-12 rounded border border-border bg-muted flex items-center justify-center hover:bg-muted/70">
+                                  <FileText className="h-5 w-5 text-primary" />
+                                </div>
+                              ) : (
+                                <img src={url} alt="receipt" className="h-12 w-12 object-cover rounded border border-border" />
+                              )}
                             </button>
                           ) : (
                             <div className="h-12 w-12 rounded border border-border bg-muted flex items-center justify-center">
@@ -575,7 +582,11 @@ export const AdminReceipts = () => {
       <Dialog open={!!previewUrl} onOpenChange={(o) => !o && setPreviewUrl(null)}>
         <DialogContent className="max-w-3xl">
           <DialogHeader><DialogTitle>Receipt</DialogTitle></DialogHeader>
-          {previewUrl && <img src={previewUrl} alt="Receipt" className="w-full h-auto rounded" />}
+          {previewUrl && (previewUrl.includes(".pdf") ? (
+            <iframe src={previewUrl} title="Receipt PDF" className="w-full h-[75vh] rounded border border-border" />
+          ) : (
+            <img src={previewUrl} alt="Receipt" className="w-full h-auto rounded" />
+          ))}
         </DialogContent>
       </Dialog>
     </div>
