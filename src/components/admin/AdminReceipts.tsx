@@ -398,7 +398,7 @@ export const AdminReceipts = () => {
             <DialogTrigger asChild>
               <Button><Plus className="h-4 w-4 mr-2" /> Add Receipt</Button>
             </DialogTrigger>
-            <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>New Receipt</DialogTitle>
               </DialogHeader>
@@ -580,7 +580,7 @@ export const AdminReceipts = () => {
 
       {/* Image preview */}
       <Dialog open={!!previewUrl} onOpenChange={(o) => !o && setPreviewUrl(null)}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="w-[95vw] max-w-3xl">
           <DialogHeader><DialogTitle>Receipt</DialogTitle></DialogHeader>
           {previewUrl && (previewUrl.includes(".pdf") ? (
             <iframe src={previewUrl} title="Receipt PDF" className="w-full h-[75vh] rounded border border-border" />

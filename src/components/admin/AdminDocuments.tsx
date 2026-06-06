@@ -375,7 +375,7 @@ export const AdminDocuments = () => {
               <DialogTrigger asChild>
                 <Button><Plus className="h-4 w-4 mr-2" /> Add Document</Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Create Document Record</DialogTitle>
                   <DialogDescription>Add a new document to a client's file</DialogDescription>

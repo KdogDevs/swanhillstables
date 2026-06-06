@@ -303,7 +303,7 @@ export const AdminSuperSettings = () => {
 
         {/* Add account dialog */}
         <Dialog open={showAddAccount} onOpenChange={setShowAddAccount}>
-          <DialogContent>
+          <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>Add Email Account</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <Input value={accEmail} onChange={e => setAccEmail(e.target.value)} placeholder="Email address *" />
@@ -323,7 +323,7 @@ export const AdminSuperSettings = () => {
 
         {/* Grant access dialog */}
         <Dialog open={showGrantAccess} onOpenChange={setShowGrantAccess}>
-          <DialogContent>
+          <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>Grant Email Access</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <Select value={grantUserId} onValueChange={setGrantUserId}>
@@ -364,7 +364,7 @@ export const AdminSuperSettings = () => {
         </Card>
 
         <Dialog open={showSignature} onOpenChange={setShowSignature}>
-          <DialogContent>
+          <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>Set User Signature</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <Select value={sigUserId} onValueChange={setSigUserId}>
