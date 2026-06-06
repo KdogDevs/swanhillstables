@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Phone, Mail, ExternalLink } from "lucide-react";
+import { Phone, Mail, ExternalLink, MessageSquare } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import zaxbysLogo from "@/assets/zaxbys-logo.jpeg";
@@ -27,12 +27,12 @@ const socialProfiles = [
   {
     platform: "Instagram",
     icon: InstagramIcon,
-    handle: "@realzaxbys",
-    name: "Zaxby's",
-    followers: "412K",
-    description: "Indescribably Good Chicken™",
+    handle: "@swan.hill.stables",
+    name: "Swan Hill Stables",
+    followers: "1.2K",
+    description: "Premium horse boarding & riding lessons in Northport, AL",
     profileImage: zaxbysLogo,
-    url: "https://instagram.com/realzaxbys",
+    url: "https://www.instagram.com/swan.hill.stables?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
     gradient: "from-purple-500 via-pink-500 to-orange-400",
     buttonColor: "bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500",
   },
@@ -113,14 +113,23 @@ export const ContactSection = () => {
                   <div className="p-3 rounded-full bg-primary/10">
                     <Phone className="h-6 w-6 text-primary" />
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-sm text-muted-foreground">Phone</p>
                     <a
-                      href="tel:------"
+                      href="tel:+16175137262"
                       className="text-lg font-medium text-foreground hover:text-primary transition-colors"
                     >
-                      ------
+                      +1 (617) 513-7262
                     </a>
+                    <div className="flex items-center gap-3 mt-1">
+                      <a
+                        href="sms:+16175137262"
+                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                      >
+                        <MessageSquare className="h-3 w-3" />
+                        Send a message
+                      </a>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
