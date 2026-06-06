@@ -609,6 +609,51 @@ export const AdminSupplyTracker = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Alert Recipients Dialog */}
+      <Dialog open={showRecipientsDialog} onOpenChange={setShowRecipientsDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Low-Stock Alert Recipients</DialogTitle>
+            <DialogDescription>
+              Emails listed here will receive a notification when any supply drops to or below its low-stock threshold.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                placeholder="alerts@example.com"
+                value={newRecipient}
+                onChange={(e) => setNewRecipient(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addRecipient(); } }}
+              />
+              <Button onClick={addRecipient} disabled={!newRecipient.trim()}>
+                <Plus className="h-4 w-4 mr-1" /> Add
+              </Button>
+            </div>
+            <div className="space-y-2 max-h-72 overflow-y-auto">
+              {recipients.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-6">
+                  No recipients yet. Add at least one to start receiving alerts.
+                </p>
+              ) : (
+                recipients.map((r) => (
+                  <div key={r.id} className="flex items-center justify-between border border-border rounded px-3 py-2">
+                    <span className="text-sm break-all">{r.email}</span>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => removeRecipient(r.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShowRecipientsDialog(false)}>Done</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
