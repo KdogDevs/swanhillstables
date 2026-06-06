@@ -9,8 +9,8 @@ const Lessons = () => {
       <Navigation />
       
       <main className="pt-24">
-        <section className="py-16 section-gradient">
-          <div className="container mx-auto px-6">
+        <section className="py-10 md:py-16 section-gradient">
+          <div className="container mx-auto px-4 sm:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -20,7 +20,7 @@ const Lessons = () => {
               <p className="text-accent text-sm uppercase tracking-[0.2em] mb-4 font-medium">
                 Get Started
               </p>
-              <h1 className="font-serif text-5xl md:text-6xl font-semibold text-foreground mb-6">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6">
                 Riding Lessons
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed">
@@ -31,8 +31,8 @@ const Lessons = () => {
           </div>
         </section>
 
-        <section className="py-16 bg-background">
-          <div className="container mx-auto px-6 max-w-2xl">
+        <section className="py-10 md:py-16 bg-background">
+          <div className="container mx-auto px-4 sm:px-6 max-w-2xl">
             <LessonSignupWizard />
           </div>
         </section>

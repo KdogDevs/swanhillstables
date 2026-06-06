@@ -46,7 +46,7 @@ export const Navigation = () => {
       className="fixed top-0 left-0 right-0 z-50 py-3 px-4"
     >
       <div
-        className={`container mx-auto px-6 py-3 backdrop-blur-xl border rounded-lg transition-all duration-500 ${
+        className={`container mx-auto px-3 sm:px-6 py-3 backdrop-blur-xl border rounded-lg transition-all duration-500 ${
           scrolled
             ? "bg-background/85 border-border/60 shadow-md"
             : "bg-background/60 border-border/40 shadow-sm"
@@ -140,7 +140,7 @@ export const Navigation = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-fit gap-2"
+                      className="w-full gap-2"
                       onClick={() => {
                         navigate("/dashboard");
                         setIsOpen(false);
@@ -152,7 +152,7 @@ export const Navigation = () => {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="w-fit gap-2"
+                      className="w-full gap-2"
                       onClick={() => {
                         handleSignOut();
                         setIsOpen(false);
@@ -166,7 +166,7 @@ export const Navigation = () => {
                   <Button
                     variant="default"
                     size="sm"
-                    className="w-fit"
+                    className="w-full"
                     onClick={() => {
                       navigate("/auth");
                       setIsOpen(false);

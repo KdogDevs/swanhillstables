@@ -267,7 +267,7 @@ export const AdminCareLog = () => {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <CardTitle className="flex items-center gap-2">
               <ClipboardList className="h-5 w-5" />
@@ -284,7 +284,7 @@ export const AdminCareLog = () => {
                 Add Entry
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-lg">
+            <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>New Care Log Entry</DialogTitle>
                 <DialogDescription>
@@ -452,7 +452,7 @@ export const AdminCareLog = () => {
             <p>No care log entries yet</p>
           </div>
         ) : (
-          <Table>
+          <div className="overflow-x-auto"><Table className="min-w-[600px]">
             <TableHeader>
               <TableRow>
                 <TableHead>Date</TableHead>
@@ -504,7 +504,7 @@ export const AdminCareLog = () => {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </Table></div>
         )}
       </CardContent>
     </Card>

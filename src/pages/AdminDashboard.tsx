@@ -52,7 +52,7 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
               <Home className="h-4 w-4" /><span className="text-sm">Home</span>
             </Link>
@@ -72,10 +72,10 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-7xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="mb-8">
-            <h2 className="font-serif text-3xl font-semibold text-foreground">Swan Hill Stables Admin</h2>
+            <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-foreground">Swan Hill Stables Admin</h2>
             <p className="text-muted-foreground mt-1">
               {isSuperAdmin ? "Full system control — manage accounts, roles, and all operations" : "Manage clients, paperwork, and lesson availability"}
             </p>

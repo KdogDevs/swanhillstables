@@ -208,7 +208,7 @@ export const AdminHorseUseLog = () => {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <CardTitle className="flex items-center gap-2">
           <Bookmark className="h-5 w-5" />
           Horse Use Log
@@ -264,7 +264,7 @@ export const AdminHorseUseLog = () => {
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="rideDate">Date *</Label>
                   <Input
@@ -338,7 +338,7 @@ export const AdminHorseUseLog = () => {
           </p>
         ) : (
           <div className="rounded-md border overflow-x-auto">
-            <Table>
+            <Table className="min-w-[580px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>

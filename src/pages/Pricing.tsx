@@ -56,8 +56,8 @@ const Pricing = () => {
 
       <main className="pt-24">
         {/* Page Header */}
-        <section className="py-20 section-gradient">
-          <div className="container mx-auto px-6">
+        <section className="py-12 md:py-20 section-gradient">
+          <div className="container mx-auto px-4 sm:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -67,7 +67,7 @@ const Pricing = () => {
               <p className="text-accent text-sm uppercase tracking-[0.2em] mb-4 font-medium">
                 Transparent Pricing
               </p>
-              <h1 className="font-serif text-5xl md:text-6xl font-semibold text-foreground mb-6">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6">
                 Programs & Pricing
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed">
@@ -79,8 +79,8 @@ const Pricing = () => {
         </section>
 
         {/* Boarding tiers */}
-        <section className="py-20 bg-background">
-          <div className="container mx-auto px-6">
+        <section className="py-12 md:py-20 bg-background">
+          <div className="container mx-auto px-4 sm:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -170,8 +170,8 @@ const Pricing = () => {
         </section>
 
         {/* Full pricing matrix */}
-        <section className="py-16 bg-secondary/40">
-          <div className="container mx-auto px-6">
+        <section className="py-10 md:py-16 bg-secondary/40">
+          <div className="container mx-auto px-4 sm:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -190,7 +190,7 @@ const Pricing = () => {
               </div>
 
               <div className="overflow-x-auto bg-card rounded-xl card-shadow">
-                <table className="w-full text-sm">
+                <table className="w-full min-w-[360px] text-sm">
                   <thead>
                     <tr className="border-b border-border">
                       <th className="text-left p-4 font-medium text-muted-foreground">Feed Plan</th>
@@ -254,8 +254,8 @@ const Pricing = () => {
         </section>
 
         {/* Lessons Section */}
-        <section className="py-20 bg-background">
-          <div className="container mx-auto px-6">
+        <section className="py-12 md:py-20 bg-background">
+          <div className="container mx-auto px-4 sm:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -319,7 +319,7 @@ const Pricing = () => {
       <Footer />
 
       <Dialog open={wizardOpen} onOpenChange={setWizardOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl">Boarding Application</DialogTitle>
           </DialogHeader>

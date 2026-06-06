@@ -44,8 +44,8 @@ const Team = () => {
       
       <main className="pt-24">
         {/* Page Header */}
-        <section className="py-20 section-gradient">
-          <div className="container mx-auto px-6">
+        <section className="py-12 md:py-20 section-gradient">
+          <div className="container mx-auto px-4 sm:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -55,7 +55,7 @@ const Team = () => {
               <p className="text-accent text-sm uppercase tracking-[0.2em] mb-4 font-medium">
                 The People Behind The Barn
               </p>
-              <h1 className="font-serif text-5xl md:text-6xl font-semibold text-foreground mb-6">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6">
                 Meet Our Team
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed">
@@ -67,9 +67,9 @@ const Team = () => {
         </section>
 
         {/* Team Members */}
-        <section className="py-20 bg-background">
-          <div className="container mx-auto px-6">
-            <div className="space-y-24">
+        <section className="py-12 md:py-20 bg-background">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="space-y-16 md:space-y-24">
               {teamMembers.map((member, index) => (
                 <motion.div
                   key={member.name}
@@ -77,7 +77,7 @@ const Team = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8 }}
                   viewport={{ once: true }}
-                  className={`grid lg:grid-cols-2 gap-12 items-center ${
+                  className={`grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${
                     index % 2 === 1 ? "lg:grid-flow-dense" : ""
                   }`}
                 >
@@ -101,7 +101,7 @@ const Team = () => {
                     <p className="text-accent text-sm uppercase tracking-[0.2em] mb-2 font-medium">
                       {member.role}
                     </p>
-                    <h2 className="font-serif text-4xl font-semibold text-foreground mb-6">
+                    <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-foreground mb-6">
                       {member.name}
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-8">
@@ -125,8 +125,8 @@ const Team = () => {
         </section>
 
         {/* Join Our Team CTA */}
-        <section className="py-20 bg-secondary">
-          <div className="container mx-auto px-6">
+        <section className="py-12 md:py-20 bg-secondary">
+          <div className="container mx-auto px-4 sm:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -134,7 +134,7 @@ const Team = () => {
               viewport={{ once: true }}
               className="text-center max-w-2xl mx-auto"
             >
-              <h2 className="font-serif text-4xl font-semibold text-foreground mb-6">
+              <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-foreground mb-6">
                 Join Our Family
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-8">
@@ -144,7 +144,7 @@ const Team = () => {
               </p>
               <a 
                 href="mailto:careers@swanhillstables.com"
-                className="inline-block bg-primary text-primary-foreground font-medium px-8 py-3 rounded-md hover:bg-primary/90 transition-colors"
+                className="inline-block w-full sm:w-auto text-center bg-primary text-primary-foreground font-medium px-8 py-3 rounded-md hover:bg-primary/90 transition-colors"
               >
                 Get in Touch
               </a>

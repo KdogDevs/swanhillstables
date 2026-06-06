@@ -218,7 +218,7 @@ export const AdminSupplyTracker = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl font-serif font-semibold">Supply Tracker</h2>
           <p className="text-muted-foreground">Monitor feed, hay, pellets, and other inventory</p>
@@ -258,7 +258,7 @@ export const AdminSupplyTracker = () => {
             <CardDescription>{items.length} item(s)</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <div className="overflow-x-auto"><Table className="min-w-[580px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Supply</TableHead>
@@ -306,7 +306,7 @@ export const AdminSupplyTracker = () => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </Table></div>
           </CardContent>
         </Card>
       ))}
@@ -333,7 +333,7 @@ export const AdminSupplyTracker = () => {
               <Label>Name</Label>
               <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Purina Strategy" />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Category</Label>
                 <Select value={category} onValueChange={setCategory}>
@@ -353,7 +353,7 @@ export const AdminSupplyTracker = () => {
                 </Select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Current Quantity</Label>
                 <Input type="number" value={quantity} onChange={e => setQuantity(e.target.value)} min="0" />
@@ -416,7 +416,7 @@ export const AdminSupplyTracker = () => {
             {logs.length === 0 ? (
               <p className="text-center text-muted-foreground py-8">No history yet</p>
             ) : (
-              <Table>
+              <div className="overflow-x-auto"><Table className="min-w-[580px]">
                 <TableHeader>
                   <TableRow>
                     <TableHead>Date</TableHead>
@@ -441,7 +441,7 @@ export const AdminSupplyTracker = () => {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             )}
           </div>
         </DialogContent>

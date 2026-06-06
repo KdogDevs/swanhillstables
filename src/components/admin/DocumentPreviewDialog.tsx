@@ -33,7 +33,7 @@ export const DocumentPreviewDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh]">
+      <DialogContent className="w-[95vw] sm:max-w-5xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>{formatDocumentType(documentType)}</DialogTitle>
         </DialogHeader>
