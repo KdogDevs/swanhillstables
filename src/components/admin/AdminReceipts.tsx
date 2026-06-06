@@ -459,8 +459,48 @@ export const AdminReceipts = () => {
                 </div>
                 <div>
                   <Label>Receipt Photo</Label>
-                  <Input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-                  {file && <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1"><Upload className="h-3 w-3" /> {file.name}</p>}
+                  <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className="cursor-pointer">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleScan(f);
+                          }}
+                        />
+                        <div className="flex items-center justify-center gap-2 border border-dashed border-border rounded-md py-2 text-sm hover:bg-muted">
+                          {scanning ? <Loader2 className="h-4 w-4 animate-spin" /> : <ScanLine className="h-4 w-4" />}
+                          {scanning ? "Scanning…" : "Scan with Camera"}
+                        </div>
+                      </label>
+                      <label className="cursor-pointer">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleScan(f);
+                          }}
+                        />
+                        <div className="flex items-center justify-center gap-2 border border-dashed border-border rounded-md py-2 text-sm hover:bg-muted">
+                          <Upload className="h-4 w-4" /> Upload Image
+                        </div>
+                      </label>
+                    </div>
+                    {file && (
+                      <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <FileText className="h-3 w-3" /> {file.name} — will be archived as PDF
+                      </p>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      Tip: scanning auto-fills vendor, amount, date, and category. Review before saving.
+                    </p>
+                  </div>
                 </div>
               </div>
               <DialogFooter>
