@@ -35,7 +35,6 @@ interface FormData {
   feed_plan: FeedPlan;
   addon_hay: boolean;
   addon_bedding: boolean;
-  addon_pasture_feeding: boolean;
   addon_blanketing: boolean;
   addon_grooming: boolean;
   addon_training: boolean;
@@ -69,7 +68,6 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
     feed_plan: "boarder",
     addon_hay: false,
     addon_bedding: false,
-    addon_pasture_feeding: false,
     addon_blanketing: false,
     addon_grooming: false,
     addon_training: false,
@@ -108,7 +106,6 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
     ? calculateMonthly(formData.tier, formData.feed_plan, {
         hay: formData.addon_hay,
         bedding: formData.addon_bedding,
-        pasture_feeding: formData.addon_pasture_feeding,
       })
     : 0;
 
@@ -185,7 +182,6 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
           monthly_amount: monthly,
           addon_hay: formData.addon_hay,
           addon_bedding: formData.addon_bedding,
-          addon_pasture_feeding: formData.addon_pasture_feeding,
           addon_blanketing: formData.addon_blanketing,
           addon_grooming: formData.addon_grooming,
           addon_training: formData.addon_training,
@@ -265,7 +261,7 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
                 <p className="text-sm text-muted-foreground">Subject to availability</p>
               </div>
               <RadioGroup value={formData.tier} onValueChange={(v) => update("tier", v as Tier)} className="space-y-3">
-                {(["indoor", "outdoor", "pasture"] as Tier[]).map((t) => (
+                {(["indoor", "outdoor"] as Tier[]).map((t) => (
                   <Label
                     key={t}
                     htmlFor={`tier-${t}`}
@@ -342,15 +338,6 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
                   </div>
                   <span className="text-sm text-muted-foreground">+$60/mo</span>
                 </Label>
-                {formData.tier === "pasture" && (
-                  <Label className="flex items-center justify-between gap-3 border rounded-md p-3 cursor-pointer hover:bg-muted/40">
-                    <div className="flex items-center gap-3">
-                      <Checkbox checked={formData.addon_pasture_feeding} onCheckedChange={(v) => update("addon_pasture_feeding", !!v)} />
-                      <span className="text-sm">Twice-daily feeding (pasture only)</span>
-                    </div>
-                    <span className="text-sm text-muted-foreground">+$50–65/mo</span>
-                  </Label>
-                )}
                 <p className="text-xs text-muted-foreground pt-2">
                   Note other services (blanketing, grooming, training rides, vet/farrier holds, deworming) are billed separately and can be requested at any time.
                 </p>
@@ -549,11 +536,10 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
                 <Row label="Horse" value={`${formData.horse_name} — ${formData.horse_breed}, ${formData.horse_age}, ${formData.horse_sex}, ${formData.horse_color}`} />
                 <Row label="Tier" value={TIER_LABELS[formData.tier as Tier]} />
                 <Row label="Feed plan" value={FEED_LABELS[formData.feed_plan]} />
-                {(formData.addon_hay || formData.addon_bedding || formData.addon_pasture_feeding) && (
+                {(formData.addon_hay || formData.addon_bedding) && (
                   <Row label="Add-ons" value={[
                     formData.addon_hay && "Hay",
                     formData.addon_bedding && "Bedding",
-                    formData.addon_pasture_feeding && "Pasture feeding",
                   ].filter(Boolean).join(", ")} />
                 )}
                 <Row label="Vet" value={formData.vet_name ? `${formData.vet_name} ${formData.vet_phone}` : "—"} />
