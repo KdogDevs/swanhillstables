@@ -372,7 +372,60 @@ export const AdminSupplyTracker = () => {
             <CardDescription>{items.length} item(s)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto"><Table className="min-w-[580px]">
+            {/* Mobile card list */}
+            <div className="md:hidden space-y-3">
+              {items.map(s => (
+                <div key={s.id} className="rounded-lg border border-border p-3 bg-card">
+                  <div className="flex gap-3">
+                    {photoUrls[s.id] ? (
+                      <a href={photoUrls[s.id]} target="_blank" rel="noreferrer" className="shrink-0">
+                        <img src={photoUrls[s.id]} alt={s.supply_name} className="h-16 w-16 object-cover rounded border border-border" />
+                      </a>
+                    ) : (
+                      <div className="h-16 w-16 shrink-0 rounded border border-dashed border-border flex items-center justify-center text-muted-foreground">
+                        <ImageIcon className="h-5 w-5" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="font-medium truncate">{s.supply_name}</p>
+                          <p className="text-sm text-muted-foreground">{s.quantity} {s.unit}</p>
+                        </div>
+                        {getStatusBadge(s)}
+                      </div>
+                      <Progress value={getProgressColor(s)} className="h-2 mt-2" />
+                      {s.last_restocked_at && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Restocked {format(new Date(s.last_restocked_at), "MMM d, yyyy")}
+                        </p>
+                      )}
+                      {s.notes && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{s.notes}</p>}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-end gap-1 mt-2 pt-2 border-t border-border">
+                    <Button size="sm" variant="ghost" className="h-8 px-2 text-green-600" onClick={() => openLog(s.id, "add")}>
+                      <Plus className="h-4 w-4 mr-1" />Restock
+                    </Button>
+                    <Button size="sm" variant="ghost" className="h-8 px-2 text-orange-600" onClick={() => openLog(s.id, "use")}>
+                      <Minus className="h-4 w-4 mr-1" />Use
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openHistory(s.id)} title="History">
+                      <History className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEdit(s)} title="Edit">
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => handleDelete(s.id)} title="Delete">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto"><Table className="min-w-[580px]">
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[60px]">Photo</TableHead>
