@@ -132,6 +132,9 @@ export const AdminEmail = ({ isSuperAdmin }: AdminEmailProps) => {
             const ids = data.map(a => a.email_account_id);
             const { data: accts } = await supabase.from("email_accounts").select("id, email_address, display_name").in("id", ids);
             setAccounts(accts || []);
+            if (accts && accts.length > 0) {
+              setSelectedAccountId(accts[0].id);
+            }
           }
         }
       } catch {}
@@ -369,7 +372,7 @@ export const AdminEmail = ({ isSuperAdmin }: AdminEmailProps) => {
             <Select value={selectedAccountId || "default"} onValueChange={v => setSelectedAccountId(v === "default" ? null : v)}>
               <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Default account" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="default">kagen@swanhillstables.com</SelectItem>
+                {isSuperAdmin && <SelectItem value="default">kagen@swanhillstables.com</SelectItem>}
                 {accounts.map(a => <SelectItem key={a.id} value={a.id}>{a.email_address}</SelectItem>)}
               </SelectContent>
             </Select>
