@@ -82,6 +82,75 @@ const containerVariants = {
 };
 
 export const ContactSection = () => {
+  const [igData, setIgData] = useState<{
+    profilePic: string | null;
+    followers: string;
+    fullName: string;
+    biography: string;
+    isVerified: boolean;
+    loading: boolean;
+  }>({
+    profilePic: null,
+    followers: "—",
+    fullName: "Swan Hill Stables",
+    biography: "Premium horse boarding & riding lessons in Northport, AL",
+    isVerified: false,
+    loading: true,
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("instagram-profile", {
+          body: { username: "swan.hill.stables" },
+          method: "GET",
+        });
+        // supabase.functions.invoke doesn't support GET query params cleanly; fall back to direct fetch
+        if (error || !data) throw error || new Error("no data");
+        if (cancelled) return;
+        setIgData({
+          profilePic: data.profilePic ?? null,
+          followers: data.followerCountFormatted ?? "—",
+          fullName: data.fullName || "Swan Hill Stables",
+          biography: data.biography || "Premium horse boarding & riding lessons in Northport, AL",
+          isVerified: !!data.isVerified,
+          loading: false,
+        });
+      } catch {
+        // Fallback to direct GET against the function URL
+        try {
+          const projectId = (import.meta as any).env.VITE_SUPABASE_PROJECT_ID;
+          const anon = (import.meta as any).env.VITE_SUPABASE_PUBLISHABLE_KEY;
+          const res = await fetch(
+            `https://${projectId}.supabase.co/functions/v1/instagram-profile?username=swan.hill.stables`,
+            { headers: { apikey: anon, Authorization: `Bearer ${anon}` } },
+          );
+          const data = await res.json();
+          if (cancelled) return;
+          if (data && !data.error) {
+            setIgData({
+              profilePic: data.profilePic ?? null,
+              followers: data.followerCountFormatted ?? "—",
+              fullName: data.fullName || "Swan Hill Stables",
+              biography: data.biography || "Premium horse boarding & riding lessons in Northport, AL",
+              isVerified: !!data.isVerified,
+              loading: false,
+            });
+            return;
+          }
+        } catch {}
+        if (!cancelled) setIgData((s) => ({ ...s, loading: false }));
+      }
+    };
+    load();
+    const interval = setInterval(load, 5 * 60 * 1000); // refresh every 5 min
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <section id="contact" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4">
