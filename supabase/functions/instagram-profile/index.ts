@@ -67,6 +67,8 @@ async function fetchInstagramProfile(username: string) {
   const ogDesc = html.match(/<meta(?: name| property)="(?:og:)?description" content="([^"]+)"/)?.[1] ?? '';
   const ogTitle = html.match(/<meta property="og:title" content="([^"]+)"/)?.[1] ?? '';
 
+  console.log('IG fetch', { username, htmlLen: html.length, hasOg: !!ogImage, ogDesc: ogDesc.slice(0, 200), ogTitle });
+
   const desc = decodeEntities(ogDesc);
   const title = decodeEntities(ogTitle);
 
