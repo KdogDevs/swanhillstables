@@ -1,7 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
-import nicolePhoto from "@/assets/nicole-barry.jpg";
+import nicolePhoto from "@/assets/nicole-barry.jpg.asset.json";
 import lendyPhoto from "@/assets/lendy-johnston.jpg";
 import kagenPhoto from "@/assets/kagen-jensen.jpg";
 import sarahPhoto from "@/assets/sarah-figeritti.jpg";
@@ -10,7 +10,7 @@ const teamMembers = [
   {
     name: "Nicole Barry",
     role: "Owner & Trainer",
-    image: nicolePhoto,
+    image: nicolePhoto.url,
     bio: "Nicole is a dedicated horsewoman and instructor with 19 years of hands-on experience in the equine industry. As the owner of Swan Hill Stables, she has worked under several trainers as both an instructor and barn manager, gaining extensive knowledge in horse care, rider development, and barn operations. Nicole also has experience starting young horses and finishing them for successful riding careers, bringing skill, patience, and a welcoming approach to riders of all levels.",
     credentials: ["Owner", "Trainer", "19 Years Experience"],
   },
