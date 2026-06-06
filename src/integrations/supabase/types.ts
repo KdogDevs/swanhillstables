@@ -853,6 +853,62 @@ export type Database = {
           },
         ]
       }
+      supply_receipts: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          id: string
+          notes: string | null
+          purchase_date: string
+          quantity: number | null
+          receipt_image_url: string | null
+          supply_id: string | null
+          unit: string | null
+          updated_at: string
+          uploaded_by: string
+          vendor: string
+        }
+        Insert: {
+          amount: number
+          category?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          purchase_date?: string
+          quantity?: number | null
+          receipt_image_url?: string | null
+          supply_id?: string | null
+          unit?: string | null
+          updated_at?: string
+          uploaded_by: string
+          vendor: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          purchase_date?: string
+          quantity?: number | null
+          receipt_image_url?: string | null
+          supply_id?: string | null
+          unit?: string | null
+          updated_at?: string
+          uploaded_by?: string
+          vendor?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supply_receipts_supply_id_fkey"
+            columns: ["supply_id"]
+            isOneToOne: false
+            referencedRelation: "supply_inventory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string

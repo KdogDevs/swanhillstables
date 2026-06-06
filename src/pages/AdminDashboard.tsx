@@ -15,9 +15,10 @@ import { AdminContacts } from "@/components/admin/AdminContacts";
 import { AdminMailingLists } from "@/components/admin/AdminMailingLists";
 import { AdminSuperSettings } from "@/components/admin/AdminSuperSettings";
 import { AdminSupplyTracker } from "@/components/admin/AdminSupplyTracker";
+import { AdminReceipts } from "@/components/admin/AdminReceipts";
 import { 
   Loader2, Users, FileText, Home, Shield, LogOut,
-  ClipboardList, Bookmark, Mail, Contact, Megaphone, Settings, Package
+  ClipboardList, Bookmark, Mail, Contact, Megaphone, Settings, Package, Receipt
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -107,6 +108,9 @@ const AdminDashboard = () => {
               <TabsTrigger value="supplies" className="flex items-center gap-1.5 text-xs">
                 <Package className="h-3.5 w-3.5" /> Supplies
               </TabsTrigger>
+              <TabsTrigger value="receipts" className="flex items-center gap-1.5 text-xs">
+                <Receipt className="h-3.5 w-3.5" /> Receipts
+              </TabsTrigger>
               {isSuperAdmin && (
                 <TabsTrigger value="settings" className="flex items-center gap-1.5 text-xs">
                   <Settings className="h-3.5 w-3.5" /> Settings
@@ -122,6 +126,7 @@ const AdminDashboard = () => {
             <TabsContent value="horseuse"><AdminHorseUseLog /></TabsContent>
             <TabsContent value="documents"><AdminDocuments /></TabsContent>
             <TabsContent value="supplies"><AdminSupplyTracker /></TabsContent>
+            <TabsContent value="receipts"><AdminReceipts /></TabsContent>
             {isSuperAdmin && (
               <TabsContent value="settings"><AdminSuperSettings /></TabsContent>
             )}
