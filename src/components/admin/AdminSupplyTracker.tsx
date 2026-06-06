@@ -12,7 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Minus, Package, AlertTriangle, Loader2, History, Trash2, Edit } from "lucide-react";
+import { Plus, Minus, Package, AlertTriangle, Loader2, History, Trash2, Edit, Upload, Mail, X, Image as ImageIcon } from "lucide-react";
 import { format } from "date-fns";
 
 interface SupplyItem {
@@ -27,6 +27,8 @@ interface SupplyItem {
   updated_by: string | null;
   created_at: string;
   updated_at: string;
+  image_url: string | null;
+  low_stock_notified_at: string | null;
 }
 
 interface SupplyLogEntry {
@@ -49,6 +51,7 @@ export const AdminSupplyTracker = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showLogDialog, setShowLogDialog] = useState(false);
   const [showHistoryDialog, setShowHistoryDialog] = useState(false);
+  const [showRecipientsDialog, setShowRecipientsDialog] = useState(false);
   const [editingSupply, setEditingSupply] = useState<SupplyItem | null>(null);
   const [selectedSupplyId, setSelectedSupplyId] = useState<string | null>(null);
   const [logType, setLogType] = useState<"add" | "use">("use");
@@ -60,6 +63,14 @@ export const AdminSupplyTracker = () => {
   const [unit, setUnit] = useState("bags");
   const [threshold, setThreshold] = useState("5");
   const [notes, setNotes] = useState("");
+  const [imagePath, setImagePath] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({});
+
+  // Recipients
+  const [recipients, setRecipients] = useState<{ id: string; email: string }[]>([]);
+  const [newRecipient, setNewRecipient] = useState("");
 
   // Log form
   const [logAmount, setLogAmount] = useState("");
@@ -77,8 +88,90 @@ export const AdminSupplyTracker = () => {
       .select("*")
       .order("category")
       .order("supply_name");
-    if (!error) setSupplies((data as SupplyItem[]) || []);
+    if (!error) {
+      const items = (data as SupplyItem[]) || [];
+      setSupplies(items);
+      // Sign URLs for any images
+      const withImages = items.filter(i => i.image_url);
+      if (withImages.length) {
+        const { data: signed } = await supabase.storage
+          .from("supply-photos")
+          .createSignedUrls(withImages.map(i => i.image_url!), 3600);
+        const map: Record<string, string> = {};
+        (signed || []).forEach((s, idx) => {
+          if (s.signedUrl) map[withImages[idx].id] = s.signedUrl;
+        });
+        setPhotoUrls(map);
+      } else {
+        setPhotoUrls({});
+      }
+    }
     setIsLoading(false);
+  };
+
+  const fetchRecipients = async () => {
+    const { data } = await supabase
+      .from("supply_alert_recipients")
+      .select("id, email")
+      .order("email");
+    setRecipients(data || []);
+  };
+
+  const addRecipient = async () => {
+    const email = newRecipient.trim().toLowerCase();
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      toast({ title: "Invalid email", variant: "destructive" });
+      return;
+    }
+    const { error } = await supabase.from("supply_alert_recipients").insert({ email, created_by: user?.id });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      setNewRecipient("");
+      fetchRecipients();
+    }
+  };
+
+  const removeRecipient = async (id: string) => {
+    await supabase.from("supply_alert_recipients").delete().eq("id", id);
+    fetchRecipients();
+  };
+
+  const openRecipients = () => {
+    fetchRecipients();
+    setShowRecipientsDialog(true);
+  };
+
+  const handleImageUpload = async (file: File) => {
+    if (!user || !file) return;
+    setUploadingImage(true);
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("supply-photos").upload(path, file, {
+      cacheControl: "3600", upsert: false,
+    });
+    if (error) {
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+    } else {
+      setImagePath(path);
+      const { data } = await supabase.storage.from("supply-photos").createSignedUrl(path, 3600);
+      if (data?.signedUrl) setImagePreview(data.signedUrl);
+    }
+    setUploadingImage(false);
+  };
+
+  const clearImage = () => {
+    setImagePath(null);
+    setImagePreview(null);
+  };
+
+  const maybeNotifyLowStock = async () => {
+    // Fire-and-forget; the function decides what to send
+    try {
+      await supabase.functions.invoke("notify-low-stock");
+    } catch (e) {
+      console.error("notify-low-stock failed", e);
+    }
   };
 
   const fetchLogs = async (supplyId: string) => {
@@ -93,14 +186,19 @@ export const AdminSupplyTracker = () => {
 
   const handleSaveSupply = async () => {
     if (!user || !name.trim()) return;
+    const newQty = parseFloat(quantity) || 0;
+    const newThreshold = parseFloat(threshold) || 5;
     const payload = {
       supply_name: name.trim(),
       category,
-      quantity: parseFloat(quantity) || 0,
+      quantity: newQty,
       unit,
-      low_threshold: parseFloat(threshold) || 5,
+      low_threshold: newThreshold,
       notes: notes || null,
+      image_url: imagePath,
       updated_by: user.id,
+      // Reset notified flag if we're no longer low
+      ...(newQty > newThreshold ? { low_stock_notified_at: null } : {}),
     };
 
     let error;
@@ -118,6 +216,7 @@ export const AdminSupplyTracker = () => {
       setShowAddDialog(false);
       setEditingSupply(null);
       fetchSupplies();
+      maybeNotifyLowStock();
     }
   };
 
@@ -144,10 +243,16 @@ export const AdminSupplyTracker = () => {
     const supply = supplies.find(s => s.id === selectedSupplyId);
     if (supply) {
       const newQty = Math.max(0, supply.quantity + actualChange);
-      await supabase.from("supply_inventory").update({
+      const threshold = supply.low_threshold || 0;
+      const updates: any = {
         quantity: newQty,
         updated_by: user.id,
         ...(logType === "add" ? { last_restocked_at: new Date().toISOString() } : {}),
+      };
+      // Reset notification flag if restocked back above threshold
+      if (newQty > threshold) updates.low_stock_notified_at = null;
+      await supabase.from("supply_inventory").update({
+        ...updates,
       }).eq("id", selectedSupplyId);
     }
 
@@ -156,6 +261,7 @@ export const AdminSupplyTracker = () => {
     setLogNotes("");
     setShowLogDialog(false);
     fetchSupplies();
+    maybeNotifyLowStock();
   };
 
   const handleDelete = async (id: string) => {
@@ -165,6 +271,7 @@ export const AdminSupplyTracker = () => {
 
   const resetForm = () => {
     setName(""); setCategory("feed"); setQuantity("0"); setUnit("bags"); setThreshold("5"); setNotes("");
+    setImagePath(null); setImagePreview(null);
   };
 
   const openEdit = (s: SupplyItem) => {
@@ -175,6 +282,8 @@ export const AdminSupplyTracker = () => {
     setUnit(s.unit);
     setThreshold(String(s.low_threshold || 5));
     setNotes(s.notes || "");
+    setImagePath(s.image_url);
+    setImagePreview(s.image_url ? (photoUrls[s.id] || null) : null);
     setShowAddDialog(true);
   };
 
@@ -223,9 +332,14 @@ export const AdminSupplyTracker = () => {
           <h2 className="text-2xl font-serif font-semibold">Supply Tracker</h2>
           <p className="text-muted-foreground">Monitor feed, hay, pellets, and other inventory</p>
         </div>
-        <Button onClick={() => { resetForm(); setEditingSupply(null); setShowAddDialog(true); }}>
-          <Plus className="h-4 w-4 mr-2" /> Add Supply
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={openRecipients}>
+            <Mail className="h-4 w-4 mr-2" /> Alert Recipients
+          </Button>
+          <Button onClick={() => { resetForm(); setEditingSupply(null); setShowAddDialog(true); }}>
+            <Plus className="h-4 w-4 mr-2" /> Add Supply
+          </Button>
+        </div>
       </div>
 
       {/* Low stock alerts */}
@@ -261,6 +375,7 @@ export const AdminSupplyTracker = () => {
             <div className="overflow-x-auto"><Table className="min-w-[580px]">
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[60px]">Photo</TableHead>
                   <TableHead>Supply</TableHead>
                   <TableHead>Quantity</TableHead>
                   <TableHead>Status</TableHead>
@@ -272,6 +387,17 @@ export const AdminSupplyTracker = () => {
               <TableBody>
                 {items.map(s => (
                   <TableRow key={s.id}>
+                    <TableCell>
+                      {photoUrls[s.id] ? (
+                        <a href={photoUrls[s.id]} target="_blank" rel="noreferrer">
+                          <img src={photoUrls[s.id]} alt={s.supply_name} className="h-12 w-12 object-cover rounded border border-border" />
+                        </a>
+                      ) : (
+                        <div className="h-12 w-12 rounded border border-dashed border-border flex items-center justify-center text-muted-foreground">
+                          <ImageIcon className="h-4 w-4" />
+                        </div>
+                      )}
+                    </TableCell>
                     <TableCell className="font-medium">
                       {s.supply_name}
                       {s.notes && <p className="text-xs text-muted-foreground mt-0.5">{s.notes}</p>}
@@ -367,6 +493,43 @@ export const AdminSupplyTracker = () => {
               <Label>Notes</Label>
               <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Brand, supplier, etc." />
             </div>
+            <div className="space-y-2">
+              <Label>Photo</Label>
+              {imagePreview ? (
+                <div className="flex items-center gap-3">
+                  <img src={imagePreview} alt="Supply" className="h-20 w-20 object-cover rounded border border-border" />
+                  <Button type="button" variant="outline" size="sm" onClick={clearImage}>
+                    <X className="h-4 w-4 mr-1" /> Remove
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <input
+                    id="supply-photo-input"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleImageUpload(f);
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={uploadingImage}
+                    onClick={() => document.getElementById("supply-photo-input")?.click()}
+                  >
+                    {uploadingImage ? (
+                      <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Uploading...</>
+                    ) : (
+                      <><Upload className="h-4 w-4 mr-2" /> Upload Photo</>
+                    )}
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-1">Optional. Helps identify the product at a glance.</p>
+                </div>
+              )}
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setShowAddDialog(false); setEditingSupply(null); }}>Cancel</Button>
@@ -444,6 +607,51 @@ export const AdminSupplyTracker = () => {
               </Table></div>
             )}
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Alert Recipients Dialog */}
+      <Dialog open={showRecipientsDialog} onOpenChange={setShowRecipientsDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Low-Stock Alert Recipients</DialogTitle>
+            <DialogDescription>
+              Emails listed here will receive a notification when any supply drops to or below its low-stock threshold.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                placeholder="alerts@example.com"
+                value={newRecipient}
+                onChange={(e) => setNewRecipient(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addRecipient(); } }}
+              />
+              <Button onClick={addRecipient} disabled={!newRecipient.trim()}>
+                <Plus className="h-4 w-4 mr-1" /> Add
+              </Button>
+            </div>
+            <div className="space-y-2 max-h-72 overflow-y-auto">
+              {recipients.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-6">
+                  No recipients yet. Add at least one to start receiving alerts.
+                </p>
+              ) : (
+                recipients.map((r) => (
+                  <div key={r.id} className="flex items-center justify-between border border-border rounded px-3 py-2">
+                    <span className="text-sm break-all">{r.email}</span>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => removeRecipient(r.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShowRecipientsDialog(false)}>Done</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

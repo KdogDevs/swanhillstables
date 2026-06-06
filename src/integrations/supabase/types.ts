@@ -746,12 +746,35 @@ export type Database = {
           },
         ]
       }
+      supply_alert_recipients: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
       supply_inventory: {
         Row: {
           category: string
           created_at: string
           id: string
+          image_url: string | null
           last_restocked_at: string | null
+          low_stock_notified_at: string | null
           low_threshold: number | null
           notes: string | null
           quantity: number
@@ -764,7 +787,9 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          image_url?: string | null
           last_restocked_at?: string | null
+          low_stock_notified_at?: string | null
           low_threshold?: number | null
           notes?: string | null
           quantity?: number
@@ -777,7 +802,9 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          image_url?: string | null
           last_restocked_at?: string | null
+          low_stock_notified_at?: string | null
           low_threshold?: number | null
           notes?: string | null
           quantity?: number
