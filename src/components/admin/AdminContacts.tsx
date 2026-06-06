@@ -174,7 +174,7 @@ export const AdminContacts = () => {
 
       {/* Add/Edit contact dialog */}
       <Dialog open={showAdd || !!editContact} onOpenChange={v => { if (!v) { setShowAdd(false); setEditContact(null); resetForm(); } }}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{editContact ? "Edit Contact" : "Add Contact"}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <Input value={formEmail} onChange={e => setFormEmail(e.target.value)} placeholder="Email *" />
@@ -189,7 +189,7 @@ export const AdminContacts = () => {
 
       {/* Add group dialog */}
       <Dialog open={showGroupAdd} onOpenChange={setShowGroupAdd}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>New Contact Group</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <Input value={groupName} onChange={e => setGroupName(e.target.value)} placeholder="Group name *" />
@@ -269,7 +269,7 @@ export const AdminContacts = () => {
                       <DialogTrigger asChild>
                         <Button size="sm"><UserPlus className="h-4 w-4 mr-1" /> Add Members</Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
                         <DialogHeader><DialogTitle>Add to {selectedGroup.name}</DialogTitle></DialogHeader>
                         <div className="max-h-60 overflow-y-auto space-y-1">
                           {contacts.filter(c => !groupMembers.some(m => m.id === c.id)).map(c => (

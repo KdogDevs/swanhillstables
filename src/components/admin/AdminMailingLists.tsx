@@ -170,7 +170,7 @@ export const AdminMailingLists = () => {
 
       {/* Create list dialog */}
       <Dialog open={showAddList} onOpenChange={setShowAddList}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>New Mailing List</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <Input value={listName} onChange={e => setListName(e.target.value)} placeholder="List name *" />
@@ -276,7 +276,7 @@ export const AdminMailingLists = () => {
 
       {/* Add subscriber dialog */}
       <Dialog open={showAddSub} onOpenChange={setShowAddSub}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>Add Subscriber</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <Input value={subEmail} onChange={e => setSubEmail(e.target.value)} placeholder="Email *" />
@@ -288,7 +288,7 @@ export const AdminMailingLists = () => {
 
       {/* Bulk import dialog */}
       <Dialog open={showBulkImport} onOpenChange={setShowBulkImport}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>Bulk Import Subscribers</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">Enter one subscriber per line: email,name</p>
@@ -300,7 +300,7 @@ export const AdminMailingLists = () => {
 
       {/* Bulk send dialog */}
       <Dialog open={showBulkSend} onOpenChange={setShowBulkSend}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[95vw] max-w-2xl">
           <DialogHeader><DialogTitle>Send Campaign to {selectedList?.name}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">

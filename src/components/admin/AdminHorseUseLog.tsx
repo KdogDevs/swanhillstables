@@ -220,7 +220,7 @@ export const AdminHorseUseLog = () => {
               Add Entry
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md">
+          <DialogContent className="w-[95vw] max-w-md">
             <DialogHeader>
               <DialogTitle>Log Horse Use</DialogTitle>
             </DialogHeader>
