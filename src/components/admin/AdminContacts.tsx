@@ -147,7 +147,7 @@ export const AdminContacts = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-2">
         <div className="flex gap-2">
           <Button variant={activeTab === "contacts" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("contacts")}>
             All Contacts
@@ -159,7 +159,7 @@ export const AdminContacts = () => {
         <div className="flex-1" />
         {activeTab === "contacts" && (
           <>
-            <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search contacts..." className="max-w-xs h-8" />
+            <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search contacts..." className="w-full sm:max-w-xs h-8" />
             <Button size="sm" onClick={() => { resetForm(); setShowAdd(true); setEditContact(null); }}>
               <Plus className="h-4 w-4 mr-1" /> Add Contact
             </Button>
@@ -202,7 +202,7 @@ export const AdminContacts = () => {
       {activeTab === "contacts" && (
         <Card>
           <CardContent className="p-0">
-            <Table>
+            <div className="overflow-x-auto"><Table className="min-w-[500px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
@@ -235,13 +235,13 @@ export const AdminContacts = () => {
                   <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No contacts found</TableCell></TableRow>
                 )}
               </TableBody>
-            </Table>
+            </Table></div>
           </CardContent>
         </Card>
       )}
 
       {activeTab === "groups" && (
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
             {groups.map(g => (
               <Card key={g.id} className={`cursor-pointer transition-colors ${selectedGroup?.id === g.id ? "border-primary" : ""}`}

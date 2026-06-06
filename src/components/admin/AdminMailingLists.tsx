@@ -180,7 +180,7 @@ export const AdminMailingLists = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* List sidebar */}
         <div className="space-y-2">
           {lists.map(list => (
@@ -205,29 +205,31 @@ export const AdminMailingLists = () => {
           {selectedList ? (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center justify-between flex-wrap gap-2">
-                  <div className="flex items-center gap-2">
-                    {selectedList.name}
-                    <Badge variant="secondary">{subscribers.filter(s => s.subscribed).length} active</Badge>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => setShowBulkImport(true)}>
-                      <Upload className="h-4 w-4 mr-1" /> Import
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={exportSubscribers}>
-                      <Download className="h-4 w-4 mr-1" /> Export
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setShowAddSub(true)}>
-                      <Plus className="h-4 w-4 mr-1" /> Add
-                    </Button>
-                    <Button size="sm" onClick={() => setShowBulkSend(true)}>
-                      <Send className="h-4 w-4 mr-1" /> Send Campaign
-                    </Button>
+                <CardTitle className="text-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      {selectedList.name}
+                      <Badge variant="secondary">{subscribers.filter(s => s.subscribed).length} active</Badge>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button size="sm" variant="outline" onClick={() => setShowBulkImport(true)}>
+                        <Upload className="h-4 w-4 mr-1" /> Import
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={exportSubscribers}>
+                        <Download className="h-4 w-4 mr-1" /> Export
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setShowAddSub(true)}>
+                        <Plus className="h-4 w-4 mr-1" /> Add
+                      </Button>
+                      <Button size="sm" onClick={() => setShowBulkSend(true)}>
+                        <Send className="h-4 w-4 mr-1" /> Send Campaign
+                      </Button>
+                    </div>
                   </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <Table>
+                <div className="overflow-x-auto"><Table className="min-w-[500px]">
                   <TableHeader>
                     <TableRow>
                       <TableHead>Name</TableHead>
@@ -263,7 +265,7 @@ export const AdminMailingLists = () => {
                       </TableRow>
                     ))}
                   </TableBody>
-                </Table>
+                </Table></div>
               </CardContent>
             </Card>
           ) : (

@@ -260,7 +260,7 @@ export const AdminDocuments = () => {
             {selectedClientDocs.length === 0 ? (
               <p className="text-center py-8 text-muted-foreground">No documents found for this client</p>
             ) : (
-              <Table>
+              <div className="overflow-x-auto"><Table className="min-w-[550px]">
                 <TableHeader>
                   <TableRow>
                      <TableHead>Document</TableHead>
@@ -300,7 +300,7 @@ export const AdminDocuments = () => {
                        </TableCell>
                       <TableCell>
                         <Select value={doc.status} onValueChange={(v) => handleUpdateStatus(doc.id, v)}>
-                          <SelectTrigger className="w-[110px] h-8 text-xs">
+                          <SelectTrigger className="w-[100px] h-8 text-xs">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -313,7 +313,7 @@ export const AdminDocuments = () => {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             )}
           </CardContent>
         </Card>
@@ -325,10 +325,10 @@ export const AdminDocuments = () => {
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <p className="text-sm text-muted-foreground">Total Clients</p>
                 <p className="text-2xl font-bold">{clientSummaries.length}</p>
@@ -426,7 +426,7 @@ export const AdminDocuments = () => {
           {clientSummaries.length === 0 ? (
             <p className="text-center py-8 text-muted-foreground">No documents found</p>
           ) : (
-            <Table>
+            <div className="overflow-x-auto"><Table className="min-w-[500px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Client</TableHead>
@@ -459,7 +459,7 @@ export const AdminDocuments = () => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </Table></div>
           )}
         </CardContent>
       </Card>

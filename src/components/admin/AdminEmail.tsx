@@ -361,9 +361,9 @@ export const AdminEmail = ({ isSuperAdmin }: AdminEmailProps) => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-280px)] min-h-[500px] border border-border rounded-lg overflow-hidden bg-card">
+    <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-280px)] min-h-[400px] border border-border rounded-lg overflow-hidden bg-card">
       {/* Sidebar */}
-      <div className="w-56 border-r border-border flex flex-col bg-muted/30">
+      <div className="w-full lg:w-56 border-b lg:border-b-0 lg:border-r border-border flex flex-col bg-muted/30 max-h-52 lg:max-h-none overflow-y-auto lg:overflow-visible">
         {accounts.length > 0 && (
           <div className="p-2 border-b border-border">
             <Select value={selectedAccountId || "default"} onValueChange={v => setSelectedAccountId(v === "default" ? null : v)}>
@@ -478,7 +478,7 @@ export const AdminEmail = ({ isSuperAdmin }: AdminEmailProps) => {
               <Button variant="ghost" size="sm" onClick={() => deleteEmail(selectedEmail.uid)} className="text-destructive hover:text-destructive"><Trash2 className="h-4 w-4 mr-1" /> Delete</Button>
             </div>
             <ScrollArea className="flex-1">
-              <div className="p-6 max-w-5xl mx-auto w-full">
+              <div className="p-3 sm:p-6 max-w-5xl mx-auto w-full">
                 <h2 className="text-xl font-semibold text-foreground mb-4">{selectedEmail.envelope.subject}</h2>
                 <div className="space-y-1 mb-6 text-sm">
                   <div className="flex gap-2"><span className="text-muted-foreground w-12">From:</span><span className="text-foreground">{formatFullAddr(selectedEmail.envelope.from)}</span></div>
@@ -537,12 +537,12 @@ export const AdminEmail = ({ isSuperAdmin }: AdminEmailProps) => {
 
             {/* Schedule picker */}
             {showSchedule && (
-              <div className="flex items-center gap-3 px-4 py-3 bg-muted/50 border-b border-border">
+              <div className="flex flex-wrap items-center gap-2 px-4 py-3 bg-muted/50 border-b border-border">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Schedule for:</span>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" size="sm" className={cn("w-[160px] justify-start text-left font-normal", !scheduleDate && "text-muted-foreground")}>
+                    <Button variant="outline" size="sm" className={cn("w-full sm:w-[160px] justify-start text-left font-normal", !scheduleDate && "text-muted-foreground")}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {scheduleDate ? format(scheduleDate, "MMM d, yyyy") : "Pick date"}
                     </Button>
@@ -553,7 +553,7 @@ export const AdminEmail = ({ isSuperAdmin }: AdminEmailProps) => {
                       initialFocus className={cn("p-3 pointer-events-auto")} />
                   </PopoverContent>
                 </Popover>
-                <Input type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} className="w-[130px] h-8" />
+                <Input type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} className="w-full sm:w-[130px] h-8" />
                 <Button size="sm" variant="default" onClick={handleScheduleSend} disabled={!scheduleDate || !scheduleTime}>
                   <Clock className="h-4 w-4 mr-1" /> Schedule Send
                 </Button>

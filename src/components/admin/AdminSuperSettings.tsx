@@ -157,7 +157,7 @@ export const AdminSuperSettings = () => {
 
   return (
     <Tabs defaultValue="roles" className="space-y-6">
-      <TabsList>
+      <TabsList className="flex flex-wrap h-auto gap-1">
         <TabsTrigger value="roles" className="gap-2"><Shield className="h-4 w-4" /> Roles</TabsTrigger>
         <TabsTrigger value="accounts" className="gap-2"><Mail className="h-4 w-4" /> Email Accounts</TabsTrigger>
         <TabsTrigger value="signatures" className="gap-2"><Key className="h-4 w-4" /> Signatures</TabsTrigger>
@@ -170,7 +170,7 @@ export const AdminSuperSettings = () => {
             <CardTitle className="text-lg">User Role Management</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
+            <div className="overflow-x-auto"><Table className="min-w-[450px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>User</TableHead>
@@ -216,7 +216,7 @@ export const AdminSuperSettings = () => {
                   );
                 })}
               </TableBody>
-            </Table>
+            </Table></div>
           </CardContent>
         </Card>
       </TabsContent>
@@ -229,7 +229,7 @@ export const AdminSuperSettings = () => {
             <Button size="sm" onClick={() => setShowAddAccount(true)}><Plus className="h-4 w-4 mr-1" /> Add Account</Button>
           </div>
 
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               {emailAccounts.map(acc => (
                 <Card key={acc.id} className={`cursor-pointer transition-colors ${selectedAccount?.id === acc.id ? "border-primary" : ""}`}
@@ -255,8 +255,8 @@ export const AdminSuperSettings = () => {
               {selectedAccount ? (
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center justify-between">
-                      <span>Access Control: {selectedAccount.email_address}</span>
+                    <CardTitle className="text-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <span className="truncate">Access Control: {selectedAccount.email_address}</span>
                       <Button size="sm" onClick={() => setShowGrantAccess(true)}>
                         <Plus className="h-4 w-4 mr-1" /> Grant Access
                       </Button>
