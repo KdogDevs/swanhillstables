@@ -123,7 +123,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
               <Home className="h-4 w-4" />
@@ -136,7 +136,7 @@ const Dashboard = () => {
               </Link>
             )}
           </div>
-          <h1 className="font-serif text-xl font-semibold text-foreground">Member Portal</h1>
+          <h1 className="font-serif text-base sm:text-xl font-semibold text-foreground">Member Portal</h1>
           <Button variant="ghost" size="sm" onClick={handleSignOut}>
             Sign Out
           </Button>
@@ -151,15 +151,15 @@ const Dashboard = () => {
           className="space-y-8"
         >
           {/* Welcome Section */}
-          <div className="flex items-center gap-6">
-            <Avatar className="h-20 w-20 border-2 border-border">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border-2 border-border">
               <AvatarImage src={profile?.avatar_url || user.user_metadata?.avatar_url} />
               <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
                 {getInitials(profile?.full_name || user.user_metadata?.full_name)}
               </AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="font-serif text-3xl font-semibold text-foreground">
+              <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-foreground">
                 Welcome back, {profile?.full_name?.split(" ")[0] || user.user_metadata?.full_name?.split(" ")[0] || "Member"}!
               </h2>
               <p className="text-muted-foreground mt-1">
@@ -186,7 +186,7 @@ const Dashboard = () => {
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Email</p>
-                    <p className="font-medium">{user.email}</p>
+                    <p className="font-medium break-all">{user.email}</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground flex items-center gap-1">

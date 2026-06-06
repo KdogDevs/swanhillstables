@@ -168,7 +168,7 @@ const Auth = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <div className="bg-card rounded-lg shadow-lg p-8 border border-border">
+        <div className="bg-card rounded-lg shadow-lg p-5 sm:p-8 border border-border">
           <div className="text-center mb-8">
             <img src={logo} alt="Swan Hill Stables" className="h-20 w-auto mx-auto mb-4 rounded-full border-2 border-border shadow-sm" />
             <p className="text-muted-foreground">

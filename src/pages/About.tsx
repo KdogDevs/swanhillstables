@@ -34,7 +34,7 @@ const About = () => {
             transition={{ duration: 0.8 }}
             className="relative z-10 text-center px-6"
           >
-            <h1 className="font-serif text-5xl md:text-6xl font-semibold text-white mb-4">
+            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-4">
               About Swan Hill Stables
             </h1>
             <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
@@ -44,9 +44,9 @@ const About = () => {
         </section>
 
         {/* Our Story */}
-        <section className="py-20 section-gradient">
-          <div className="container mx-auto px-6">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <section className="py-12 md:py-20 section-gradient">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
               <motion.div
                 initial="hidden"
                 whileInView="visible"
@@ -56,7 +56,7 @@ const About = () => {
                 <p className="text-accent text-sm uppercase tracking-[0.2em] mb-4 font-medium">
                   Our Story
                 </p>
-                <h2 className="font-serif text-4xl md:text-5xl font-semibold text-foreground mb-6">
+                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-6">
                   More Than a Barn
                 </h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
@@ -90,8 +90,8 @@ const About = () => {
         </section>
 
         {/* Facilities */}
-        <section className="py-20 bg-secondary">
-          <div className="container mx-auto px-6">
+        <section className="py-12 md:py-20 bg-secondary">
+          <div className="container mx-auto px-4 sm:px-6">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -102,7 +102,7 @@ const About = () => {
               <p className="text-accent text-sm uppercase tracking-[0.2em] mb-4 font-medium">
                 Our Facilities
               </p>
-              <h2 className="font-serif text-4xl md:text-5xl font-semibold text-foreground">
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground">
                 Everything Your Horse Needs
               </h2>
             </motion.div>
@@ -207,9 +207,9 @@ const About = () => {
         <StallTour3D />
 
         {/* Property Overview */}
-        <section className="py-20 section-gradient">
-          <div className="container mx-auto px-6">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <section className="py-12 md:py-20 section-gradient">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -234,7 +234,7 @@ const About = () => {
                 <p className="text-accent text-sm uppercase tracking-[0.2em] mb-4 font-medium">
                   Our Community
                 </p>
-                <h2 className="font-serif text-4xl md:text-5xl font-semibold text-foreground mb-6">
+                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-6">
                   A Welcoming Barn Family
                 </h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">

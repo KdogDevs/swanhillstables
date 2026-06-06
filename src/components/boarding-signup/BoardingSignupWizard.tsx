@@ -224,7 +224,7 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Progress */}
       <div className="flex items-center justify-between">
         {STEPS.map((s, i) => {
@@ -233,7 +233,7 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
             <div key={i} className="flex items-center">
               <div className="flex flex-col items-center">
                 <div className={cn(
-                  "w-9 h-9 rounded-full flex items-center justify-center transition-all",
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all",
                   i < step ? "bg-primary text-primary-foreground" :
                   i === step ? "bg-primary text-primary-foreground ring-4 ring-primary/20" :
                   "bg-muted text-muted-foreground",
@@ -244,7 +244,7 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
                   {s.label}
                 </span>
               </div>
-              {i < STEPS.length - 1 && <div className={cn("h-0.5 w-3 sm:w-6 mx-1", i < step ? "bg-primary" : "bg-border")} />}
+              {i < STEPS.length - 1 && <div className={cn("h-0.5 w-2 sm:w-6 mx-0.5 sm:mx-1", i < step ? "bg-primary" : "bg-border")} />}
             </div>
           );
         })}
@@ -272,7 +272,7 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
                   >
                     <RadioGroupItem value={t} id={`tier-${t}`} className="mt-1" />
                     <div className="flex-1">
-                      <div className="flex items-baseline justify-between gap-3">
+                      <div className="flex flex-wrap items-baseline justify-between gap-1 sm:gap-3">
                         <span className="font-serif text-lg font-semibold text-foreground">{TIER_LABELS[t]}</span>
                         <span className="text-xs text-muted-foreground">{TIER_AVAILABILITY[t]}</span>
                       </div>
@@ -490,7 +490,7 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
                 </div>
               ) : (
                 <>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <Button type="button" variant={authMode === "signup" ? "default" : "outline"} size="sm" onClick={() => setAuthMode("signup")}>
                       Create Account
                     </Button>
@@ -574,7 +574,7 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
       </AnimatePresence>
 
       {/* Nav */}
-      <div className="flex items-center justify-between pt-4 border-t border-border">
+      <div className="flex items-center justify-between pt-4 border-t border-border gap-2">
         <Button variant="ghost" onClick={handleBack} disabled={step === 0 || isSubmitting}>
           <ChevronLeft className="h-4 w-4 mr-1" /> Back
         </Button>
@@ -594,7 +594,7 @@ export const BoardingSignupWizard = ({ initialTier, onClose }: Props) => {
 
 const Row = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-start justify-between gap-3">
-    <span className="text-xs uppercase tracking-wide text-muted-foreground w-32 flex-shrink-0 pt-0.5">{label}</span>
-    <span className="text-foreground text-right">{value || "—"}</span>
+    <span className="text-xs uppercase tracking-wide text-muted-foreground w-24 sm:w-32 flex-shrink-0 pt-0.5">{label}</span>
+    <span className="text-foreground text-right break-words min-w-0">{value || "—"}</span>
   </div>
 );

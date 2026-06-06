@@ -178,7 +178,7 @@ export const AdminClientsList = () => {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
@@ -188,7 +188,7 @@ export const AdminClientsList = () => {
               Manage client profiles and information
             </CardDescription>
           </div>
-          <div className="relative w-64">
+          <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search clients..."
@@ -210,7 +210,7 @@ export const AdminClientsList = () => {
             <p>No clients found</p>
           </div>
         ) : (
-          <Table>
+          <div className="overflow-x-auto"><Table className="min-w-[560px]">
             <TableHeader>
               <TableRow>
                 <TableHead>Client</TableHead>
@@ -264,13 +264,13 @@ export const AdminClientsList = () => {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </Table></div>
         )}
       </CardContent>
 
       {/* Client Detail Dialog */}
       <Dialog open={showClientDialog} onOpenChange={setShowClientDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Client Details</DialogTitle>
             <DialogDescription>
@@ -332,7 +332,7 @@ export const AdminClientsList = () => {
                   <AlertCircle className="h-4 w-4 text-accent" />
                   Emergency Contact
                 </h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-muted-foreground">Name</p>
                     <p className="font-medium">
@@ -357,7 +357,7 @@ export const AdminClientsList = () => {
                       <Stethoscope className="h-4 w-4 text-primary" />
                       Horse Care Preferences
                     </h4>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                       <div>
                         <p className="text-muted-foreground">Preferred Vet</p>
                         <p className="font-medium">
