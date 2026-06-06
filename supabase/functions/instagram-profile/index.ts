@@ -7,8 +7,7 @@ type CacheEntry = { ts: number; data: any };
 const cache = new Map<string, CacheEntry>();
 const TTL_MS = 10 * 60 * 1000;
 
-const UA =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+const UA = 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)';
 
 function formatCount(n: number): string {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1).replace(/\.0$/, '') + 'M';
@@ -30,42 +29,71 @@ async function fetchProfilePicAsDataUrl(url: string): Promise<string | null> {
   }
 }
 
+function parseCount(raw: string): number {
+  const s = raw.trim().toUpperCase().replace(/,/g, '');
+  const m = s.match(/^([\d.]+)\s*([KMB])?$/);
+  if (!m) return parseInt(s, 10) || 0;
+  const n = parseFloat(m[1]);
+  const mult = m[2] === 'B' ? 1e9 : m[2] === 'M' ? 1e6 : m[2] === 'K' ? 1e3 : 1;
+  return Math.round(n * mult);
+}
+
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
+
 async function fetchInstagramProfile(username: string) {
-  // Try the public web_profile_info endpoint (used by instagram.com itself).
-  const endpoint = `https://www.instagram.com/api/v1/users/web_profile_info/?username=${encodeURIComponent(username)}`;
-  const res = await fetch(endpoint, {
+  // Scrape the public profile HTML. The OpenGraph meta description contains:
+  // "1,234 Followers, 56 Following, 78 Posts - See Instagram photos and videos from Full Name (@handle)"
+  const res = await fetch(`https://www.instagram.com/${encodeURIComponent(username)}/`, {
     headers: {
       'User-Agent': UA,
-      'X-IG-App-ID': '936619743392459',
-      'Accept': 'application/json',
+      'Accept': 'text/html,application/xhtml+xml',
       'Accept-Language': 'en-US,en;q=0.9',
-      'Referer': `https://www.instagram.com/${username}/`,
     },
   });
 
-  if (!res.ok) {
-    throw new Error(`Instagram API returned ${res.status}`);
-  }
+  if (!res.ok) throw new Error(`Instagram returned ${res.status}`);
+  const html = await res.text();
 
-  const json = await res.json();
-  const user = json?.data?.user;
-  if (!user) throw new Error('No user data in Instagram response');
+  const ogImage = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+  const ogDesc = html.match(/<meta(?: name| property)="(?:og:)?description" content="([^"]+)"/)?.[1] ?? '';
+  const ogTitle = html.match(/<meta property="og:title" content="([^"]+)"/)?.[1] ?? '';
 
-  const followerCount: number = user.edge_followed_by?.count ?? 0;
-  const picUrl: string = user.profile_pic_url_hd || user.profile_pic_url || '';
-  const fullName: string = user.full_name || '';
-  const biography: string = user.biography || '';
-  const isVerified: boolean = !!user.is_verified;
+  // Debug: peek at meta tags & key tokens
+  const metas = html.match(/<meta[^>]*>/gi)?.slice(0, 12) ?? [];
+  const idxFollowers = html.toLowerCase().indexOf('followers');
+  const followersSnippet = idxFollowers >= 0 ? html.slice(Math.max(0, idxFollowers - 100), idxFollowers + 100) : '';
+  console.log('IG fetch', { username, htmlLen: html.length, metas, followersSnippet });
 
+  const desc = decodeEntities(ogDesc);
+  const title = decodeEntities(ogTitle);
+
+  // "1,234 Followers, 56 Following, 78 Posts - See Instagram photos and videos from Full Name (@handle)"
+  const followersMatch = desc.match(/([\d.,]+[KMB]?)\s+Followers/i);
+  const followerCount = followersMatch ? parseCount(followersMatch[1]) : 0;
+
+  const nameMatch =
+    title.match(/^(.*?)\s*\(@/) ||
+    desc.match(/from\s+(.+?)\s*\(@/i);
+  const fullName = nameMatch ? nameMatch[1].trim() : '';
+
+  const picUrl = ogImage ? decodeEntities(ogImage) : '';
   const profilePic = picUrl ? await fetchProfilePicAsDataUrl(picUrl) : null;
 
   return {
     username,
     fullName,
-    biography,
-    isVerified,
+    biography: '',
+    isVerified: false,
     followerCount,
-    followerCountFormatted: formatCount(followerCount),
+    followerCountFormatted: followerCount ? formatCount(followerCount) : '—',
     profilePic,
     fetchedAt: new Date().toISOString(),
   };
