@@ -9,8 +9,6 @@ import { useAdminCheck } from "@/hooks/useAdminCheck";
 // Each admin tab is a heavy module (forms, dialogs, editors). Lazy-load per tab so
 // the initial admin bundle is tiny and only the active tab's code is downloaded.
 const AdminClientsList  = lazy(() => import("@/components/admin/AdminClientsList").then(m => ({ default: m.AdminClientsList })));
-const AdminDocuments    = lazy(() => import("@/components/admin/AdminDocuments").then(m => ({ default: m.AdminDocuments })));
-const AdminCareLog      = lazy(() => import("@/components/admin/AdminCareLog").then(m => ({ default: m.AdminCareLog })));
 const AdminHorseUseLog  = lazy(() => import("@/components/admin/AdminHorseUseLog").then(m => ({ default: m.AdminHorseUseLog })));
 const AdminEmail        = lazy(() => import("@/components/admin/AdminEmail").then(m => ({ default: m.AdminEmail })));
 const AdminContacts     = lazy(() => import("@/components/admin/AdminContacts").then(m => ({ default: m.AdminContacts })));
@@ -19,8 +17,8 @@ const AdminSuperSettings= lazy(() => import("@/components/admin/AdminSuperSettin
 const AdminSupplyTracker= lazy(() => import("@/components/admin/AdminSupplyTracker").then(m => ({ default: m.AdminSupplyTracker })));
 const AdminReceipts     = lazy(() => import("@/components/admin/AdminReceipts").then(m => ({ default: m.AdminReceipts })));
 import {
-  Loader2, Users, FileText, Home, LogOut,
-  ClipboardList, Bookmark, Mail, Contact, Megaphone, Settings, Package, Receipt
+  Loader2, Users, Home, LogOut,
+  Bookmark, Mail, Contact, Megaphone, Settings, Package, Receipt
 } from "lucide-react";
 
 const AdminDashboard = () => {
