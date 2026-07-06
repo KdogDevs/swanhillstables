@@ -215,8 +215,16 @@ const About = () => {
           </div>
         </section>
 
-        {/* 3D Stall Tour */}
-        <StallTour3D />
+        {/* 3D Stall Tour — lazy: loads three.js only when this section mounts */}
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          }
+        >
+          <StallTour3D />
+        </Suspense>
 
         {/* Property Overview */}
         <section className="py-12 md:py-20 section-gradient">
