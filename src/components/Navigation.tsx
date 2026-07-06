@@ -28,7 +28,22 @@ export const Navigation = () => {
   const { user, signOut } = useAuth();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    // rAF-throttled scroll listener; only sets state on threshold crossings
+    let ticking = false;
+    let lastScrolled = window.scrollY > 40;
+    setScrolled(lastScrolled);
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const next = window.scrollY > 40;
+        if (next !== lastScrolled) {
+          lastScrolled = next;
+          setScrolled(next);
+        }
+        ticking = false;
+      });
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -39,18 +54,14 @@ export const Navigation = () => {
   }, [signOut, navigate]);
 
   return (
-    <motion.nav
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 py-3 px-4"
-    >
+    <nav className="fixed top-0 left-0 right-0 z-50 py-3 px-4 isolate">
       <div
-        className={`container mx-auto px-3 sm:px-6 py-3 backdrop-blur-xl border rounded-lg transition-all duration-500 ${
+        className={`container mx-auto px-3 sm:px-6 py-3 border rounded-lg transform-gpu transition-[background-color,border-color,box-shadow] duration-300 ${
           scrolled
-            ? "bg-background/85 border-border/60 shadow-md"
-            : "bg-background/60 border-border/40 shadow-sm"
+            ? "bg-background/95 border-border/60 shadow-md backdrop-blur-md"
+            : "bg-background/80 border-border/40 shadow-sm backdrop-blur-sm"
         }`}
+        style={{ willChange: "background-color" }}
       >
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
@@ -180,6 +191,6 @@ export const Navigation = () => {
           )}
         </AnimatePresence>
       </div>
-    </motion.nav>
+    </nav>
   );
 };
