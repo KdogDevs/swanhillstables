@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "swan-hill-stables-mcp",
+      "version": "0.1.0",
+      "title": "Swan Hill Stables"
+    },
+    "tools": [
+      {
+        "name": "get_stable_info",
+        "title": "Get Swan Hill Stables info",
+        "description": "Returns basic public info about Swan Hill Stables: address, phone, email, hours, and social links.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_services",
+        "title": "List Swan Hill Stables services",
+        "description": "Lists the services Swan Hill Stables offers with a short summary and starting price. Use `category` to filter to just boarding or lessons.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "enum": [
+                "boarding",
+                "lessons",
+                "all"
+              ],
+              "default": "all",
+              "description": "Which service category to return."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
