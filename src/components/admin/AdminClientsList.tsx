@@ -17,6 +17,7 @@ import { Users, Search, Loader2, Phone, MapPin, AlertCircle, FileText, Eye, Stet
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DocumentPreviewDialog } from "./DocumentPreviewDialog";
+import { ClientCareLogSection } from "./ClientCareLogSection";
 
 interface Profile {
   id: string;
@@ -450,6 +451,11 @@ export const AdminClientsList = () => {
                   </div>
                 )}
               </div>
+
+              {/* Horse Care Log — boarders only */}
+              {selectedClient.is_boarder && (<><Separator />
+                <ClientCareLogSection userId={selectedClient.user_id} />
+              </>)}
 
               {/* Request signature link */}
               <Separator />

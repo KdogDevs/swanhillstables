@@ -9,8 +9,6 @@ import { useAdminCheck } from "@/hooks/useAdminCheck";
 // Each admin tab is a heavy module (forms, dialogs, editors). Lazy-load per tab so
 // the initial admin bundle is tiny and only the active tab's code is downloaded.
 const AdminClientsList  = lazy(() => import("@/components/admin/AdminClientsList").then(m => ({ default: m.AdminClientsList })));
-const AdminDocuments    = lazy(() => import("@/components/admin/AdminDocuments").then(m => ({ default: m.AdminDocuments })));
-const AdminCareLog      = lazy(() => import("@/components/admin/AdminCareLog").then(m => ({ default: m.AdminCareLog })));
 const AdminHorseUseLog  = lazy(() => import("@/components/admin/AdminHorseUseLog").then(m => ({ default: m.AdminHorseUseLog })));
 const AdminEmail        = lazy(() => import("@/components/admin/AdminEmail").then(m => ({ default: m.AdminEmail })));
 const AdminContacts     = lazy(() => import("@/components/admin/AdminContacts").then(m => ({ default: m.AdminContacts })));
@@ -19,8 +17,8 @@ const AdminSuperSettings= lazy(() => import("@/components/admin/AdminSuperSettin
 const AdminSupplyTracker= lazy(() => import("@/components/admin/AdminSupplyTracker").then(m => ({ default: m.AdminSupplyTracker })));
 const AdminReceipts     = lazy(() => import("@/components/admin/AdminReceipts").then(m => ({ default: m.AdminReceipts })));
 import {
-  Loader2, Users, FileText, Home, LogOut,
-  ClipboardList, Bookmark, Mail, Contact, Megaphone, Settings, Package, Receipt
+  Loader2, Users, Home, LogOut,
+  Bookmark, Mail, Contact, Megaphone, Settings, Package, Receipt
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -123,26 +121,7 @@ const AdminDashboard = () => {
             <TabsContent value="email"><Suspense fallback={<TabFallback />}><AdminEmail isSuperAdmin={isSuperAdmin} /></Suspense></TabsContent>
             <TabsContent value="contacts"><Suspense fallback={<TabFallback />}><AdminContacts /></Suspense></TabsContent>
             <TabsContent value="mailinglists"><Suspense fallback={<TabFallback />}><AdminMailingLists /></Suspense></TabsContent>
-            <TabsContent value="clients" className="space-y-4">
-              <Suspense fallback={<TabFallback />}>
-                <Tabs defaultValue="profiles" className="space-y-4">
-                  <TabsList className="flex flex-wrap gap-1 h-auto p-1">
-                    <TabsTrigger value="profiles" className="flex items-center gap-1.5 text-xs">
-                      <Users className="h-3.5 w-3.5" /> Profiles
-                    </TabsTrigger>
-                    <TabsTrigger value="paperwork" className="flex items-center gap-1.5 text-xs">
-                      <FileText className="h-3.5 w-3.5" /> Paperwork
-                    </TabsTrigger>
-                    <TabsTrigger value="carelog" className="flex items-center gap-1.5 text-xs">
-                      <ClipboardList className="h-3.5 w-3.5" /> Horse Care Log
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="profiles"><Suspense fallback={<TabFallback />}><AdminClientsList /></Suspense></TabsContent>
-                  <TabsContent value="paperwork"><Suspense fallback={<TabFallback />}><AdminDocuments /></Suspense></TabsContent>
-                  <TabsContent value="carelog"><Suspense fallback={<TabFallback />}><AdminCareLog /></Suspense></TabsContent>
-                </Tabs>
-              </Suspense>
-            </TabsContent>
+            <TabsContent value="clients"><Suspense fallback={<TabFallback />}><AdminClientsList /></Suspense></TabsContent>
             <TabsContent value="horseuse"><Suspense fallback={<TabFallback />}><AdminHorseUseLog /></Suspense></TabsContent>
             <TabsContent value="supplies"><Suspense fallback={<TabFallback />}><AdminSupplyTracker /></Suspense></TabsContent>
             <TabsContent value="receipts"><Suspense fallback={<TabFallback />}><AdminReceipts /></Suspense></TabsContent>
