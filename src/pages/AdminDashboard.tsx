@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "@/assets/logo-transparent.png";
 import { motion } from "framer-motion";
@@ -6,16 +6,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
-import { AdminClientsList } from "@/components/admin/AdminClientsList";
-import { AdminDocuments } from "@/components/admin/AdminDocuments";
-import { AdminCareLog } from "@/components/admin/AdminCareLog";
-import { AdminHorseUseLog } from "@/components/admin/AdminHorseUseLog";
-import { AdminEmail } from "@/components/admin/AdminEmail";
-import { AdminContacts } from "@/components/admin/AdminContacts";
-import { AdminMailingLists } from "@/components/admin/AdminMailingLists";
-import { AdminSuperSettings } from "@/components/admin/AdminSuperSettings";
-import { AdminSupplyTracker } from "@/components/admin/AdminSupplyTracker";
-import { AdminReceipts } from "@/components/admin/AdminReceipts";
+// Each admin tab is a heavy module (forms, dialogs, editors). Lazy-load per tab so
+// the initial admin bundle is tiny and only the active tab's code is downloaded.
+const AdminClientsList  = lazy(() => import("@/components/admin/AdminClientsList").then(m => ({ default: m.AdminClientsList })));
+const AdminDocuments    = lazy(() => import("@/components/admin/AdminDocuments").then(m => ({ default: m.AdminDocuments })));
+const AdminCareLog      = lazy(() => import("@/components/admin/AdminCareLog").then(m => ({ default: m.AdminCareLog })));
+const AdminHorseUseLog  = lazy(() => import("@/components/admin/AdminHorseUseLog").then(m => ({ default: m.AdminHorseUseLog })));
+const AdminEmail        = lazy(() => import("@/components/admin/AdminEmail").then(m => ({ default: m.AdminEmail })));
+const AdminContacts     = lazy(() => import("@/components/admin/AdminContacts").then(m => ({ default: m.AdminContacts })));
+const AdminMailingLists = lazy(() => import("@/components/admin/AdminMailingLists").then(m => ({ default: m.AdminMailingLists })));
+const AdminSuperSettings= lazy(() => import("@/components/admin/AdminSuperSettings").then(m => ({ default: m.AdminSuperSettings })));
+const AdminSupplyTracker= lazy(() => import("@/components/admin/AdminSupplyTracker").then(m => ({ default: m.AdminSupplyTracker })));
+const AdminReceipts     = lazy(() => import("@/components/admin/AdminReceipts").then(m => ({ default: m.AdminReceipts })));
 import { 
   Loader2, Users, FileText, Home, Shield, LogOut,
   ClipboardList, Bookmark, Mail, Contact, Megaphone, Settings, Package, Receipt
@@ -38,6 +40,12 @@ const AdminDashboard = () => {
     await signOut();
     navigate("/");
   };
+
+  const TabFallback = () => (
+    <div className="flex items-center justify-center py-16">
+      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+    </div>
+  );
 
   if (authLoading || adminLoading) {
     return (
@@ -118,17 +126,17 @@ const AdminDashboard = () => {
               )}
             </TabsList>
 
-            <TabsContent value="email"><AdminEmail isSuperAdmin={isSuperAdmin} /></TabsContent>
-            <TabsContent value="contacts"><AdminContacts /></TabsContent>
-            <TabsContent value="mailinglists"><AdminMailingLists /></TabsContent>
-            <TabsContent value="clients"><AdminClientsList /></TabsContent>
-            <TabsContent value="carelog"><AdminCareLog /></TabsContent>
-            <TabsContent value="horseuse"><AdminHorseUseLog /></TabsContent>
-            <TabsContent value="documents"><AdminDocuments /></TabsContent>
-            <TabsContent value="supplies"><AdminSupplyTracker /></TabsContent>
-            <TabsContent value="receipts"><AdminReceipts /></TabsContent>
+            <TabsContent value="email"><Suspense fallback={<TabFallback />}><AdminEmail isSuperAdmin={isSuperAdmin} /></Suspense></TabsContent>
+            <TabsContent value="contacts"><Suspense fallback={<TabFallback />}><AdminContacts /></Suspense></TabsContent>
+            <TabsContent value="mailinglists"><Suspense fallback={<TabFallback />}><AdminMailingLists /></Suspense></TabsContent>
+            <TabsContent value="clients"><Suspense fallback={<TabFallback />}><AdminClientsList /></Suspense></TabsContent>
+            <TabsContent value="carelog"><Suspense fallback={<TabFallback />}><AdminCareLog /></Suspense></TabsContent>
+            <TabsContent value="horseuse"><Suspense fallback={<TabFallback />}><AdminHorseUseLog /></Suspense></TabsContent>
+            <TabsContent value="documents"><Suspense fallback={<TabFallback />}><AdminDocuments /></Suspense></TabsContent>
+            <TabsContent value="supplies"><Suspense fallback={<TabFallback />}><AdminSupplyTracker /></Suspense></TabsContent>
+            <TabsContent value="receipts"><Suspense fallback={<TabFallback />}><AdminReceipts /></Suspense></TabsContent>
             {isSuperAdmin && (
-              <TabsContent value="settings"><AdminSuperSettings /></TabsContent>
+              <TabsContent value="settings"><Suspense fallback={<TabFallback />}><AdminSuperSettings /></Suspense></TabsContent>
             )}
           </Tabs>
         </motion.div>
