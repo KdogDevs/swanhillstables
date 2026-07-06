@@ -338,21 +338,30 @@ const Dashboard = () => {
           </Card>
 
           {/* My Documents */}
-          <MyDocuments />
+          <Suspense fallback={<div className="h-32" />}>
+            <MyDocuments />
+          </Suspense>
 
           {/* Horse Care Log - Only for Boarders */}
           {profile?.is_boarder && (
-            <BoarderCareLog />
+            <Suspense fallback={<div className="h-32" />}>
+              <BoarderCareLog />
+            </Suspense>
           )}
         </motion.div>
       </main>
 
-      <ProfileEditDialog
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-        profile={profile}
-        onProfileUpdated={fetchProfile}
-      />
+      {/* Dialog is only mounted when opened → its chunk downloads on first edit */}
+      {editDialogOpen && (
+        <Suspense fallback={null}>
+          <ProfileEditDialog
+            open={editDialogOpen}
+            onOpenChange={setEditDialogOpen}
+            profile={profile}
+            onProfileUpdated={fetchProfile}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };
