@@ -18,8 +18,8 @@ const AdminMailingLists = lazy(() => import("@/components/admin/AdminMailingList
 const AdminSuperSettings= lazy(() => import("@/components/admin/AdminSuperSettings").then(m => ({ default: m.AdminSuperSettings })));
 const AdminSupplyTracker= lazy(() => import("@/components/admin/AdminSupplyTracker").then(m => ({ default: m.AdminSupplyTracker })));
 const AdminReceipts     = lazy(() => import("@/components/admin/AdminReceipts").then(m => ({ default: m.AdminReceipts })));
-import { 
-  Loader2, Users, FileText, Home, Shield, LogOut,
+import {
+  Loader2, Users, FileText, Home, LogOut,
   ClipboardList, Bookmark, Mail, Contact, Megaphone, Settings, Package, Receipt
 } from "lucide-react";
 
@@ -104,14 +104,8 @@ const AdminDashboard = () => {
               <TabsTrigger value="clients" className="flex items-center gap-1.5 text-xs">
                 <Users className="h-3.5 w-3.5" /> Clients
               </TabsTrigger>
-              <TabsTrigger value="carelog" className="flex items-center gap-1.5 text-xs">
-                <ClipboardList className="h-3.5 w-3.5" /> Care Log
-              </TabsTrigger>
               <TabsTrigger value="horseuse" className="flex items-center gap-1.5 text-xs">
                 <Bookmark className="h-3.5 w-3.5" /> Horse Use
-              </TabsTrigger>
-              <TabsTrigger value="documents" className="flex items-center gap-1.5 text-xs">
-                <FileText className="h-3.5 w-3.5" /> Paperwork
               </TabsTrigger>
               <TabsTrigger value="supplies" className="flex items-center gap-1.5 text-xs">
                 <Package className="h-3.5 w-3.5" /> Supplies
@@ -129,10 +123,27 @@ const AdminDashboard = () => {
             <TabsContent value="email"><Suspense fallback={<TabFallback />}><AdminEmail isSuperAdmin={isSuperAdmin} /></Suspense></TabsContent>
             <TabsContent value="contacts"><Suspense fallback={<TabFallback />}><AdminContacts /></Suspense></TabsContent>
             <TabsContent value="mailinglists"><Suspense fallback={<TabFallback />}><AdminMailingLists /></Suspense></TabsContent>
-            <TabsContent value="clients"><Suspense fallback={<TabFallback />}><AdminClientsList /></Suspense></TabsContent>
-            <TabsContent value="carelog"><Suspense fallback={<TabFallback />}><AdminCareLog /></Suspense></TabsContent>
+            <TabsContent value="clients" className="space-y-4">
+              <Suspense fallback={<TabFallback />}>
+                <Tabs defaultValue="profiles" className="space-y-4">
+                  <TabsList className="flex flex-wrap gap-1 h-auto p-1">
+                    <TabsTrigger value="profiles" className="flex items-center gap-1.5 text-xs">
+                      <Users className="h-3.5 w-3.5" /> Profiles
+                    </TabsTrigger>
+                    <TabsTrigger value="paperwork" className="flex items-center gap-1.5 text-xs">
+                      <FileText className="h-3.5 w-3.5" /> Paperwork
+                    </TabsTrigger>
+                    <TabsTrigger value="carelog" className="flex items-center gap-1.5 text-xs">
+                      <ClipboardList className="h-3.5 w-3.5" /> Horse Care Log
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="profiles"><Suspense fallback={<TabFallback />}><AdminClientsList /></Suspense></TabsContent>
+                  <TabsContent value="paperwork"><Suspense fallback={<TabFallback />}><AdminDocuments /></Suspense></TabsContent>
+                  <TabsContent value="carelog"><Suspense fallback={<TabFallback />}><AdminCareLog /></Suspense></TabsContent>
+                </Tabs>
+              </Suspense>
+            </TabsContent>
             <TabsContent value="horseuse"><Suspense fallback={<TabFallback />}><AdminHorseUseLog /></Suspense></TabsContent>
-            <TabsContent value="documents"><Suspense fallback={<TabFallback />}><AdminDocuments /></Suspense></TabsContent>
             <TabsContent value="supplies"><Suspense fallback={<TabFallback />}><AdminSupplyTracker /></Suspense></TabsContent>
             <TabsContent value="receipts"><Suspense fallback={<TabFallback />}><AdminReceipts /></Suspense></TabsContent>
             {isSuperAdmin && (
