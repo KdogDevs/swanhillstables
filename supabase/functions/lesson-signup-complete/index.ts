@@ -60,6 +60,7 @@ Deno.serve(async (req) => {
 
     // 2. Insert lesson signup
     const { error: signupErr } = await supabaseAdmin.from("lesson_signups").insert({
+      user_id: userId,
       full_name: formData.full_name,
       email: formData.email,
       phone: formData.phone || null,
