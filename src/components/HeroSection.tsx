@@ -5,12 +5,18 @@ import { useRef } from "react";
 import heroBarn from "@/assets/barn-entrance.jpg";
 import logoFull from "@/assets/logo-full-transparent.png";
 
-// Preload hero image immediately
-const preloadLink = document.createElement("link");
-preloadLink.rel = "preload";
-preloadLink.as = "image";
-preloadLink.href = heroBarn;
-document.head.appendChild(preloadLink);
+// Preload hero image immediately (guard against HMR duplicates)
+if (typeof document !== "undefined" && !document.head.querySelector(`link[rel="preload"][href="${heroBarn}"]`)) {
+  const preloadLink = document.createElement("link");
+  preloadLink.rel = "preload";
+  preloadLink.as = "image";
+  preloadLink.href = heroBarn;
+  (preloadLink as any).fetchPriority = "high";
+  document.head.appendChild(preloadLink);
+}
+
+// Lowercase DOM attribute avoids React's unknown-prop warning while still hinting the browser.
+const highPriorityImgAttrs = { fetchpriority: "high" } as unknown as Record<string, string>;
 
 export const HeroSection = () => {
   const ref = useRef<HTMLElement>(null);
@@ -37,10 +43,9 @@ export const HeroSection = () => {
           src={heroBarn}
           alt="Swan Hill Stables at sunset"
           className="w-full h-[130%] object-cover"
-          fetchPriority="high"
           decoding="async"
+          {...highPriorityImgAttrs}
         />
-        
       </motion.div>
 
       {/* Content with scroll fade - GPU accelerated */}
@@ -61,7 +66,7 @@ export const HeroSection = () => {
             src={logoFull}
             alt="Swan Hill Stables"
             className="h-48 md:h-64 lg:h-72 w-auto rounded-md mix-blend-multiply"
-            fetchPriority="high"
+            decoding="async"
           />
         </motion.div>
 
