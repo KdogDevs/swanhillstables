@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,10 +22,15 @@ import {
   DollarSign
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import ProfileEditDialog from "@/components/ProfileEditDialog";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
-import { BoarderCareLog } from "@/components/BoarderCareLog";
-import { MyDocuments } from "@/components/MyDocuments";
+// Below-the-fold / on-demand — lazy-load to keep the dashboard shell light.
+const ProfileEditDialog = lazy(() => import("@/components/ProfileEditDialog"));
+const BoarderCareLog = lazy(() =>
+  import("@/components/BoarderCareLog").then((m) => ({ default: m.BoarderCareLog }))
+);
+const MyDocuments = lazy(() =>
+  import("@/components/MyDocuments").then((m) => ({ default: m.MyDocuments }))
+);
 
 interface Profile {
   id: string;
@@ -333,21 +338,30 @@ const Dashboard = () => {
           </Card>
 
           {/* My Documents */}
-          <MyDocuments />
+          <Suspense fallback={<div className="h-32" />}>
+            <MyDocuments />
+          </Suspense>
 
           {/* Horse Care Log - Only for Boarders */}
           {profile?.is_boarder && (
-            <BoarderCareLog />
+            <Suspense fallback={<div className="h-32" />}>
+              <BoarderCareLog />
+            </Suspense>
           )}
         </motion.div>
       </main>
 
-      <ProfileEditDialog
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-        profile={profile}
-        onProfileUpdated={fetchProfile}
-      />
+      {/* Dialog is only mounted when opened → its chunk downloads on first edit */}
+      {editDialogOpen && (
+        <Suspense fallback={null}>
+          <ProfileEditDialog
+            open={editDialogOpen}
+            onOpenChange={setEditDialogOpen}
+            profile={profile}
+            onProfileUpdated={fetchProfile}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };

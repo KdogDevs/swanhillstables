@@ -5,9 +5,14 @@ import { motion } from "framer-motion";
 import { Check, Home, Sparkles, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { BoardingSignupWizard } from "@/components/boarding-signup/BoardingSignupWizard";
+// Wizard is only needed once the user clicks "Apply" — lazy-load its bundle then.
+const BoardingSignupWizard = lazy(() =>
+  import("@/components/boarding-signup/BoardingSignupWizard").then((m) => ({
+    default: m.BoardingSignupWizard,
+  }))
+);
 import { Tier, TIER_INCLUDES, TIER_AVAILABILITY, PRICE_MATRIX, FEED_LABELS, FeedPlan, ADDON_NOTES } from "@/components/boarding-signup/pricing";
 
 const lessonOptions = [
@@ -329,10 +334,14 @@ const Pricing = () => {
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl">Boarding Application</DialogTitle>
           </DialogHeader>
-          <BoardingSignupWizard
-            initialTier={wizardTier ?? undefined}
-            onClose={() => setWizardOpen(false)}
-          />
+          {wizardOpen && (
+            <Suspense fallback={<div className="py-12 text-center text-muted-foreground">Loading…</div>}>
+              <BoardingSignupWizard
+                initialTier={wizardTier ?? undefined}
+                onClose={() => setWizardOpen(false)}
+              />
+            </Suspense>
+          )}
         </DialogContent>
       </Dialog>
     </div>
