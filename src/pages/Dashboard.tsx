@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,10 +22,15 @@ import {
   DollarSign
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import ProfileEditDialog from "@/components/ProfileEditDialog";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
-import { BoarderCareLog } from "@/components/BoarderCareLog";
-import { MyDocuments } from "@/components/MyDocuments";
+// Below-the-fold / on-demand — lazy-load to keep the dashboard shell light.
+const ProfileEditDialog = lazy(() => import("@/components/ProfileEditDialog"));
+const BoarderCareLog = lazy(() =>
+  import("@/components/BoarderCareLog").then((m) => ({ default: m.BoarderCareLog }))
+);
+const MyDocuments = lazy(() =>
+  import("@/components/MyDocuments").then((m) => ({ default: m.MyDocuments }))
+);
 
 interface Profile {
   id: string;
