@@ -2,6 +2,8 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { motion } from "framer-motion";
+import { lazy, Suspense } from "react";
+import { Loader2 } from "lucide-react";
 import barnEntrance from "@/assets/barn-entrance.jpg";
 import creekFencing from "@/assets/creek-fencing.jpg";
 import indoorArena from "@/assets/indoor-arena.jpg";
@@ -9,7 +11,11 @@ import stallsExterior from "@/assets/stalls-exterior.jpg";
 import paddockHorses from "@/assets/paddock-horses.jpg";
 import horsesFence from "@/assets/horses-fence.jpg";
 import ridingField from "@/assets/riding-field.jpg";
-import { StallTour3D } from "@/components/StallTour3D";
+// three.js + react-three-fiber is a large dependency — load it only when
+// the tour scrolls into view instead of blocking the About page bundle.
+const StallTour3D = lazy(() =>
+  import("@/components/StallTour3D").then((m) => ({ default: m.StallTour3D }))
+);
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
