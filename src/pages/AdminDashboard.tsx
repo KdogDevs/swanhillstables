@@ -123,26 +123,7 @@ const AdminDashboard = () => {
             <TabsContent value="email"><Suspense fallback={<TabFallback />}><AdminEmail isSuperAdmin={isSuperAdmin} /></Suspense></TabsContent>
             <TabsContent value="contacts"><Suspense fallback={<TabFallback />}><AdminContacts /></Suspense></TabsContent>
             <TabsContent value="mailinglists"><Suspense fallback={<TabFallback />}><AdminMailingLists /></Suspense></TabsContent>
-            <TabsContent value="clients" className="space-y-4">
-              <Suspense fallback={<TabFallback />}>
-                <Tabs defaultValue="profiles" className="space-y-4">
-                  <TabsList className="flex flex-wrap gap-1 h-auto p-1">
-                    <TabsTrigger value="profiles" className="flex items-center gap-1.5 text-xs">
-                      <Users className="h-3.5 w-3.5" /> Profiles
-                    </TabsTrigger>
-                    <TabsTrigger value="paperwork" className="flex items-center gap-1.5 text-xs">
-                      <FileText className="h-3.5 w-3.5" /> Paperwork
-                    </TabsTrigger>
-                    <TabsTrigger value="carelog" className="flex items-center gap-1.5 text-xs">
-                      <ClipboardList className="h-3.5 w-3.5" /> Horse Care Log
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="profiles"><Suspense fallback={<TabFallback />}><AdminClientsList /></Suspense></TabsContent>
-                  <TabsContent value="paperwork"><Suspense fallback={<TabFallback />}><AdminDocuments /></Suspense></TabsContent>
-                  <TabsContent value="carelog"><Suspense fallback={<TabFallback />}><AdminCareLog /></Suspense></TabsContent>
-                </Tabs>
-              </Suspense>
-            </TabsContent>
+            <TabsContent value="clients"><Suspense fallback={<TabFallback />}><AdminClientsList /></Suspense></TabsContent>
             <TabsContent value="horseuse"><Suspense fallback={<TabFallback />}><AdminHorseUseLog /></Suspense></TabsContent>
             <TabsContent value="supplies"><Suspense fallback={<TabFallback />}><AdminSupplyTracker /></Suspense></TabsContent>
             <TabsContent value="receipts"><Suspense fallback={<TabFallback />}><AdminReceipts /></Suspense></TabsContent>
