@@ -14,6 +14,99 @@ export type Database = {
   }
   public: {
     Tables: {
+      boarding_signups: {
+        Row: {
+          addon_bedding: boolean
+          addon_blanketing: boolean
+          addon_grooming: boolean
+          addon_hay: boolean
+          addon_pasture_feeding: boolean
+          addon_training: boolean
+          address: string | null
+          admin_notes: string | null
+          created_at: string
+          email: string
+          emergency_authorize: boolean
+          emergency_limit: string | null
+          feed_plan: string
+          full_name: string
+          horse_age: string | null
+          horse_breed: string | null
+          horse_color: string | null
+          horse_name: string
+          horse_sex: string
+          id: string
+          monthly_amount: number
+          phone: string | null
+          status: string
+          tier: string
+          updated_at: string
+          user_id: string | null
+          vet_name: string | null
+          vet_phone: string | null
+        }
+        Insert: {
+          addon_bedding?: boolean
+          addon_blanketing?: boolean
+          addon_grooming?: boolean
+          addon_hay?: boolean
+          addon_pasture_feeding?: boolean
+          addon_training?: boolean
+          address?: string | null
+          admin_notes?: string | null
+          created_at?: string
+          email: string
+          emergency_authorize?: boolean
+          emergency_limit?: string | null
+          feed_plan: string
+          full_name: string
+          horse_age?: string | null
+          horse_breed?: string | null
+          horse_color?: string | null
+          horse_name: string
+          horse_sex: string
+          id?: string
+          monthly_amount: number
+          phone?: string | null
+          status?: string
+          tier: string
+          updated_at?: string
+          user_id?: string | null
+          vet_name?: string | null
+          vet_phone?: string | null
+        }
+        Update: {
+          addon_bedding?: boolean
+          addon_blanketing?: boolean
+          addon_grooming?: boolean
+          addon_hay?: boolean
+          addon_pasture_feeding?: boolean
+          addon_training?: boolean
+          address?: string | null
+          admin_notes?: string | null
+          created_at?: string
+          email?: string
+          emergency_authorize?: boolean
+          emergency_limit?: string | null
+          feed_plan?: string
+          full_name?: string
+          horse_age?: string | null
+          horse_breed?: string | null
+          horse_color?: string | null
+          horse_name?: string
+          horse_sex?: string
+          id?: string
+          monthly_amount?: number
+          phone?: string | null
+          status?: string
+          tier?: string
+          updated_at?: string
+          user_id?: string | null
+          vet_name?: string | null
+          vet_phone?: string | null
+        }
+        Relationships: []
+      }
       client_documents: {
         Row: {
           created_at: string
@@ -26,10 +119,12 @@ export type Database = {
           pdf_url: string | null
           recipient_email: string | null
           sent_at: string | null
+          sign_token: string | null
           signature_data: string | null
           signed_at: string | null
           signing_url: string | null
           status: string
+          token_expires_at: string | null
           updated_at: string
           user_id: string
         }
@@ -44,10 +139,12 @@ export type Database = {
           pdf_url?: string | null
           recipient_email?: string | null
           sent_at?: string | null
+          sign_token?: string | null
           signature_data?: string | null
           signed_at?: string | null
           signing_url?: string | null
           status?: string
+          token_expires_at?: string | null
           updated_at?: string
           user_id: string
         }
@@ -62,10 +159,12 @@ export type Database = {
           pdf_url?: string | null
           recipient_email?: string | null
           sent_at?: string | null
+          sign_token?: string | null
           signature_data?: string | null
           signed_at?: string | null
           signing_url?: string | null
           status?: string
+          token_expires_at?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -474,6 +573,7 @@ export type Database = {
           special_needs: string | null
           status: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           admin_notes?: string | null
@@ -494,6 +594,7 @@ export type Database = {
           special_needs?: string | null
           status?: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           admin_notes?: string | null
@@ -514,6 +615,7 @@ export type Database = {
           special_needs?: string | null
           status?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }

@@ -90,6 +90,34 @@ Deno.serve(async (req) => {
 
     // 2. Insert client_documents row (signed)
     const now = new Date().toISOString();
+
+    // 2a. Insert boarding_signups record for admin visibility & deletion
+    await supabaseAdmin.from("boarding_signups").insert({
+      user_id: userId,
+      full_name: formData.full_name,
+      email: formData.email,
+      phone: formData.phone || null,
+      address: formData.address || null,
+      horse_name: formData.horse_name,
+      horse_breed: formData.horse_breed || null,
+      horse_age: formData.horse_age || null,
+      horse_sex: formData.horse_sex,
+      horse_color: formData.horse_color || null,
+      tier: formData.tier,
+      feed_plan: formData.feed_plan,
+      monthly_amount: formData.monthly_amount,
+      addon_hay: formData.addon_hay,
+      addon_bedding: formData.addon_bedding,
+      addon_pasture_feeding: formData.addon_pasture_feeding,
+      addon_blanketing: formData.addon_blanketing,
+      addon_grooming: formData.addon_grooming,
+      addon_training: formData.addon_training,
+      vet_name: formData.vet_name || null,
+      vet_phone: formData.vet_phone || null,
+      emergency_authorize: formData.emergency_authorize,
+      emergency_limit: formData.emergency_limit || null,
+    });
+
     const { data: insertedDoc, error: docErr } = await supabaseAdmin
       .from("client_documents")
       .insert({
