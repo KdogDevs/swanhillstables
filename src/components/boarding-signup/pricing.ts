@@ -18,6 +18,11 @@ export const TIER_SHORT: Record<Tier, string> = {
   outdoor: "Outdoor / Shed-Row",
 };
 
+export const BASE_BOARD_PRICE: Record<Tier, number> = {
+  indoor: 600,
+  outdoor: 475,
+};
+
 export const FEED_LABELS: Record<FeedPlan, string> = {
   boarder: "Boarder provides feed",
   barn_1bag_basic: "Barn provides — 1 bag/week (Basic 14% Starch)",
