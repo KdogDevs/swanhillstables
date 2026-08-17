@@ -220,19 +220,7 @@ const Pricing = () => {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6 mt-8">
-                <div className="bg-card rounded-lg p-6 card-shadow">
-                  <h3 className="font-serif text-lg font-semibold text-foreground mb-3">
-                    Available Add-Ons
-                  </h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• <strong className="text-foreground">Hay</strong> — $100/month</li>
-                    <li>• <strong className="text-foreground">Pelletized bedding</strong> — $60/month</li>
-                    {ADDON_NOTES.map((note) => (
-                      <li key={note}>• {note}</li>
-                    ))}
-                  </ul>
-                </div>
+              <div className="mt-8">
                 <div className="bg-card rounded-lg p-6 card-shadow">
                   <h3 className="font-serif text-lg font-semibold text-foreground mb-3">
                     What's Included in Every Tier
