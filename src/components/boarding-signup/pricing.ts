@@ -28,18 +28,18 @@ export const FEED_LABELS: Record<FeedPlan, string> = {
 
 export const PRICE_MATRIX: Record<Tier, Record<FeedPlan, number>> = {
   indoor: {
-    boarder: 525,
-    barn_1bag_basic: 545,
-    barn_1bag_tcs: 590,
-    barn_2bag_basic: 565,
-    barn_2bag_tcs: 610,
+    boarder: 600,
+    barn_1bag_basic: 620,
+    barn_1bag_tcs: 665,
+    barn_2bag_basic: 640,
+    barn_2bag_tcs: 685,
   },
   outdoor: {
-    boarder: 425,
-    barn_1bag_basic: 445,
-    barn_1bag_tcs: 465,
-    barn_2bag_basic: 465,
-    barn_2bag_tcs: 505,
+    boarder: 475,
+    barn_1bag_basic: 495,
+    barn_1bag_tcs: 515,
+    barn_2bag_basic: 515,
+    barn_2bag_tcs: 555,
   },
 };
 
