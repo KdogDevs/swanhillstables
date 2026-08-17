@@ -13,7 +13,7 @@ const BoardingWaitlistForm = lazy(() =>
     default: m.BoardingWaitlistForm,
   }))
 );
-import { Tier, TIER_INCLUDES, TIER_AVAILABILITY, PRICE_MATRIX, FEED_LABELS, FeedPlan, ADDON_NOTES } from "@/components/boarding-signup/pricing";
+import { Tier, TIER_INCLUDES, TIER_AVAILABILITY, BASE_BOARD_PRICE, ADDON_NOTES } from "@/components/boarding-signup/pricing";
 
 const lessonOptions = [
   {
@@ -103,16 +103,16 @@ const Pricing = () => {
                 Boarding Tiers
               </h2>
               <p className="text-muted-foreground">
-                Two stall types, five feed plans — pick what fits your horse and
-                budget. Board is prorated based on current feed prices for the feed
-                we stock and provide, so your rate reflects what your horse actually eats.
+                Choose an indoor or outdoor stall. Feed is not sold in tiers—it is
+                charged separately and prorated using the current price of the feed
+                we stock and the amount your horse consumes.
               </p>
             </motion.div>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {tierCards.map((card, index) => {
                 const Icon = card.icon;
-                const startPrice = PRICE_MATRIX[card.tier].boarder;
+                const basePrice = BASE_BOARD_PRICE[card.tier];
                 return (
                   <motion.div
                     key={card.tier}
@@ -144,14 +144,14 @@ const Pricing = () => {
 
                     <div className="mb-6">
                       <p className={`text-xs uppercase tracking-wide mb-1 ${card.featured ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
-                        Prorated from
+                        Base board
                       </p>
                       <div className="flex items-baseline gap-1">
-                        <span className="font-serif text-4xl font-semibold">${startPrice}</span>
+                        <span className="font-serif text-4xl font-semibold">${basePrice}</span>
                         <span className={card.featured ? "text-primary-foreground/70" : "text-muted-foreground"}>/month</span>
                       </div>
                       <p className={`text-xs mt-1 ${card.featured ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
-                        when you provide feed — adjusts with feed cost
+                        plus prorated feed cost, if barn-provided
                       </p>
                     </div>
 
@@ -181,7 +181,7 @@ const Pricing = () => {
           </div>
         </section>
 
-        {/* Full pricing matrix */}
+        {/* Boarding price breakdown */}
         <section className="py-10 md:py-16 bg-secondary/40">
           <div className="container mx-auto px-4 sm:px-6">
             <motion.div
@@ -193,35 +193,31 @@ const Pricing = () => {
             >
               <div className="text-center mb-8">
                 <h2 className="font-serif text-3xl font-semibold text-foreground mb-3">
-                  Full Pricing Matrix
+                  Boarding Price Breakdown
                 </h2>
                 <p className="text-muted-foreground text-sm max-w-2xl mx-auto">
-                  Rates are <strong>prorated based on current feed prices</strong> for the feed we
-                  stock and provide, not a fixed fee — the figures below are current estimates.
-                  Feed options provided by the barn: <em>Tucker Milling non-GMO 14% Starch
-                  Maintenance Pellets</em> or <em>Triple Crown Gold Senior Performance Pellets</em>.
+                  Board has one base rate for each stall type. If we provide feed, its cost is
+                  added separately and <strong>prorated from the feed's current purchase price</strong>
+                  based on the amount your horse consumes. There are no fixed feed tiers.
                 </p>
               </div>
 
-              <div className="overflow-x-auto bg-card rounded-xl card-shadow">
-                <table className="w-full min-w-[360px] text-sm">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left p-4 font-medium text-muted-foreground">Feed Plan</th>
-                      <th className="text-right p-4 font-medium text-foreground">Indoor Stall</th>
-                      <th className="text-right p-4 font-medium text-foreground">Outdoor / Shed-Row</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(Object.keys(FEED_LABELS) as FeedPlan[]).map((fp, idx) => (
-                      <tr key={fp} className={idx % 2 ? "bg-muted/20" : ""}>
-                        <td className="p-4 text-foreground">{FEED_LABELS[fp]}</td>
-                        <td className="p-4 text-right font-semibold">${PRICE_MATRIX.indoor[fp]}</td>
-                        <td className="p-4 text-right font-semibold">${PRICE_MATRIX.outdoor[fp]}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="bg-card rounded-lg p-6 card-shadow">
+                  <p className="text-sm text-muted-foreground mb-1">Indoor Stall Base</p>
+                  <p className="font-serif text-3xl font-semibold text-foreground">${BASE_BOARD_PRICE.indoor}<span className="font-sans text-sm font-normal text-muted-foreground">/month</span></p>
+                </div>
+                <div className="bg-card rounded-lg p-6 card-shadow">
+                  <p className="text-sm text-muted-foreground mb-1">Outdoor / Shed-Row Base</p>
+                  <p className="font-serif text-3xl font-semibold text-foreground">${BASE_BOARD_PRICE.outdoor}<span className="font-sans text-sm font-normal text-muted-foreground">/month</span></p>
+                </div>
+                <div className="sm:col-span-2 bg-card rounded-lg p-6 card-shadow">
+                  <h3 className="font-serif text-lg font-semibold text-foreground mb-2">Feed</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Boarders may provide their own feed. Barn-provided feed is billed at its
+                    current cost, prorated to the amount consumed by each horse.
+                  </p>
+                </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6 mt-8">
@@ -244,7 +240,7 @@ const Pricing = () => {
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li>• Feeding twice daily</li>
                     <li>• Arena access</li>
-                    <li>• Trail access (outdoor & pasture)</li>
+                    <li>• Trail access</li>
                     <li>• Stall cleaning as needed (indoor & outdoor)</li>
                   </ul>
                   <p className="text-xs text-muted-foreground mt-4 italic">
