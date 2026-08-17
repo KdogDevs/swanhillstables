@@ -2,15 +2,15 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { motion } from "framer-motion";
-import { Check, Home, Sparkles, FileText } from "lucide-react";
+import { Check, Home, Sparkles, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState, lazy, Suspense } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-// Wizard is only needed once the user clicks "Apply" — lazy-load its bundle then.
-const BoardingSignupWizard = lazy(() =>
-  import("@/components/boarding-signup/BoardingSignupWizard").then((m) => ({
-    default: m.BoardingSignupWizard,
+// Waitlist form is only needed once the user clicks — lazy-load its bundle then.
+const BoardingWaitlistForm = lazy(() =>
+  import("@/components/boarding-signup/BoardingWaitlistForm").then((m) => ({
+    default: m.BoardingWaitlistForm,
   }))
 );
 import { Tier, TIER_INCLUDES, TIER_AVAILABILITY, PRICE_MATRIX, FEED_LABELS, FeedPlan, ADDON_NOTES } from "@/components/boarding-signup/pricing";
@@ -48,12 +48,12 @@ const tierCards: Array<{
 ];
 
 const Pricing = () => {
-  const [wizardTier, setWizardTier] = useState<Tier | null>(null);
-  const [wizardOpen, setWizardOpen] = useState(false);
+  const [waitlistTier, setWaitlistTier] = useState<Tier | null>(null);
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
 
-  const startWizard = (tier?: Tier) => {
-    setWizardTier(tier ?? null);
-    setWizardOpen(true);
+  const startWaitlist = (tier?: Tier) => {
+    setWaitlistTier(tier ?? null);
+    setWaitlistOpen(true);
   };
 
   return (
@@ -103,8 +103,9 @@ const Pricing = () => {
                 Boarding Tiers
               </h2>
               <p className="text-muted-foreground">
-                Three tiers, five feed plans — pick what fits your horse and
-                budget. Pricing scales with the feed plan you select.
+                Two stall types, five feed plans — pick what fits your horse and
+                budget. Board is prorated based on current feed prices for the feed
+                we stock and provide, so your rate reflects what your horse actually eats.
               </p>
             </motion.div>
 
@@ -143,14 +144,14 @@ const Pricing = () => {
 
                     <div className="mb-6">
                       <p className={`text-xs uppercase tracking-wide mb-1 ${card.featured ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
-                        Starting at
+                        Prorated from
                       </p>
                       <div className="flex items-baseline gap-1">
                         <span className="font-serif text-4xl font-semibold">${startPrice}</span>
                         <span className={card.featured ? "text-primary-foreground/70" : "text-muted-foreground"}>/month</span>
                       </div>
                       <p className={`text-xs mt-1 ${card.featured ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
-                        when you provide feed
+                        when you provide feed — adjusts with feed cost
                       </p>
                     </div>
 
@@ -169,9 +170,9 @@ const Pricing = () => {
                       variant={card.featured ? "hero" : "default"}
                       className="w-full"
                       size="lg"
-                      onClick={() => startWizard(card.tier)}
+                      onClick={() => startWaitlist(card.tier)}
                     >
-                      Apply for {card.name}
+                      Join Waiting List
                     </Button>
                   </motion.div>
                 );
@@ -195,6 +196,8 @@ const Pricing = () => {
                   Full Pricing Matrix
                 </h2>
                 <p className="text-muted-foreground text-sm max-w-2xl mx-auto">
+                  Rates are <strong>prorated based on current feed prices</strong> for the feed we
+                  stock and provide, not a fixed fee — the figures below are current estimates.
                   Feed options provided by the barn: <em>Tucker Milling non-GMO 14% Starch
                   Maintenance Pellets</em> or <em>Triple Crown Gold Senior Performance Pellets</em>.
                 </p>
@@ -252,12 +255,12 @@ const Pricing = () => {
               </div>
 
               <div className="text-center mt-10">
-                <Button size="lg" onClick={() => startWizard()}>
-                  <FileText className="h-4 w-4 mr-2" />
-                  Apply for Boarding
+                <Button size="lg" onClick={() => startWaitlist()}>
+                  <ClipboardList className="h-4 w-4 mr-2" />
+                  Join the Boarding Waiting List
                 </Button>
                 <p className="text-xs text-muted-foreground mt-3">
-                  6-step wizard auto-fills the official Horse Boarding Agreement and emails you a signed copy.
+                  Tell us your name, contact info, and how many horses you have — we'll reach out when a stall opens.
                 </p>
               </div>
             </motion.div>
@@ -329,16 +332,16 @@ const Pricing = () => {
 
       <Footer />
 
-      <Dialog open={wizardOpen} onOpenChange={setWizardOpen}>
-        <DialogContent className="w-[calc(100vw-2rem)] max-w-3xl max-h-[90vh] overflow-y-auto">
+      <Dialog open={waitlistOpen} onOpenChange={setWaitlistOpen}>
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="font-serif text-2xl">Boarding Application</DialogTitle>
+            <DialogTitle className="font-serif text-2xl">Boarding Waiting List</DialogTitle>
           </DialogHeader>
-          {wizardOpen && (
+          {waitlistOpen && (
             <Suspense fallback={<div className="py-12 text-center text-muted-foreground">Loading…</div>}>
-              <BoardingSignupWizard
-                initialTier={wizardTier ?? undefined}
-                onClose={() => setWizardOpen(false)}
+              <BoardingWaitlistForm
+                initialTier={waitlistTier ?? undefined}
+                onClose={() => setWaitlistOpen(false)}
               />
             </Suspense>
           )}
