@@ -107,6 +107,51 @@ export type Database = {
         }
         Relationships: []
       }
+      boarding_waitlist: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          email: string
+          full_name: string
+          horse_genders: string
+          id: string
+          notes: string | null
+          num_horses: number
+          phone: string
+          status: string
+          tier: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          horse_genders: string
+          id?: string
+          notes?: string | null
+          num_horses?: number
+          phone: string
+          status?: string
+          tier?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          horse_genders?: string
+          id?: string
+          notes?: string | null
+          num_horses?: number
+          phone?: string
+          status?: string
+          tier?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       client_documents: {
         Row: {
           created_at: string
