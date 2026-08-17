@@ -13,7 +13,7 @@ const BoardingWaitlistForm = lazy(() =>
     default: m.BoardingWaitlistForm,
   }))
 );
-import { Tier, TIER_INCLUDES, TIER_AVAILABILITY, BASE_BOARD_PRICE, ADDON_NOTES } from "@/components/boarding-signup/pricing";
+import { Tier, TIER_INCLUDES, TIER_AVAILABILITY, BASE_BOARD_PRICE } from "@/components/boarding-signup/pricing";
 
 const lessonOptions = [
   {
