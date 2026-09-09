@@ -604,12 +604,12 @@ export type Database = {
           age: number | null
           created_at: string
           email: string
-          emergency_contact_name: string
-          emergency_contact_phone: string
-          experience_level: string
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          experience_level: string | null
           full_name: string
           goals: string | null
-          horse_preference: string
+          horse_preference: string | null
           id: string
           own_horse_name: string | null
           phone: string | null
@@ -625,12 +625,12 @@ export type Database = {
           age?: number | null
           created_at?: string
           email: string
-          emergency_contact_name: string
-          emergency_contact_phone: string
-          experience_level?: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          experience_level?: string | null
           full_name: string
           goals?: string | null
-          horse_preference?: string
+          horse_preference?: string | null
           id?: string
           own_horse_name?: string | null
           phone?: string | null
@@ -646,12 +646,12 @@ export type Database = {
           age?: number | null
           created_at?: string
           email?: string
-          emergency_contact_name?: string
-          emergency_contact_phone?: string
-          experience_level?: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          experience_level?: string | null
           full_name?: string
           goals?: string | null
-          horse_preference?: string
+          horse_preference?: string | null
           id?: string
           own_horse_name?: string | null
           phone?: string | null
