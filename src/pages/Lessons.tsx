@@ -1,6 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { LessonSignupWizard } from "@/components/lesson-signup/LessonSignupWizard";
+import { LessonInquiryForm } from "@/components/lesson-signup/LessonInquiryForm";
 import { motion } from "framer-motion";
 import { SEO } from "@/components/SEO";
 
@@ -30,8 +30,8 @@ const Lessons = () => {
                 Riding Lessons
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                Complete the application below to get started. You'll create an account,
-                review our barn rules, and sign the required documents — all in one place.
+                Send us a quick note and we'll get back to you to set up your first
+                lesson and go over everything you need to know.
               </p>
             </motion.div>
           </div>
@@ -39,7 +39,7 @@ const Lessons = () => {
 
         <section className="py-10 md:py-16 bg-background">
           <div className="container mx-auto px-4 sm:px-6 max-w-2xl">
-            <LessonSignupWizard />
+            <LessonInquiryForm />
           </div>
         </section>
       </main>

@@ -1,16 +1,9 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
-import { Menu, X, LogOut, User, LayoutDashboard } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "@/contexts/AuthContext";
 import logo from "@/assets/logo-horse-only.png";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -22,10 +15,8 @@ const navLinks = [
 
 export const Navigation = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { user, signOut } = useAuth();
 
   useEffect(() => {
     // rAF-throttled scroll listener; only sets state on threshold crossings
@@ -47,11 +38,6 @@ export const Navigation = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const handleSignOut = useCallback(async () => {
-    await signOut();
-    navigate("/");
-  }, [signOut, navigate]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 py-3 px-4 isolate">
@@ -83,32 +69,6 @@ export const Navigation = () => {
                 {link.name}
               </Link>
             ))}
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <User size={16} />
-                    <span className="max-w-[120px] truncate">
-                      {user.user_metadata?.full_name || user.email?.split("@")[0]}
-                    </span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => navigate("/dashboard")} className="gap-2 cursor-pointer">
-                    <LayoutDashboard size={16} />
-                    Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut} className="gap-2 cursor-pointer">
-                    <LogOut size={16} />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button variant="default" size="sm" onClick={() => navigate("/auth")}>
-                Sign In
-              </Button>
-            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -146,46 +106,6 @@ export const Navigation = () => {
                     {link.name}
                   </Link>
                 ))}
-                {user ? (
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full gap-2"
-                      onClick={() => {
-                        navigate("/dashboard");
-                        setIsOpen(false);
-                      }}
-                    >
-                      <LayoutDashboard size={16} />
-                      Dashboard
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full gap-2"
-                      onClick={() => {
-                        handleSignOut();
-                        setIsOpen(false);
-                      }}
-                    >
-                      <LogOut size={16} />
-                      Sign Out
-                    </Button>
-                  </div>
-                ) : (
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => {
-                      navigate("/auth");
-                      setIsOpen(false);
-                    }}
-                  >
-                    Sign In
-                  </Button>
-                )}
               </div>
             </motion.div>
           )}
